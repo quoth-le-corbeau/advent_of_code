@@ -5,19 +5,37 @@ import re
 
 def restore_1202_program_alarm(file_path: str):
     programs = _parse_programs(file=file_path)
+    programs[1] = 12
+    programs[2] = 2
     i = 0
     while i < len(programs):
-        if i == len(programs) - 1:
-            print(f"This better be the end: {programs[i]}")
-            break
-        elif programs[i] == 99:
-            print(f"Better be {programs[i]} Luftballons!")
+        if programs[i] == 99:
             i += 1
-            continue
+            break
         else:
             program = programs[i : i + 4]
-            print(f"{program=}")
+            opcode = program[0]
+            if len(program) < 2:
+                i += 1
+                continue
+            x =  program[1]
+            a = programs[x]
+            if len(program) < 3:
+                i += 1
+                continue
+            y = program[2]
+            b = programs[y]
+            if len(program) < 4:
+                i += 1
+                continue
+            position = program[3]
+            if opcode == 1:
+                programs[position] = a + b
+            elif opcode == 2:
+                programs[position] = a * b
         i += 4
+    return programs[0]
+    # 1028256
 
 
 def _parse_programs(file: str):
@@ -25,10 +43,10 @@ def _parse_programs(file: str):
         return list(map(int, re.findall(r"\d+", puzzle_input.read())))
 
 
-start = time.perf_counter()
-print(restore_1202_program_alarm("eg.txt"))
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
-
 # start = time.perf_counter()
-# print(restore_1202_program_alarm("input.txt"))
-# print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+# print(restore_1202_program_alarm("eg.txt"))
+# print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+
+start = time.perf_counter()
+print(restore_1202_program_alarm("input.txt"))
+print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
