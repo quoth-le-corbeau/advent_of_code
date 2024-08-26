@@ -10,8 +10,6 @@ def count_depth_increases_in_window(file_path: str) -> int:
         if i != 0 and window_sum > window_sums[i - 1]:
             count += 1
     return count
-    
-        
 
 
 def _parse_depth_windows(file: str) -> list[int]:
@@ -23,8 +21,6 @@ def _parse_depth_windows(file: str) -> list[int]:
             window = [depths[k] for k in range(i, i + 3)]
             windows.append(sum(window))
         return windows
-        
-        
 
 
 start = time.perf_counter()

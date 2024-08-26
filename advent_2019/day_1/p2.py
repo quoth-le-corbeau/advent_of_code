@@ -10,6 +10,7 @@ def sum_recursive_fuel_requirements(file_path: str) -> int:
         total += _sum_all_mass_fuels(mass=mass)
     return total
 
+
 def _sum_all_mass_fuels(mass: int) -> int:
     total = 0
     while mass // 3 - 2 > 0:
@@ -22,7 +23,7 @@ def _sum_all_mass_fuels(mass: int) -> int:
 def _parse_input(file: str) -> int:
     with open(pathlib.Path(__file__).parent / file, "r") as puzzle_input:
         lines = puzzle_input.read()
-        return map(int, re.findall(r'\d+', lines))
+        return map(int, re.findall(r"\d+", lines))
 
 
 start = time.perf_counter()

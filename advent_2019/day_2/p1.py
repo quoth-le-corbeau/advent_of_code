@@ -3,7 +3,7 @@ import pathlib
 import re
 
 
-def restore_1202_program_alarm(file_path: str):
+def restore_1202_program_alarm(file_path: str) -> int:
     programs = _parse_programs(file=file_path)
     programs[1] = 12
     programs[2] = 2
@@ -18,7 +18,7 @@ def restore_1202_program_alarm(file_path: str):
             if len(program) < 2:
                 i += 1
                 continue
-            x =  program[1]
+            x = program[1]
             a = programs[x]
             if len(program) < 3:
                 i += 1
@@ -35,17 +35,12 @@ def restore_1202_program_alarm(file_path: str):
                 programs[position] = a * b
         i += 4
     return programs[0]
-    # 1028256
 
 
 def _parse_programs(file: str):
     with open(pathlib.Path(__file__).parent / file, "r") as puzzle_input:
         return list(map(int, re.findall(r"\d+", puzzle_input.read())))
 
-
-# start = time.perf_counter()
-# print(restore_1202_program_alarm("eg.txt"))
-# print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
 print(restore_1202_program_alarm("input.txt"))

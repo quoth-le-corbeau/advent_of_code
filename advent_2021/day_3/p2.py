@@ -10,24 +10,20 @@ def calculate_power_consumption(file_path: str) -> int:
     return oxygen_generator_rating * co2_generator_rating
 
 
-def _get_generator_rating(data_grid: pandas.DataFrame, mode:str = "oxygen") -> int:
+def _get_generator_rating(data_grid: pandas.DataFrame, mode: str = "oxygen") -> int:
     current_data_grid = data_grid
     column_name = 1
     while len(current_data_grid) > 1 and column_name <= len(data_grid.columns):
         modal_value = _get_column_mode_or_default(
             column_name=column_name, data_grid=current_data_grid
         )
-        
+
         modal_value = str(1 - int(modal_value)) if mode == "co2" else modal_value
         data_subset = current_data_grid[current_data_grid[column_name] == modal_value]
         current_data_grid = data_subset
         column_name += 1
-    generator_rating_string = "".join(
-        [value for value in current_data_grid.values[0]]
-    )
-    generator_rating = _binary_string_to_integer(
-        binary_string=generator_rating_string
-    )
+    generator_rating_string = "".join([value for value in current_data_grid.values[0]])
+    generator_rating = _binary_string_to_integer(binary_string=generator_rating_string)
     return generator_rating
 
 

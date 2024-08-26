@@ -30,7 +30,6 @@ def count_least_dangerous_points(file_path: str):
     return count
 
 
-
 def _get_start_end_coordinates(file: str) -> list[list[tuple[int, int]]]:
     with open(pathlib.Path(__file__).parent / file, "r") as puzzle_input:
         lines = puzzle_input.read().splitlines()

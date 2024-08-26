@@ -15,6 +15,7 @@ _FIELDS = {
 
 _EYE_COLOURS = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
 
+
 class InvalidPassport(Exception):
     pass
 
