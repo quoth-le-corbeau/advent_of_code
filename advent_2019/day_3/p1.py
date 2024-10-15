@@ -1,7 +1,8 @@
-from typing import Set
 import time
 import pathlib
+import re
 import dataclasses
+from typing import List, Dict, Tuple
 
 
 @dataclasses.dataclass(frozen=True)
@@ -9,77 +10,76 @@ class Node:
     x: int
     y: int
 
-    def move_one_space(self, i: int, j: int):
-        return Node(self.x + i, self.y + j)
+    def coordinates(self) -> Tuple[int, int]:
+        return self.x, self.y
+
+    def move_in_str_ln(self, direction: str, spaces: int):
+        direction_map = {
+            "R": (1, 0),
+            "L": (-1, 0),
+            "U": (0, 1),
+            "D": (0, -1),
+        }
+        if direction not in direction_map:
+            raise ValueError(f"Invalid direction: {direction}")
+        dx, dy = direction_map[direction]
+        return [
+            Node(
+                x=self.x + i * dx,
+                y=self.y + i * dy,
+            )
+            for i in range(1, spaces + 1)
+        ]
 
     @property
-    def manhattan(self) -> int:
+    def manhattan_distance(self) -> int:
         return abs(self.x) + abs(self.y)
 
 
-def find_manhattan_closest_intersection(file_path: str) -> int:
+def find_smallest_manhattan_intersection(file_path: str) -> int:
     wires = _parse_wires(file=file_path)
-    all_visited = list()
-    for wire in wires:
-        visited: Set[Node] = set()
+    visited_nodes_by_wire = _get_visited_nodes(instructions=wires)
+    assert len(visited_nodes_by_wire) == 2
+    intersections = _get_intersections(
+        node_list_1=visited_nodes_by_wire[1], node_list_2=visited_nodes_by_wire[2]
+    )
+    return min([intersection.manhattan_distance for intersection in intersections])
+
+
+def _get_intersections(node_list_1: List[Node], node_list_2: List[Node]) -> List[Node]:
+    coordinates_set = {node.coordinates() for node in node_list_1}
+    return [node for node in node_list_2 if node.coordinates() in coordinates_set]
+
+
+def _get_visited_nodes(instructions: List[str]) -> Dict[int, List[Node]]:
+    visited_nodes_by_wire = {k: [] for k in range(1, len(instructions) + 1)}
+    for i, wire in enumerate(instructions):
+        visited_nodes: List[Node] = list()
         current_node = Node(x=0, y=0)
         for instruction in wire.split(","):
-            direction = instruction[0]
-            spaces = int(instruction[1:])
-            if direction == "i":
-                if spaces >= 0:
-                    steps = 0
-                    while steps < spaces:
-                        new_node = current_node.move_one_space(i=1, j=0)
-                        visited.add(new_node)
-                        current_node = new_node
-                        steps += 1
-                else:
-                    steps = 0
-                    while steps > spaces:
-                        new_node = current_node.move_one_space(i=-1, j=0)
-                        visited.add(new_node)
-                        current_node = new_node
-                        steps -= 1
+            match = re.match(r"([A-Za-z])(\d+)", instruction)
+            if match:
+                direction = match.group(1)
+                spaces = int(match.group(2))
             else:
-                assert direction == "j"
-                if spaces >= 0:
-                    steps = 0
-                    while steps < spaces:
-                        new_node = current_node.move_one_space(i=0, j=1)
-                        visited.add(new_node)
-                        current_node = new_node
-                        steps += 1
-                else:
-                    steps = 0
-                    while steps > spaces:
-                        new_node = current_node.move_one_space(i=0, j=-1)
-                        visited.add(new_node)
-                        current_node = new_node
-                        steps -= 1
-        all_visited.append(visited)
-    intersections = set.intersection(*all_visited)
-    return min([node.manhattan for node in intersections])
+                raise ValueError("The input string does not match the expected format")
+            visited_nodes += current_node.move_in_str_ln(
+                direction=direction, spaces=spaces
+            )
+            current_node = visited_nodes[-1]
+        visited_nodes_by_wire[i + 1] += visited_nodes
+    return visited_nodes_by_wire
 
 
-def _parse_wires(file: str):
+def _parse_wires(file: str) -> List[str]:
     with open(pathlib.Path(__file__).parent / file, "r") as puzzle_input:
-        lines = (
-            puzzle_input.read()
-            .replace("R", "i")
-            .replace("U", "j")
-            .replace("L", "i-")
-            .replace("D", "j-")
-            .strip()
-            .splitlines()
-        )
-        return lines
+        return puzzle_input.read().strip().splitlines()
 
 
 start = time.perf_counter()
-print(find_manhattan_closest_intersection("eg.txt"))
+print(find_smallest_manhattan_intersection("eg.txt"))
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(find_manhattan_closest_intersection("input.txt"))
+print(find_smallest_manhattan_intersection("input.txt"))
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
