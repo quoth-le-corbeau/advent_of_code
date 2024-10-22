@@ -8,8 +8,7 @@ echo "   _____                 __  .__                      _____       .___    
 \____|__  /___|  /\____/|__| |___|  /\___  >__|    \____|__  /\____ |  \_/  \___  >___|  /__|    \____/|__|     \______  /\____/\____ |\___  >
         \/     \/                 \/     \/                \/      \/           \/     \/                              \/            \/    \/ "
 echo "Let's get this party started ==========================================================================================================="
-read -p "Enter the absolute path to your project: [${HOME}/code/advent]" project_path
-project_path="${project_path:-$HOME/code/advent}"
+read -p "Enter the absolute path to your project: " project_path
 echo "project path set to $project_path"
 read -p "What year is it?: " project_year
 
@@ -22,7 +21,7 @@ else
   echo "successfully created: $project_path"
 fi
 
-solution_template=~/.scripts/aoctmpl.py || { echo "Finding ${solution_template} failed. Sorry!" ; exit 1; }
+solution_template=aoctmpl.py || { echo "Finding ${solution_template} failed. Sorry!" ; exit 1; }
 
 for day_number in $(seq 25 $END); do 
     project_day_dir="${project_dir}/day_${day_number}"
