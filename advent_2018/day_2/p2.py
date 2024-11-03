@@ -2,21 +2,21 @@ import time
 import pathlib
 
 
-def RENAME_FUNC(file_path: str):
-    RENAME = _RENAME_FUNC(file=file_path)
-    pass
+def get_common_box_id_letters(file_path: str) -> str:
+    with open(pathlib.Path(__file__).parent / file_path, "r") as puzzle_input:
+        box_ids = puzzle_input.read().splitlines()
+        for i, box_id in enumerate(box_ids):
+            for b_id in box_ids[i + 1 :]:
+                common_letters = set(box_id).intersection(b_id)
+                if len(common_letters) == len(box_id) - 1:
+                    char = set(box_id).difference(common_letters).pop()
+                    return box_id.replace(char, "")
 
-
-def _RENAME_FUNC(file: str):
-    with open(pathlib.Path(__file__).parent / file, "r") as puzzle_input:
-        lines = puzzle_input.read()
-        print(lines)
-
-
-start = time.perf_counter()
-print(RENAME_FUNC("eg.txt"))
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 # start = time.perf_counter()
-# print(RENAME_FUNC("input.txt"))
-# print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+# print(get_common_box_id_letters("eg.txt"))
+# print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+
+start = time.perf_counter()
+print(get_common_box_id_letters("input.txt"))
+print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
