@@ -11,12 +11,11 @@ def get_common_box_id_letters(file_path: str) -> str:
                 remaining_dict = {k: remaining_id[k] for k in range(len(remaining_id))}
                 diff = set(box_dict.items()) - set(remaining_dict.items())
                 if len(diff) == 1:
-                    print(type(diff))
                     index, _ = diff.pop()
-                    print(f"{index}")
-                    print(f"{box_id}")
                     return box_id[:index] + box_id[index:]
-
+                else:
+                    continue
+        return "No Match Found!"
 
 
 start = time.perf_counter()
