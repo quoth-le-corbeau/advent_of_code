@@ -1,5 +1,6 @@
 import time
 import pathlib
+from collections import Counter
 
 
 def count_overlaps(file_path: str) -> int:
@@ -13,18 +14,17 @@ def count_overlaps(file_path: str) -> int:
                 .replace("x", ",")
                 .split(",")
             )
-            print("---------")
-            print(vertices)
-            print("---------")
-            for x in range(int(vertices[0], int(vertices[0]) + int(vertices[2]))):
+            for x in range(int(vertices[0]), int(vertices[0]) + int(vertices[2])):
                 for y in range(int(vertices[1]), int(vertices[1]) + int(vertices[3])):
-                    print(x, y)
+                    visited.append((x, y))
+        counter = Counter(visited)
+        return sum(1 for count in counter.values() if count > 1)
 
 
 start = time.perf_counter()
 print(count_overlaps("eg.txt"))
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
-# start = time.perf_counter()
-# print(count_overlaps("input.txt"))
-# print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+start = time.perf_counter()
+print(count_overlaps("input.txt"))
+print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
