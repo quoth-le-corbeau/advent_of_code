@@ -4,7 +4,7 @@ from advent_2024.day_1 import utils
 
 
 def sum_location_differences(file_path: str) -> int:
-    locations_1, locations_2 = utils.parse_into_lists(file_path)
+    locations_1, locations_2 = utils.parse_into_equal_length_lists(file_path)
     l1 = np.array(sorted(locations_1))
     l2 = np.array(sorted(locations_2))
     return sum(abs(l2 - l1))
