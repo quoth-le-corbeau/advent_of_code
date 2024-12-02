@@ -3,7 +3,7 @@ import pathlib
 import re
 
 
-def count_safe_reports_with_dampener(file_path: str):
+def count_safe_reports_with_dampener(file_path: str) -> int:
     with open(pathlib.Path(__file__).parent / file_path, "r") as puzzle_input:
         lines = puzzle_input.read().splitlines()
         safe_count = 0
@@ -11,21 +11,27 @@ def count_safe_reports_with_dampener(file_path: str):
             nums = list(map(int, re.findall(r"(\d+)", line)))
             if len(nums) < 2:
                 continue
-            diffs = [nums[i + 1] - nums[i] for i in range(len(nums) - 1)]
-            is_increasing = all(diff > 0 for diff in diffs)
-            is_decreasing = all(diff < 0 for diff in diffs)
-            anomalies = 0
-            for diff in diffs:
-                if (
-                    abs(diff) < 1
-                    or abs(diff) > 3
-                    or (diff > 0 and not is_increasing)
-                    or (diff < 0 and not is_decreasing)
-                ):
-                    anomalies += 1
-            if anomalies == 0 or anomalies == 1:
+            if _is_safe(nums):
                 safe_count += 1
+            else:
+                for i in range(len(nums)):
+                    sub_list = nums[:i] + nums[i + 1 :]
+                    if _is_safe(sub_list):
+                        safe_count += 1
+                        break
         return safe_count
+
+
+def _is_safe(nums: list[int]) -> bool:
+    diffs = [nums[i + 1] - nums[i] for i in range(len(nums) - 1)]
+    if all(1 <= abs(diff) <= 3 for diff in diffs):
+        if all(diff > 0 for diff in diffs):
+            return True
+        elif all(diff < 0 for diff in diffs):
+            return True
+        else:
+            return False
+    return False
 
 
 start = time.perf_counter()
