@@ -17,19 +17,30 @@ if [ -d "$project_dir" ]; then
   echo "$project_dir already exists!"
   exit 1
 else
-  mkdir -p $project_dir || { echo "Creating ${project_dir} failed. Sorry!" ; exit 1; }
+  mkdir -p $project_dir || { echo "Creating ${project_dir} failed. Sorry!" ; exit 1; };
   echo "successfully created: $project_path"
 fi
 
-solution_template=aoctmpl.py || { echo "Finding ${solution_template} failed. Sorry!" ; exit 1; }
+solution_template=aoctmpl.py || { echo "Finding ${solution_template} failed. Sorry!" ; exit 1; };
 
-for day_number in $(seq 25 $END); do 
+my_inputs_dir="${project_path}/my_inputs/${project_year}"
+mkdir -p $my_inputs_dir || { echo "creating ${my_inputs_dir} failed. Sorry!" ; exit 1; };
+echo "created ${my_inputs_dir}";
+
+
+for day_number in $(seq 1 25); do
     project_day_dir="${project_dir}/day_${day_number}"
-    mkdir -p $project_day_dir || { echo "Creating ${project_day_dir} failed. Sorry!" ; exit 1; };
-    cat $solution_template > $project_day_dir/p1.py || { echo "Creating ${project_day_dir}/p1.py failed. Sorry!" ; exit 1; };
-    cat $solution_template > $project_day_dir/p2.py || { echo "Creating ${project_day_dir}/p2.py failed. Sorry!" ; exit 1; };
-    touch $project_day_dir/eg.txt || { echo "Creating ${project_day_dir}/eg.txt failed. Sorry!" ; exit 1; };
-    touch $project_day_dir/input.txt || { echo "Creating ${project_day_dir}/input.txt failed. Sorry!" ; exit 1; };
+    mkdir -p "$project_day_dir" || { echo "Creating ${project_day_dir} failed. Sorry!" ; exit 1; };
+    mkdir -p "${my_inputs_dir}/day_${day_number}" || { echo "Creating ${my_inputs_dir}/day_${day_number} failed. Sorry!"; exit 1; };
+
+    # Copy and replace YEAR placeholder in template files
+    sed "s/YEAR/${project_year}/g" "$solution_template" > "${project_day_dir}/p1.py" || { echo "Creating ${project_day_dir}/p1.py failed. Sorry!" ; exit 1; };
+    sed "s/YEAR/${project_year}/g" "$solution_template" > "${project_day_dir}/p2.py" || { echo "Creating ${project_day_dir}/p2.py failed. Sorry!" ; exit 1; };
+
+    touch "${my_inputs_dir}/day_${day_number}/eg.txt" || { echo "Creating ${my_inputs_dir}/day_${day_number}/eg.txt failed. Sorry!" ; exit 1; };
+    touch "${my_inputs_dir}/day_${day_number}/input.txt" || { echo "Creating ${my_inputs_dir}/day_${day_number}/input.txt failed. Sorry!" ; exit 1; };
 done
+
+
 
 echo "$project_dir successfully created! Happy coding!"
