@@ -63,9 +63,29 @@ def _get_boarding_passes(file: str) -> List[Tuple[str, str]]:
 
 
 start = time.perf_counter()
-print(get_highest_seat_id("eg.txt"))
+print(
+    get_highest_seat_id(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2020/day_5"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(get_highest_seat_id("input.txt"))
+print(
+    get_highest_seat_id(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2020/day_5"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

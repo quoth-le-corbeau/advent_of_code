@@ -12,9 +12,29 @@ def scan_corrupted_memory(file_path: str) -> int:
 
 
 start = time.perf_counter()
-print(scan_corrupted_memory("eg.txt"))
+print(
+    scan_corrupted_memory(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2024/day_3"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(scan_corrupted_memory("input.txt"))
+print(
+    scan_corrupted_memory(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2024/day_3"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

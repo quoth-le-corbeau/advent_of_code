@@ -83,8 +83,28 @@ def _get_all_series_from_input(file: str) -> list[list[int]]:
 
 
 start = time.perf_counter()
-print(sum_previous_terms_in_series("eg.txt"))
+print(
+    sum_previous_terms_in_series(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2023/day_9"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(sum_previous_terms_in_series("input.txt"))
+print(
+    sum_previous_terms_in_series(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2023/day_9"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

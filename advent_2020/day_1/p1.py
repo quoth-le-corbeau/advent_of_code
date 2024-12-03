@@ -34,9 +34,29 @@ def _get_pair_with_target_sum(
 
 
 start = time.perf_counter()
-print(product_of_target_pair("eg.txt"))
+print(
+    product_of_target_pair(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2020/day_1"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(product_of_target_pair("input.txt"))
+print(
+    product_of_target_pair(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2020/day_1"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

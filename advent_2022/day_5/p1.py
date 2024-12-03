@@ -57,8 +57,28 @@ def _get_stacks_and_instructions(
 
 
 start = time.perf_counter()
-print(stack_crates_9000("eg.txt"))
+print(
+    stack_crates_9000(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_5"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(stack_crates_9000("input.txt"))
+print(
+    stack_crates_9000(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_5"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

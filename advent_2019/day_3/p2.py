@@ -100,9 +100,29 @@ def _parse_wires(file: str) -> List[str]:
 
 
 start = time.perf_counter()
-print(find_earliest_intersection("eg.txt"))
+print(
+    find_earliest_intersection(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2019/day_3"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(find_earliest_intersection("input.txt"))
+print(
+    find_earliest_intersection(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2019/day_3"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

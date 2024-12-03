@@ -22,9 +22,29 @@ def sum_same_adjacent_digits(file_path: str) -> int:
 
 
 start = time.perf_counter()
-print(sum_same_adjacent_digits("eg.txt"))
+print(
+    sum_same_adjacent_digits(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2017/day_1"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(sum_same_adjacent_digits("input.txt"))
+print(
+    sum_same_adjacent_digits(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2017/day_1"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

@@ -22,8 +22,28 @@ def _get_scratchcard_points(file: str) -> int:
 
 
 start = time.perf_counter()
-print(get_scratchcard_points("eg.txt"))
+print(
+    get_scratchcard_points(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2023/day_4"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(get_scratchcard_points("input.txt"))
+print(
+    get_scratchcard_points(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2023/day_4"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

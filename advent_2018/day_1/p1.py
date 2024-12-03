@@ -16,9 +16,29 @@ def calculate_resulting_freq_v2(file_path: str) -> int:
 
 
 start = time.perf_counter()
-print(calculate_resulting_freq("eg.txt"))
+print(
+    calculate_resulting_freq(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2018/day_1"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(calculate_resulting_freq("input.txt"))
+print(
+    calculate_resulting_freq(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2018/day_1"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

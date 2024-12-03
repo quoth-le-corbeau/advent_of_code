@@ -21,9 +21,29 @@ def _parse_entries(file: str) -> list[str]:
 
 
 start = time.perf_counter()
-print(find_first_freq_reached_twice("eg.txt"))
+print(
+    find_first_freq_reached_twice(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2018/day_1"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(find_first_freq_reached_twice("input.txt"))
+print(
+    find_first_freq_reached_twice(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2018/day_1"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

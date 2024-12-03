@@ -78,8 +78,28 @@ def _build_nested_file_structure(file: str):
 
 
 start = time.perf_counter()
-print(find_smallest_directory_to_delete("eg.txt"))
+print(
+    find_smallest_directory_to_delete(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_7"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(find_smallest_directory_to_delete("input.txt"))
+print(
+    find_smallest_directory_to_delete(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_7"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

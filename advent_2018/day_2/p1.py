@@ -25,9 +25,29 @@ def calculate_checksum(file_path: str) -> int:
 
 
 start = time.perf_counter()
-print(calculate_checksum("eg.txt"))
+print(
+    calculate_checksum(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2018/day_2"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(calculate_checksum("input.txt"))
+print(
+    calculate_checksum(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2018/day_2"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

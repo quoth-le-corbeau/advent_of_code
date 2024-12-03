@@ -30,9 +30,29 @@ def _read_grid_from_forest(file: str) -> List[str]:
 
 
 start = time.perf_counter()
-print(count_trees_on_trajectory("eg.txt"))
+print(
+    count_trees_on_trajectory(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2020/day_3"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(count_trees_on_trajectory("input.txt"))
+print(
+    count_trees_on_trajectory(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2020/day_3"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

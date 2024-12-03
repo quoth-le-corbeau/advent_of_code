@@ -68,8 +68,28 @@ def _parse_bingo_game(file: str):
 
 
 start = time.perf_counter()
-print(let_the_squid_win("eg.txt"))
+print(
+    let_the_squid_win(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2021/day_4"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(let_the_squid_win("input.txt"))
+print(
+    let_the_squid_win(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2021/day_4"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

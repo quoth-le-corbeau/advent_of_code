@@ -5,3 +5,4 @@ __pycache__
 *.txt
 my_inputs/
 organise.sh
+*fail.py

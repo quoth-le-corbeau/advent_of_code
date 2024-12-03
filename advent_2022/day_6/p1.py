@@ -21,8 +21,28 @@ def _get_data_stream(file: str) -> str:
 
 
 start = time.perf_counter()
-print(count_characters_until_marker_detected("eg.txt"))
+print(
+    count_characters_until_marker_detected(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_6"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(count_characters_until_marker_detected("input.txt"))
+print(
+    count_characters_until_marker_detected(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_6"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

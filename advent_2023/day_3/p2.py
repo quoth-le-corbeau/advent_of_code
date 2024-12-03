@@ -60,8 +60,28 @@ def _get_part_numbers_by_coordinates(
 
 
 start = time.perf_counter()
-print(sum_gear_ratios("eg.txt"))
+print(
+    sum_gear_ratios(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2023/day_3"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(sum_gear_ratios("input.txt"))
+print(
+    sum_gear_ratios(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2023/day_3"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

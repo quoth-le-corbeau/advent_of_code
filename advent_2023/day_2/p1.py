@@ -39,8 +39,28 @@ def _is_game_impossible(cubes_by_colour: list[str], max_for_colour: int):
 
 
 start = time.perf_counter()
-print(get_possible_games("eg.txt"))
+print(
+    get_possible_games(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2023/day_2"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(get_possible_games("input.txt"))
+print(
+    get_possible_games(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2023/day_2"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

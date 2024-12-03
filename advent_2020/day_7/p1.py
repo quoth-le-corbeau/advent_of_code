@@ -43,9 +43,29 @@ def _get_bag_holding_rules(file: str) -> Dict[str, List[str]]:
 
 
 start = time.perf_counter()
-print(get_number_of_shiny_gold_bag_holders("eg.txt"))
+print(
+    get_number_of_shiny_gold_bag_holders(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2020/day_7"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(get_number_of_shiny_gold_bag_holders("input.txt"))
+print(
+    get_number_of_shiny_gold_bag_holders(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2020/day_7"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

@@ -36,8 +36,28 @@ def _get_compartments(file: str):
 
 
 start = time.perf_counter()
-print(sum_item_priorities("eg.txt"))
+print(
+    sum_item_priorities(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_3"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(sum_item_priorities("input.txt"))
+print(
+    sum_item_priorities(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_3"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

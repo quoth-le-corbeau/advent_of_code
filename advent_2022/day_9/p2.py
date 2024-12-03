@@ -125,11 +125,31 @@ def _get_instructions(file: str) -> list[tuple[str, int]]:
 
 
 start = time.perf_counter()
-print(count_tail_positions("eg.txt"))
+print(
+    count_tail_positions(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_9"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
 print(count_tail_positions("eg1.txt"))
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(count_tail_positions("input.txt"))
+print(
+    count_tail_positions(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_9"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

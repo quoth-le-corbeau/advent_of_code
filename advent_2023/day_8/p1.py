@@ -36,11 +36,31 @@ def _parse_instructions(file: str) -> tuple[str, dict[str, tuple[str, str]]]:
 
 
 start = time.perf_counter()
-print(count_moves_to_navigate_wasteland("eg.txt"))
+print(
+    count_moves_to_navigate_wasteland(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2023/day_8"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
 print(count_moves_to_navigate_wasteland("eg1.txt"))
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(count_moves_to_navigate_wasteland("input.txt"))
+print(
+    count_moves_to_navigate_wasteland(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2023/day_8"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

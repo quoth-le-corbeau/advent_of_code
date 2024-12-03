@@ -38,8 +38,28 @@ def _parse_program_file(file: str) -> list[tuple[int, int]]:
 
 
 start = time.perf_counter()
-print(calculate_signal_strength("eg.txt"))
+print(
+    calculate_signal_strength(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_10"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(calculate_signal_strength("input.txt"))
+print(
+    calculate_signal_strength(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_10"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

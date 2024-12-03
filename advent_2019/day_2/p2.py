@@ -53,5 +53,15 @@ def _parse_programs(file: str):
 
 
 start = time.perf_counter()
-print(complete_gravity_assist("input.txt"))
+print(
+    complete_gravity_assist(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2019/day_2"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

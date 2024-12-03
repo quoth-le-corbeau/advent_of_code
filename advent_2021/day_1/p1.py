@@ -19,8 +19,28 @@ def _parse_depths(file: str) -> list[int]:
 
 
 start = time.perf_counter()
-print(count_number_of_increased_depths("eg.txt"))
+print(
+    count_number_of_increased_depths(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2021/day_1"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(count_number_of_increased_depths("input.txt"))
+print(
+    count_number_of_increased_depths(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2021/day_1"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

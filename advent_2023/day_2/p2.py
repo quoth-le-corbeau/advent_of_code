@@ -29,8 +29,28 @@ def _find_highest_for_colour(cubes_by_colour: list[str]) -> int:
 
 
 start = time.perf_counter()
-print(get_minimum_cube_powers("eg.txt"))
+print(
+    get_minimum_cube_powers(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2023/day_2"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(get_minimum_cube_powers("input.txt"))
+print(
+    get_minimum_cube_powers(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2023/day_2"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

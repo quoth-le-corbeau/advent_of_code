@@ -67,8 +67,28 @@ def _get_tree_height_grid(file: str) -> list[list[int]]:
 
 
 start = time.perf_counter()
-print(find_most_scenic_tree("eg.txt"))
+print(
+    find_most_scenic_tree(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_8"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(find_most_scenic_tree("input.txt"))
+print(
+    find_most_scenic_tree(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_8"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

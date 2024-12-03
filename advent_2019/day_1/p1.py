@@ -18,9 +18,29 @@ def _parse_input(file: str) -> list[int]:
 
 
 start = time.perf_counter()
-print(sum_fuel_requirements("eg.txt"))
+print(
+    sum_fuel_requirements(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2019/day_1"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(sum_fuel_requirements("input.txt"))
+print(
+    sum_fuel_requirements(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2019/day_1"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

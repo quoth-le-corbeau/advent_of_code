@@ -14,8 +14,28 @@ def _RENAME_FUNC(file: str):
 
 
 start = time.perf_counter()
-print(navigate_pipe_maze("eg.txt"))
+print(
+    navigate_pipe_maze(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2023/day_10"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(navigate_pipe_maze("input.txt"))
+print(
+    navigate_pipe_maze(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2023/day_10"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

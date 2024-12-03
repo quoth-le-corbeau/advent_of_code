@@ -18,8 +18,28 @@ def _get_all_elf_calories(file: str) -> list[int]:
 
 
 start = time.perf_counter()
-print(find_top_three_most_calories("eg.txt"))
+print(
+    find_top_three_most_calories(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_1"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(find_top_three_most_calories("input.txt"))
+print(
+    find_top_three_most_calories(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_1"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

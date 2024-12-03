@@ -37,9 +37,29 @@ def find_most_sleepy_strategy_1(file_path: str) -> int:
 
 
 start = time.perf_counter()
-print(find_most_sleepy_strategy_1("eg.txt"))
+print(
+    find_most_sleepy_strategy_1(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2018/day_4"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(find_most_sleepy_strategy_1("input.txt"))
+print(
+    find_most_sleepy_strategy_1(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2018/day_4"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

@@ -35,8 +35,28 @@ def _get_range_pairs(file: str) -> list[tuple[tuple[int, int], tuple[int, int]]]
 
 
 start = time.perf_counter()
-print(find_overlapping_ranges("eg.txt"))
+print(
+    find_overlapping_ranges(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_4"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(find_overlapping_ranges("input.txt"))
+print(
+    find_overlapping_ranges(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_4"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

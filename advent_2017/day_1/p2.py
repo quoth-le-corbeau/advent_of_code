@@ -24,9 +24,29 @@ def sum_digits_a_step_away(file_path: str) -> int:
 
 
 start = time.perf_counter()
-print(sum_digits_a_step_away("eg.txt"))
+print(
+    sum_digits_a_step_away(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2017/day_1"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(sum_digits_a_step_away("input.txt"))
+print(
+    sum_digits_a_step_away(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2017/day_1"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

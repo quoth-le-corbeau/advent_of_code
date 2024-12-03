@@ -22,9 +22,29 @@ def count_overlaps(file_path: str) -> int:
 
 
 start = time.perf_counter()
-print(count_overlaps("eg.txt"))
+print(
+    count_overlaps(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2018/day_3"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(count_overlaps("input.txt"))
+print(
+    count_overlaps(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2018/day_3"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

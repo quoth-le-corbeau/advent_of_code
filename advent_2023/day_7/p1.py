@@ -94,8 +94,28 @@ def _get_bid_hands(file: str) -> list[BidHand]:
 
 
 start = time.perf_counter()
-print(find_total_camel_card_winnings("eg.txt"))
+print(
+    find_total_camel_card_winnings(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2023/day_7"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(find_total_camel_card_winnings("input.txt"))
+print(
+    find_total_camel_card_winnings(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2023/day_7"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

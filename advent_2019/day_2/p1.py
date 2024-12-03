@@ -43,5 +43,15 @@ def _parse_programs(file: str):
 
 
 start = time.perf_counter()
-print(restore_1202_program_alarm("input.txt"))
+print(
+    restore_1202_program_alarm(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2019/day_2"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

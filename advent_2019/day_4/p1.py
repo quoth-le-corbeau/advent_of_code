@@ -24,5 +24,15 @@ def _contains_adjacent_pair(num_string: str) -> bool:
 
 
 start = time.perf_counter()
-print(count_possible_passwords("input.txt"))
+print(
+    count_possible_passwords(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2019/day_4"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

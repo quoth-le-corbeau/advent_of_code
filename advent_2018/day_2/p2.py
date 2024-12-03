@@ -19,9 +19,29 @@ def get_common_box_id_letters(file_path: str) -> str:
 
 
 start = time.perf_counter()
-print(get_common_box_id_letters("eg.txt"))
+print(
+    get_common_box_id_letters(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2018/day_2"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(get_common_box_id_letters("input.txt"))
+print(
+    get_common_box_id_letters(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2018/day_2"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

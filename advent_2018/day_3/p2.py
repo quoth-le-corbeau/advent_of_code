@@ -54,9 +54,29 @@ def find_non_overlapping(file_path: str):
 
 
 start = time.perf_counter()
-print(find_non_overlapping("eg.txt"))
+print(
+    find_non_overlapping(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2018/day_3"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(find_non_overlapping("input.txt"))
+print(
+    find_non_overlapping(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2018/day_3"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

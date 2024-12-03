@@ -21,9 +21,29 @@ def _count_yesses(file: str) -> List[Set[str]]:
 
 
 start = time.perf_counter()
-print(sum_of_yes_counts("eg.txt"))
+print(
+    sum_of_yes_counts(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2020/day_6"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(sum_of_yes_counts("input.txt"))
+print(
+    sum_of_yes_counts(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2020/day_6"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

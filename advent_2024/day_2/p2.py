@@ -35,9 +35,29 @@ def _is_safe(nums: list[int]) -> bool:
 
 
 start = time.perf_counter()
-print(count_safe_reports_with_dampener("eg.txt"))
+print(
+    count_safe_reports_with_dampener(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2024/day_2"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(count_safe_reports_with_dampener("input.txt"))
+print(
+    count_safe_reports_with_dampener(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2024/day_2"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

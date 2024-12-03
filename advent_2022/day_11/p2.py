@@ -99,8 +99,28 @@ def _get_attributes_per_monkey_and_divisors(
 
 
 start = time.perf_counter()
-print(calculate_monkey_business_over_10000_rounds("eg.txt"))
+print(
+    calculate_monkey_business_over_10000_rounds(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_11"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(calculate_monkey_business_over_10000_rounds("input.txt"))
+print(
+    calculate_monkey_business_over_10000_rounds(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_11"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

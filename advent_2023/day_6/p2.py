@@ -26,8 +26,28 @@ def _parse_games(file: str) -> tuple[int, int]:
 
 
 start = time.perf_counter()
-print(find_winners_product_2("eg.txt"))
+print(
+    find_winners_product_2(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2023/day_6"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(find_winners_product_2("input.txt"))
+print(
+    find_winners_product_2(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2023/day_6"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

@@ -48,8 +48,28 @@ def _get_strategy_guides(file: str) -> list[tuple[str, str]]:
 
 
 start = time.perf_counter()
-print(get_total_rock_paper_scissor_points("eg.txt"))
+print(
+    get_total_rock_paper_scissor_points(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_2"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 start = time.perf_counter()
-print(get_total_rock_paper_scissor_points("input.txt"))
+print(
+    get_total_rock_paper_scissor_points(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2022/day_2"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

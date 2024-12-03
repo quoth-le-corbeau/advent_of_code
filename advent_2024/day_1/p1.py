@@ -24,9 +24,29 @@ def _parse_into_equal_length_lists(file_path: str) -> tuple[list[int], list[int]
 
 
 start = time.perf_counter()
-print(sum_location_differences("eg.txt"))
+print(
+    sum_location_differences(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2024/day_1"
+                / "eg.txt"
+            )
+        )
+    )
+)
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
-print(sum_location_differences("input.txt"))
+print(
+    sum_location_differences(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2024/day_1"
+                / "input.txt"
+            )
+        )
+    )
+)
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
