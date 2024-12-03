@@ -11,9 +11,6 @@ def scan_corrupted_memory(file_path: str) -> int:
         return sum([int(X) * int(Y) for X, Y in matches])
 
 
-
-
-
 start = time.perf_counter()
 print(scan_corrupted_memory("eg.txt"))
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")

@@ -12,9 +12,15 @@ def scan_enabled_corrupted_memory(file_path: str) -> int:
         do_matches = re.finditer(do_pattern, lines)
         do_not_matches = re.finditer(do_not_pattern, lines)
         mul_matches = re.finditer(mul_pattern, lines)
-        do_groups = [(match.group(), match.start(), match.end()) for match in do_matches]
-        do_not_groups = [(match.group(), match.start(), match.end()) for match in do_not_matches]
-        mul_groups = [(match.group(), match.start(), match.end()) for match in mul_matches]
+        do_groups = [
+            (match.group(), match.start(), match.end()) for match in do_matches
+        ]
+        do_not_groups = [
+            (match.group(), match.start(), match.end()) for match in do_not_matches
+        ]
+        mul_groups = [
+            (match.group(), match.start(), match.end()) for match in mul_matches
+        ]
         do_starts = [int(group[1]) for group in do_groups]
         do_not_starts = [int(group[1]) for group in do_not_groups]
         mul_starts = [int(group[1]) for group in mul_groups]
@@ -32,16 +38,12 @@ def scan_enabled_corrupted_memory(file_path: str) -> int:
                             final_muls.append(group[0])
 
         nums = list(map(int, re.findall(r"\d+", "".join(final_muls))))
-        #print(f"{list(zip(nums[::2], nums[1::2]))=}")
+        # print(f"{list(zip(nums[::2], nums[1::2]))=}")
         total = 0
         for pair in list(zip(nums[::2], nums[1::2])):
-            total += (pair[0] * pair[1])
+            total += pair[0] * pair[1]
         return total
         # return sum([x * y for x, y in list(zip(nums[::2], nums[1::2]))])
-
-
-
-
 
 
 start = time.perf_counter()
