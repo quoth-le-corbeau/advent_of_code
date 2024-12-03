@@ -2,3 +2,6 @@ venv/
 .idea/
 *.swp
 __pycache__
+*.txt
+my_inputs/
+organise.sh
