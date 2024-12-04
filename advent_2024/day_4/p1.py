@@ -27,10 +27,10 @@ def find_xmas(file_path: str) -> int:
 def _get_diagonals(df: pandas.DataFrame) -> list[str]:
     diagonals = []
     for offset in range(-df.shape[0] + 1, df.shape[1]):
-        diagonals.append(''.join(df.values.diagonal(offset)))
+        diagonals.append("".join(df.values.diagonal(offset)))
     flipped_df = df.iloc[:, ::-1]
     for offset in range(-flipped_df.shape[0] + 1, flipped_df.shape[1]):
-        diagonals.append(''.join(flipped_df.values.diagonal(offset)))
+        diagonals.append("".join(flipped_df.values.diagonal(offset)))
     return diagonals
 
 
