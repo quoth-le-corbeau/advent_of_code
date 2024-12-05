@@ -1,21 +1,72 @@
 import time
 import pathlib
+import re
+from collections import defaultdict
 
 
-def RENAME_FUNC(file_path: str):
-    RENAME = _RENAME_FUNC(file=file_path)
-    pass
+def order_and_sum_middle_pages(file_path: str) -> int:
+    rules, updates = _parse_input(file=file_path)
+    middles = 0
+    unordered = []
+    ordered = []
+    order_map = _get_order_map(rules)
+    print(f"{order_map=}")
+    in_order = False
+    for update in updates:
+        if len(update) == 0:
+            continue
+        for i, n in enumerate(update):
+            if all(rest in order_map[n] for rest in update[i + 1 :]):
+                in_order = True
+            else:
+                in_order = False
+                break
+        if in_order:
+            ordered.append(update)
+        else:
+            unordered.append(update)
+    # print(f"{ordered=}")
+    print(f"{unordered=}")
+    re_ordered = []
+    print(f"{re_ordered=}")
+    return middles
 
 
-def _RENAME_FUNC(file: str):
+def _get_order_map(rules) -> dict[int, set[int]]:
+    order_map = defaultdict(set)
+    all_nums = []
+    for rule in rules:
+        x, y = rule
+        all_nums.append(x)
+        all_nums.append(y)
+    for rule in rules:
+        x, y = rule
+        for other_rule in rules:
+            if other_rule[0] == x:
+                order_map[x].add(other_rule[1])
+    for num in all_nums:
+        if num not in order_map:
+            order_map[num] = set()
+    return dict(order_map)
+
+
+def _parse_input(file: str):
     with open(pathlib.Path(__file__).parent / file, "r") as puzzle_input:
         lines = puzzle_input.read()
-        print(lines)
+        rules, updates = lines.split("\n\n")
+        rules = [
+            (int(rule.split("|")[0]), int(rule.split("|")[1]))
+            for rule in rules.split("\n")
+        ]
+        updates = [
+            list(map(int, re.findall(r"(\d+)", line))) for line in updates.split("\n")
+        ]
+        return rules, updates
 
 
 start = time.perf_counter()
 print(
-    RENAME_FUNC(
+    order_and_sum_middle_pages(
         str(
             (
                 pathlib.Path(__file__).resolve().parents[2]
@@ -27,6 +78,16 @@ print(
 )
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
-# start = time.perf_counter()
-# print(RENAME_FUNC(str((pathlib.Path(__file__).resolve().parents[2] / "my_inputs/2024/day_5" / "input.txt"))))
-# print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+start = time.perf_counter()
+print(
+    order_and_sum_middle_pages(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2024/day_5"
+                / "input.txt"
+            )
+        )
+    )
+)
+print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
