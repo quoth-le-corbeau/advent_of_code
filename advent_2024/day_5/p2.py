@@ -4,32 +4,51 @@ import re
 from collections import defaultdict
 
 
-def order_and_sum_middle_pages(file_path: str) -> int:
+def reorder_and_sum_middle_pages(file_path: str) -> int:
     rules, updates = _parse_input(file=file_path)
-    middles = 0
+    order_map = _get_order_map(rules=rules)
+    unordered = []
+    for update in updates:
+        if _is_unordered(order_map=order_map, update=update):
+            unordered.append(update)
+    for update in unordered:
+        while _is_unordered(order_map=order_map, update=update):
+            update = _reorder(rules=rules, to_sort=update)
+    middle_sum = 0
+    for update in unordered:
+        middle_sum += update[len(update) // 2]
+    return middle_sum
+
+
+def _reorder(
+    to_sort: list[int],
+    rules: list[tuple[int, int]],
+) -> list[int]:
+    for rule in rules:
+        x, y = rule
+        if x in to_sort and y in to_sort:
+            x_index = to_sort.index(x)
+            y_index = to_sort.index(y)
+            if x_index > y_index:
+                to_sort[x_index], to_sort[y_index] = to_sort[y_index], to_sort[x_index]
+    return to_sort
+
+
+def _is_unordered(order_map: dict[int, set[int]], update: list[int]) -> bool:
     unordered = []
     ordered = []
-    order_map = _get_order_map(rules)
-    print(f"{order_map=}")
     in_order = False
-    for update in updates:
-        if len(update) == 0:
-            continue
-        for i, n in enumerate(update):
-            if all(rest in order_map[n] for rest in update[i + 1 :]):
-                in_order = True
-            else:
-                in_order = False
-                break
-        if in_order:
-            ordered.append(update)
+    for i, n in enumerate(update):
+        if all(rest in order_map[n] for rest in update[i + 1 :]):
+            in_order = True
         else:
-            unordered.append(update)
-    # print(f"{ordered=}")
-    print(f"{unordered=}")
-    re_ordered = []
-    print(f"{re_ordered=}")
-    return middles
+            in_order = False
+            break
+    if in_order:
+        ordered.append(update)
+    else:
+        unordered.append(update)
+    return len(unordered) > 0
 
 
 def _get_order_map(rules) -> dict[int, set[int]]:
@@ -41,16 +60,14 @@ def _get_order_map(rules) -> dict[int, set[int]]:
         all_nums.append(y)
     for rule in rules:
         x, y = rule
-        for other_rule in rules:
-            if other_rule[0] == x:
-                order_map[x].add(other_rule[1])
+        order_map[x].add(y)
     for num in all_nums:
         if num not in order_map:
             order_map[num] = set()
     return dict(order_map)
 
 
-def _parse_input(file: str):
+def _parse_input(file: str) -> tuple[list[tuple[int, int]], list[list[int]]]:
     with open(pathlib.Path(__file__).parent / file, "r") as puzzle_input:
         lines = puzzle_input.read()
         rules, updates = lines.split("\n\n")
@@ -61,12 +78,13 @@ def _parse_input(file: str):
         updates = [
             list(map(int, re.findall(r"(\d+)", line))) for line in updates.split("\n")
         ]
+        updates = [update for update in updates if len(update) > 0]
         return rules, updates
 
 
 start = time.perf_counter()
 print(
-    order_and_sum_middle_pages(
+    reorder_and_sum_middle_pages(
         str(
             (
                 pathlib.Path(__file__).resolve().parents[2]
@@ -80,7 +98,7 @@ print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
 print(
-    order_and_sum_middle_pages(
+    reorder_and_sum_middle_pages(
         str(
             (
                 pathlib.Path(__file__).resolve().parents[2]

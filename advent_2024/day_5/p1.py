@@ -1,26 +1,56 @@
 import time
 import pathlib
 import re
+from collections import defaultdict
 
 
-def sum_middle_pages(file_path: str) -> int:
+def sum_ordered_middles(file_path: str) -> int:
     rules, updates = _parse_input(file=file_path)
-    middles = 0
-    for update in updates:
-        if len(update) == 0:
-            continue
-        ordered = True
-        for i, n in enumerate(update):
-            if not ordered:
-                break
-            relevant_rules = [rule for rule in rules if n == rule[1]]
-            for other in update[i + 1 :]:
-                if any([other == rule[0] for rule in relevant_rules]):
-                    ordered = False
-                    break
-        if ordered:
-            middles += update[len(update) // 2]
-    return middles
+    order_map = _get_order_map(rules=rules)
+    ordered_middles = 0
+    ordered = [
+        update
+        for update in updates
+        if not _is_unordered(order_map=order_map, update=update)
+    ]
+    for update in ordered:
+        ordered_middles += update[len(update) // 2]
+    return ordered_middles
+
+
+def _is_unordered(order_map: dict[int, set[int]], update: list[int]) -> bool:
+    unordered = []
+    ordered = []
+    in_order = False
+    for i, n in enumerate(update):
+        if all(rest in order_map[n] for rest in update[i + 1 :]):
+            in_order = True
+        else:
+            in_order = False
+            break
+    if in_order:
+        ordered.append(update)
+    else:
+        unordered.append(update)
+    return len(unordered) > 0
+
+
+def _get_order_map(rules) -> dict[int, set[int]]:
+    order_map = defaultdict(set)
+    all_nums = []
+    for rule in rules:
+        x, y = rule
+        all_nums.append(x)
+        all_nums.append(y)
+    for rule in rules:
+        x, y = rule
+        for other_rule in rules:
+            if other_rule[0] == x:
+                order_map[x].add(other_rule[1])
+    for num in all_nums:
+        if num not in order_map:
+            order_map[num] = set()
+    return dict(order_map)
 
 
 def _parse_input(file: str):
@@ -34,12 +64,13 @@ def _parse_input(file: str):
         updates = [
             list(map(int, re.findall(r"(\d+)", line))) for line in updates.split("\n")
         ]
+        updates = [update for update in updates if len(update) > 0]
         return rules, updates
 
 
 start = time.perf_counter()
 print(
-    sum_middle_pages(
+    sum_ordered_middles(
         str(
             (
                 pathlib.Path(__file__).resolve().parents[2]
@@ -53,7 +84,7 @@ print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
 print(
-    sum_middle_pages(
+    sum_ordered_middles(
         str(
             (
                 pathlib.Path(__file__).resolve().parents[2]
