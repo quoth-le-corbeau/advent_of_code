@@ -1,17 +1,39 @@
 import time
 import pathlib
+import re
 
 
-def sum_middle_pages(file_path: str):
-    RENAME = _sum_middle_pages(file=file_path)
-    pass
+def sum_middle_pages(file_path: str) -> int:
+    rules, updates = _parse_input(file=file_path)
+    print(f"{rules=}")
+    print(f"{updates=}")
+    order = _get_order(rules)
+    middles = 0
+    for update in updates:
+        if _is_ordered(update, order):
+            middles += update[len(update)//2 + 1]
+    return middles
+
+def _is_ordered(update: list[int], order: list[int]) -> bool:
+    is_ordered = False
+    return is_ordered
+def _get_order(rules: list[tuple[int, int]]) -> list[int]:
+    result = []
+    return result
 
 
-def _sum_middle_pages(file: str):
+def _parse_input(file: str):
     with open(pathlib.Path(__file__).parent / file, "r") as puzzle_input:
         lines = puzzle_input.read()
-        print(lines)
-
+        rules, updates = lines.split("\n\n")
+        rules = [
+            (int(rule.split("|")[0]), int(rule.split("|")[1]))
+            for rule in rules.split("\n")
+        ]
+        updates = [
+            list(map(int, re.findall(r"(\d+)", line))) for line in updates.split("\n")
+        ]
+        return rules, updates
 
 start = time.perf_counter()
 print(
