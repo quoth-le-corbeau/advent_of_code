@@ -2,12 +2,12 @@ import time
 import pathlib
 
 
-def RENAME_FUNC(file_path: str):
-    RENAME = _RENAME_FUNC(file=file_path)
+def sum_middle_pages(file_path: str):
+    RENAME = _sum_middle_pages(file=file_path)
     pass
 
 
-def _RENAME_FUNC(file: str):
+def _sum_middle_pages(file: str):
     with open(pathlib.Path(__file__).parent / file, "r") as puzzle_input:
         lines = puzzle_input.read()
         print(lines)
@@ -15,7 +15,7 @@ def _RENAME_FUNC(file: str):
 
 start = time.perf_counter()
 print(
-    RENAME_FUNC(
+    sum_middle_pages(
         str(
             (
                 pathlib.Path(__file__).resolve().parents[2]
@@ -28,5 +28,5 @@ print(
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 # start = time.perf_counter()
-# print(RENAME_FUNC(str((pathlib.Path(__file__).resolve().parents[2] / "my_inputs/2024/day_5" / "input.txt"))))
+# print(sum_middle_pages(str((pathlib.Path(__file__).resolve().parents[2] / "my_inputs/2024/day_5" / "input.txt"))))
 # print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
