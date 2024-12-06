@@ -1,6 +1,8 @@
 import time
 import pathlib
 
+_DIRECTIONS = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+
 
 class Guard:
     def __init__(
@@ -13,77 +15,42 @@ class Guard:
         self.col = col
         self.visited = visited
 
-    def move(self, direction: str):
-        if direction == "N":
-            self.col -= 1
-            self.visited.add((self.row, self.col))
-        elif direction == "S":
-            self.col += 1
-            self.visited.add((self.row, self.col))
-        elif direction == "E":
-            self.row += 1
-            self.visited.add((self.row, self.col))
-        elif direction == "W":
-            self.row -= 1
-            self.visited.add((self.row, self.col))
-        else:
-            raise ValueError(f"Invalid direction: {direction}")
+    def move_in_grid(self, vector: tuple[int, int]):
+        self.row += vector[0]
+        self.col += vector[1]
 
-    def is_clear(self, obstacle_map, direction: str) -> bool:
-        if direction == "N":
-            return all(
-                [self.col not in obstacle_map[r] for r in range(self.row - 1, -1, -1)]
-            )
-        elif direction == "S":
-            return all(
-                [
-                    self.col not in obstacle_map[r]
-                    for r in range(self.row, max(obstacle_map.keys()), 1)
-                ]
-            )
-        elif direction == "W":
-            return all(
-                [c not in obstacle_map[self.row] for c in range(self.col - 1, -1, -1)]
-            )
-        elif direction == "E":
-            return all(
-                [
-                    c not in obstacle_map[self.row]
-                    for c in range(self.col + 1, max(obstacle_map[self.row]), 1)
-                ]
-            )
-        else:
-            raise ValueError(f"Invalid direction: {direction}")
+    def record_position(self) -> None:
+        self.visited.add((self.row, self.col))
 
-    def is_blocked(self, obstacle_map: dict[int, set[int]], direction: str) -> str:
-        if direction == "N":
-            if self.col in obstacle_map[self.row + 1]:
-                direction = "E"
-        elif direction == "S":
-            if self.col in obstacle_map[self.row - 1]:
-                direction = "W"
-        elif direction == "E":
-            if self.col + 1 in obstacle_map[self.row]:
-                direction = "S"
-        elif direction == "W":
-            if self.col - 1 in obstacle_map[self.row]:
-                direction = "N"
-        else:
-            raise ValueError(f"Invalid direction: {direction}")
-        return direction
+    def leaves_grid(
+        self, vector: tuple[int, int], row_bound: int, col_bound: int
+    ) -> bool:
+        new_row = self.row + vector[0]
+        new_col = self.col + vector[1]
+        return (
+            new_col < 0 or new_row < 0 or new_col >= col_bound or new_row >= row_bound
+        )
+
+    def must_change_direction(
+        self, obstacle_map: dict[int, set[int]], vector: [tuple[int, int]]
+    ):
+        return self.col + vector[1] in obstacle_map[self.row + vector[0]]
 
 
 def unique_guard_positions(file_path: str) -> int:
     start, obstacles_by_row, col_bound, row_bound = _parse_map(file=file_path)
-    print(f"{col_bound=}")
-    print(f"{row_bound=}")
-    print(f"{start=}")
-    print(f"{obstacles_by_row=}")
     guard = Guard(row=start[0], col=start[1], visited={(start[0], start[1])})
-    direction = "N"
-    while not guard.is_clear(obstacle_map=obstacles_by_row, direction=direction):
-        guard.move(direction)
-        direction = guard.is_blocked(obstacle_map=obstacles_by_row, direction=direction)
+    direction_increment = 0
+    direction = _DIRECTIONS[direction_increment % len(_DIRECTIONS)]
+    while not guard.leaves_grid(
+        vector=direction, row_bound=row_bound, col_bound=col_bound
+    ):
+        if guard.must_change_direction(obstacle_map=obstacles_by_row, vector=direction):
+            direction_increment += 1
+            direction = _DIRECTIONS[direction_increment % len(_DIRECTIONS)]
+        else:
+            guard.move_in_grid(vector=direction)
+            guard.record_position()
 
     return len(guard.visited)
 
@@ -122,6 +89,16 @@ print(
 )
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
-# start = time.perf_counter()
-# print(unique_guard_positions(str((pathlib.Path(__file__).resolve().parents[2] / "my_inputs/2024/day_6" / "input.txt"))))
-# print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+start = time.perf_counter()
+print(
+    unique_guard_positions(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2024/day_6"
+                / "input.txt"
+            )
+        )
+    )
+)
+print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
