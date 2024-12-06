@@ -48,7 +48,7 @@ class Guard:
         ]
 
 
-def unique_guard_positions(file_path: str) -> int:
+def count_possible_loop_creators(file_path: str) -> int:
     start, obstacles_by_row, col_bound, row_bound = _parse_map(file=file_path)
     guard = Guard(
         row=start[0],
@@ -56,14 +56,63 @@ def unique_guard_positions(file_path: str) -> int:
         visited={(start[0], start[1])},
         facing_direction=_DIRECTIONS[0],
     )
+    loop_creators = set()
     while not guard.leaves_grid(row_bound=row_bound, col_bound=col_bound):
+        prospective_node = (
+            guard.row + guard.facing_direction[0],
+            guard.col + guard.facing_direction[1],
+        )
+        if prospective_node in loop_creators:
+            pass
+        elif _loop_creator_check(
+            obstacle_map=obstacles_by_row,
+            row=guard.row,
+            col=guard.col,
+            facing_direction=guard.facing_direction,
+            row_bound=row_bound,
+            col_bound=col_bound,
+        ):
+            loop_creators.add(prospective_node)
         if guard.must_change_direction(obstacle_map=obstacles_by_row):
             guard.change_direction()
         else:
             guard.move_in_grid()
             guard.record_position()
 
-    return len(guard.visited)
+    print(len(guard.visited))
+    return len(loop_creators)
+
+
+def _loop_creator_check(
+    obstacle_map: dict[int, set[int]],
+    row: int,
+    col: int,
+    facing_direction: tuple[int, int],
+    row_bound: int,
+    col_bound: int,
+) -> bool:
+    next_direction_index = _DIRECTIONS.index(facing_direction) + 1
+    next_direction = _DIRECTIONS[next_direction_index % len(_DIRECTIONS)]
+    theoretical_guard = Guard(
+        row=row, col=col, visited={(row, col)}, facing_direction=next_direction
+    )
+    currently_facing = facing_direction
+    current_position = row, col
+    while not (
+        theoretical_guard.position == current_position
+        and theoretical_guard.facing_direction == currently_facing
+    ):
+        if theoretical_guard.leaves_grid(row_bound=row_bound, col_bound=col_bound):
+            return False
+        if theoretical_guard.must_change_direction(obstacle_map=obstacle_map):
+            theoretical_guard.change_direction()
+        else:
+            theoretical_guard.move_in_grid()
+            # theoretical_guard.record_position()
+    print(
+        f"got here for start: {current_position}. currently_facing: {currently_facing}"
+    )
+    return True
 
 
 def _parse_map(file: str) -> tuple[tuple[int, int], dict[int, set[int]], int, int]:
@@ -88,7 +137,7 @@ def _parse_map(file: str) -> tuple[tuple[int, int], dict[int, set[int]], int, in
 
 start = time.perf_counter()
 print(
-    unique_guard_positions(
+    count_possible_loop_creators(
         str(
             (
                 pathlib.Path(__file__).resolve().parents[2]
@@ -102,7 +151,7 @@ print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
 print(
-    unique_guard_positions(
+    count_possible_loop_creators(
         str(
             (
                 pathlib.Path(__file__).resolve().parents[2]
