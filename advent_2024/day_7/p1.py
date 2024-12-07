@@ -11,6 +11,11 @@ def sum_completable_equations(file_path: str) -> int:
         for line in lines:
             target = int(line.split(":")[0])
             nums = list(map(int, re.findall(r"\d+", line.split(":")[1])))
+            check_product_sum = nums[0]
+            for num in nums[1:]:
+                check_product_sum *= num
+            if check_product_sum < target or sum(nums) > target:
+                continue
             number_of_spaces = len(nums) - 1
             possible_operation_orders = [
                 "".join(combination)
