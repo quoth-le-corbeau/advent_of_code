@@ -24,7 +24,8 @@ and append the antinodes on either side:
         and the inverse vector (-1, 3) -> (0, 11)
     e.g antinode_dict now looks like this:
         {'0': {(3,2), (0, 11)}}
-finally sum the lengths of all values in the antinode_dict
+create a final set and append the union of all values in the antinode dict
+finally sum the lengths of all values in the final set
 
 """
 
@@ -42,23 +43,23 @@ def count_unique_antinodes(file_path: str) -> int:
                         antenna_dict[col].append((r, c))
                     else:
                         antenna_dict[col] = [(r, c)]
-        # print(f"{antenna_dict=}")
         antinode_dict = {antenna: set() for antenna in antenna_dict}
-        # print(f"{antinode_dict=}")
         for antenna, positions in antenna_dict.items():
             for idx, position in enumerate(positions):
-                for other in positions[idx:]:
+                for other in positions[idx + 1 :]:
                     distance = other[0] - position[0], other[1] - position[1]
                     dd = (distance[0] * 2, distance[1] * 2)
                     di = (-distance[0], -distance[1])
                     new_1 = position[0] + dd[0], position[1] + dd[1]
                     new_2 = position[0] + di[0], position[1] + di[1]
-                    if 0 <= new_1[0] < row_count and 0 < new_1[1] < col_count:
+                    if 0 <= new_1[0] < row_count and 0 <= new_1[1] < col_count:
                         antinode_dict[antenna].add(new_1)
                     if 0 <= new_2[0] < row_count and 0 <= new_2[1] < col_count:
                         antinode_dict[antenna].add(new_2)
-        print(f"{antinode_dict=}")
-        return sum([len(vals) for vals in antinode_dict.values()])
+        final_set = set()
+        for _, antinodes in antinode_dict.items():
+            final_set |= antinodes
+        return len(final_set)
 
 
 start = time.perf_counter()
@@ -75,6 +76,16 @@ print(
 )
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
-# start = time.perf_counter()
-# print(count_unique_antinodes(str((pathlib.Path(__file__).resolve().parents[2] / "my_inputs/2024/day_8" / "input.txt"))))
-# print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+start = time.perf_counter()
+print(
+    count_unique_antinodes(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2024/day_8"
+                / "input.txt"
+            )
+        )
+    )
+)
+print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
