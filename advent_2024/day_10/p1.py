@@ -13,8 +13,8 @@ make a list of all the 9 coordinates
 
 instantiate a defaultdict to store the paths from each zero to each nine
 
-for each 0:
-    for each 9:
+for each zero:
+    for each nine:
         use modified bfs to collect all paths
         e.g all_hiking_trails = {
                 (0, 2): [
