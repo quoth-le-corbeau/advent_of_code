@@ -57,7 +57,7 @@ def count_the_stones_after_25(file_path: str):
         row = puzzle_input.read().strip()
 
     counter = 0
-    while counter < 75:
+    while counter < 25:
         row = _apply_rules(row)
         counter += 1
     return len(row.split(" "))
