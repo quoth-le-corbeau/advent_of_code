@@ -8,7 +8,7 @@ Plutonian Pebbles Part II
 read in the input string
 create a function that takes in a string and outputs a new string
 initialize a counter at 0
-run the function 75 times
+
 functionality:
 create a dictionary of each element with its index as key:
     e.g. {
@@ -64,34 +64,35 @@ def count_the_stones_after_75(file_path: str):
     with open(pathlib.Path(__file__).parent / file_path, "r") as puzzle_input:
         row = puzzle_input.read().strip()
 
-    part_1 = _count_stones_25(row)
+    part_1 = _count_stones_25(row, blinks)
     return part_1
 
 
-start = time.perf_counter()
-print(
-    count_the_stones_after_75(
-        str(
-            (
-                pathlib.Path(__file__).resolve().parents[2]
-                / "my_inputs/2024/day_11"
-                / "eg.txt"
-            )
-        )
-    )
-)
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
-
-start = time.perf_counter()
-print(
-    count_the_stones_after_75(
-        str(
-            (
-                pathlib.Path(__file__).resolve().parents[2]
-                / "my_inputs/2024/day_11"
-                / "input.txt"
-            )
-        )
-    )
-)
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(_count_stones_25(row="125"))
+# start = time.perf_counter()
+# print(
+#    count_the_stones_after_75(
+#        str(
+#            (
+#                pathlib.Path(__file__).resolve().parents[2]
+#                / "my_inputs/2024/day_11"
+#                / "eg.txt"
+#            )
+#        )
+#    )
+# )
+# print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+#
+# start = time.perf_counter()
+# print(
+#    count_the_stones_after_75(
+#        str(
+#            (
+#                pathlib.Path(__file__).resolve().parents[2]
+#                / "my_inputs/2024/day_11"
+#                / "input.txt"
+#            )
+#        )
+#    )
+# )
+# print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
