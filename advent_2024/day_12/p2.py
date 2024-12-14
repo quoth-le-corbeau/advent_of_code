@@ -46,10 +46,78 @@ def get_discount_garden_group_price(file_path: str) -> int:
 
 
 def _get_number_of_sides(grid: list, patch: list[tuple[int, int]]) -> int:
-    count = 0
-    rows = sorted(patch)
-    c = rows[0][1]
-    return count
+    patch_type = grid[patch[0][0]][patch[0][1]]
+    all_rows_in_patch = set()
+    all_cols_in_patch = set()
+    for p in patch:
+        all_rows_in_patch.add(p[0])
+        all_cols_in_patch.add(p[1])
+    visited_north = set()
+    visited_south = set()
+    visited_west = set()
+    visited_east = set()
+    for square in sorted(patch):
+        r, c = square
+        if r - 1 < 0 or grid[r - 1][c] != patch_type:
+            visited_north.add(square)
+        if r + 1 >= len(grid) or grid[r + 1][c] != patch_type:
+            visited_south.add(square)
+        if c - 1 < 0 or grid[r][c - 1] != patch_type:
+            visited_west.add(square)
+        if c + 1 >= len(grid[0]) or grid[r][c + 1] != patch_type:
+            visited_east.add(square)
+
+    # count north sides
+    v_north = sorted(list(visited_north), key=lambda x: (x[0], x[1]))
+    n = 1
+    i = 0
+    while i < len(v_north) - 1:
+        current = v_north[i]
+        next_ = v_north[i + 1]
+        if current[0] == next_[0] and abs(current[1] - next_[1]) == 0:
+            i += 1
+            continue
+        n += 1
+        i += 1
+
+    # count south sides
+    v_south = sorted(list(visited_south), key=lambda x: (x[0], x[1]))
+    s = 1
+    i = 0
+    while i < len(v_south) - 1:
+        current = v_south[i]
+        next_ = v_south[i + 1]
+        if current[0] == next_[0] and abs(current[1] - next_[1]) == 1:
+            i += 1
+            continue
+        s += 1
+        i += 1
+    # count west sides
+    v_west = sorted(list(visited_west), key=lambda x: (x[1], x[0]))
+    w = 1
+    i = 0
+    while i < len(v_west) - 1:
+        current = v_west[i]
+        next_ = v_west[i + 1]
+        if abs(current[0] - next_[0]) == 1 and current[1] == next_[1]:
+            i += 1
+            continue
+        w += 1
+        i += 1
+    # count east sides
+    v_east = sorted(list(visited_east), key=lambda x: (x[1], x[0]))
+    e = 1
+    i = 0
+    while i < len(v_east) - 1:
+        current = v_east[i]
+        next_ = v_east[i + 1]
+        if abs(current[0] - next_[0]) == 1 and current[1] == next_[1]:
+            i += 1
+            continue
+        e += 1
+        i += 1
+
+    return n + e + s + w
 
 
 def _bfs(start: tuple[int, int], grid: list[str]) -> list[tuple[int, int]]:
