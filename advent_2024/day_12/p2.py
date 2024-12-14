@@ -1,6 +1,6 @@
 import time
 import pathlib
-from collections import deque
+from collections import deque, defaultdict
 
 """
 Garden Groups Part II
@@ -68,55 +68,71 @@ def _get_number_of_sides(grid: list, patch: list[tuple[int, int]]) -> int:
             visited_east.add(square)
 
     # count north sides
-    v_north = sorted(list(visited_north), key=lambda x: (x[0], x[1]))
-    n = 1
-    i = 0
-    while i < len(v_north) - 1:
-        current = v_north[i]
-        next_ = v_north[i + 1]
-        if current[0] == next_[0] and abs(current[1] - next_[1]) == 0:
-            i += 1
-            continue
+    v_north = sorted(list(visited_north))
+    n_dict = defaultdict(list)
+    for r, c in v_north:
+        n_dict[r].append(c)
+    n = 0
+    for row, cols in n_dict.items():
+        s_cols = sorted(cols)
         n += 1
-        i += 1
+        i = 0
+        while i < len(s_cols) - 1:
+            if abs(s_cols[i] - s_cols[i + 1]) == 1:
+                i += 1
+                continue
+            n += 1
+            i += 1
 
     # count south sides
-    v_south = sorted(list(visited_south), key=lambda x: (x[0], x[1]))
-    s = 1
-    i = 0
-    while i < len(v_south) - 1:
-        current = v_south[i]
-        next_ = v_south[i + 1]
-        if current[0] == next_[0] and abs(current[1] - next_[1]) == 1:
-            i += 1
-            continue
+    v_south = sorted(list(visited_south))
+    s_dict = defaultdict(list)
+    for r, c in v_south:
+        s_dict[r].append(c)
+    s = 0
+    for row, cols in s_dict.items():
+        s_cols = sorted(cols)
         s += 1
-        i += 1
+        i = 0
+        while i < len(s_cols) - 1:
+            if abs(s_cols[i] - s_cols[i + 1]) == 1:
+                i += 1
+                continue
+            s += 1
+            i += 1
+
     # count west sides
     v_west = sorted(list(visited_west), key=lambda x: (x[1], x[0]))
-    w = 1
-    i = 0
-    while i < len(v_west) - 1:
-        current = v_west[i]
-        next_ = v_west[i + 1]
-        if abs(current[0] - next_[0]) == 1 and current[1] == next_[1]:
-            i += 1
-            continue
+    w_dict = defaultdict(list)
+    for r, c in v_west:
+        w_dict[c].append(r)
+    w = 0
+    for col, rows in w_dict.items():
+        s_rows = sorted(rows)
         w += 1
-        i += 1
+        i = 0
+        while i < len(s_rows) - 1:
+            if abs(s_rows[i] - s_rows[i + 1]) == 1:
+                i += 1
+                continue
+            w += 1
+            i += 1
     # count east sides
     v_east = sorted(list(visited_east), key=lambda x: (x[1], x[0]))
-    e = 1
-    i = 0
-    while i < len(v_east) - 1:
-        current = v_east[i]
-        next_ = v_east[i + 1]
-        if abs(current[0] - next_[0]) == 1 and current[1] == next_[1]:
-            i += 1
-            continue
+    e_dict = defaultdict(list)
+    for r, c in v_east:
+        e_dict[c].append(r)
+    e = 0
+    for col, rows in e_dict.items():
+        s_rows = sorted(rows)
         e += 1
-        i += 1
-
+        i = 0
+        while i < len(s_rows) - 1:
+            if abs(s_rows[i] - s_rows[i + 1]) == 1:
+                i += 1
+                continue
+            e += 1
+            i += 1
     return n + e + s + w
 
 
