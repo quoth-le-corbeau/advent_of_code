@@ -15,6 +15,11 @@ instantiate a total = 0
 loop through the patches and get the area 
 
 count the number of sides in a separate function
+    first get all squares that border the egde of the grid or another patch
+    consider each direction separately
+    sort the peripheral stones (note that east and west will be sorted by col first)
+    loop through the peripheral stones only adding to the side count if a line is finished
+    or if the level of indent changes. this will also handle internal borders
 add area * number of sides to the total
 return the total
 
