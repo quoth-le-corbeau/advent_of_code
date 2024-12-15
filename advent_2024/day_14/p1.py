@@ -18,7 +18,7 @@ def calculate_safety_factor(file_path: str, rows: int, cols: int) -> int:
         lines = puzzle_input.read().splitlines()
         end_positions = list()
         for line in lines:
-            c, r, vc, vr = list(map(int, re.findall(r"(\d+)", line)))
+            c, r, vc, vr = list(map(int, re.findall(r"([-+]?\d+)", line)))
             end_position = (r + (100 * vr)) % rows, (c + (100 * vc)) % cols
             end_positions.append(end_position)
         top_left = [
