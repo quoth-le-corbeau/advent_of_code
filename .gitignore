@@ -1,10 +1,12 @@
 venv/
 .idea/
-*.swp
-__pycache__
+.DS_Store/
 my_inputs/
+__pycache__
+*.swp
 organise.sh
 *fail.py
 *again.py
 test_*
 *.txt
+*.DS_Store
