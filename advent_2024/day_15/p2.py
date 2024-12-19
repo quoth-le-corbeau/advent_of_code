@@ -61,25 +61,34 @@ def _get_boxes_to_move(
     grid: list[list[str]], first_box: tuple[int, int]
 ) -> list[tuple[int, int]]:
     boxes = _bfs(grid=grid, start=first_box)
-    boxes_to_move = [first_box]
-    next_neighbours = [
-        (first_box[0], first_box[1] - 1),
-        (first_box[0], first_box[1] + 1),
-    ]
-    if grid[first_box[0][0]][first_box[0][1]] == "[":
-        boxes_to_move.append(next_neighbours[1])
-    else:
-        assert grid[first_box[0]][first_box[1]] == "]"
-        assert (
-            grid[first_box[0]][first_box[1]]
-            + grid[next_neighbours[0][0]][next_neighbours[0][1]]
-            == "["
-        )
-        boxes_to_move.append(next_neighbours[0])
-    for box in boxes:
-        if box[0] != first_box[0]:
-            boxes_to_move.append(box)
-    return boxes_to_move
+    return boxes  # Assume the bfs gets everything correctly for now
+    # boxes_to_move = [first_box]
+    # next_neighbours = [
+    #     (first_box[0], first_box[1] - 1),
+    #     (first_box[0], first_box[1] + 1),
+    # ]
+    # if grid[first_box[0][0]][first_box[0][1]] == "[":
+    #     boxes_to_move.append(next_neighbours[1])
+    # else:
+    #     assert grid[first_box[0]][first_box[1]] == "]"
+    #     assert (
+    #         grid[first_box[0]][first_box[1]]
+    #         + grid[next_neighbours[0][0]][next_neighbours[0][1]]
+    #         == "["
+    #     )
+    #     boxes_to_move.append(next_neighbours[0])
+    # for box in boxes:
+    #     if box[0] != first_box[0]:
+    #         boxes_to_move.append(box)
+    # return boxes_to_move
+
+
+def _get_start_position(grid: list[list[str]]) -> tuple[int, int]:
+    for r, row in enumerate(grid):
+        for c, col in enumerate(row):
+            if col == "@":
+                return r, c
+    raise ValueError(f"No start_position position found")
 
 
 def sum_gps_coordinates_2(file_path: str):
@@ -88,15 +97,7 @@ def sum_gps_coordinates_2(file_path: str):
         grid = [list(line) for line in grid.splitlines()]
         moves = moves.replace("\n", "")
         grid = _blow_up_grid(grid=grid)
-
-        def get_start_position() -> tuple[int, int]:
-            for r, row in enumerate(grid):
-                for c, col in enumerate(row):
-                    if col == "@":
-                        return r, c
-            raise ValueError(f"No start_position position found")
-
-        start_position = get_start_position()
+        start_position = _get_start_position(grid=grid)
         cols = len(grid[0])
         rows = len(grid)
         current = start_position
@@ -120,7 +121,7 @@ def sum_gps_coordinates_2(file_path: str):
                 continue  # simply move into the space and await next move
             else:
                 # horizontal move preparation only looks at the row
-                if move in ["^", "v"]:
+                if move in ["<", ">"]:
                     look_ahead = []
                     i = 1
                     p = start_position
@@ -132,37 +133,38 @@ def sum_gps_coordinates_2(file_path: str):
                         continue  # boxes all the way to the wall
                     else:
                         # TODO: do horizontal move if possible
-                        pass
+                        i = 0
+                        while look_ahead[i] == "[" or look_ahead[i] == "]":
+                            i += 1
+                        for j, node in enumerate(look_ahead[i:]):
+                            grid[node[0]][node[1] * j * dc] = "#"
+                        current = next_
+
                 else:
                     # perform a bfs starting at next_ get all connected boxes
                     boxes_to_move = _get_boxes_to_move(grid=grid, first_box=next_)
                     all_box_rows = [box[0] for box in boxes_to_move]
-                    # then make sure all squares in the direction of travel are "."
+                    cols_to_check = [
+                        box[1] for box in boxes_to_move if box[0] == row_to_check
+                    ]
                     if move == "^":
-                        row_to_check = min(all_box_rows)
-                        cols_to_check = [
-                            box[1] for box in boxes_to_move if box[0] == row_to_check
-                        ]
-                        blocked_cols = []
+                        row_to_check = min(all_box_rows) - 1
+                    else:
+                        assert move == "v"
+                        row_to_check = max(all_box_rows) + 1
+                    # then make sure all squares in the direction of travel are "."
+                    for col in cols_to_check:
+                        if grid[row_to_check][col] != ".":
+                            continue  # Assumption: if one box cannot move none can move (check edge case!)
 
-                        # TODO: need to somehow go through all rows of boxes to move to find blocked
-                        for col in cols_to_check:
-                            if grid[row_to_check - 1][col] == "#":
-                                blocked_cols.append(col)
-                                if grid[row_to_check][col] == "[":
-                                    blocked_cols.append(col + 1)
-                                else:
-                                    assert grid[row_to_check][col] == "]"
-                                    blocked_cols.append(col - 1)
-                            else:
-                                assert grid[row_to_check - 1][col] == "."
-                        for box in boxes_to_move:
-                            if box[1] in blocked_cols:
-                                pass
+                    # move all box-parts in direction of travel
+                    new_box_positions_by_half = {
+                        grid[br][bc]: (br + dr, bc + dc) for br, bc in boxes_to_move
+                    }
 
-                    # move all box-parts once in direction of travel if move is possible
                     # move the robot one position
-                pass
+
+                    current = next_
 
         gps_sums = []
         for r, row in enumerate(grid):
