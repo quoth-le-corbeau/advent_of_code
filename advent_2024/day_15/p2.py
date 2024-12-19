@@ -39,56 +39,53 @@ def _blow_up_grid(grid: list[list[str]]) -> list[list[str]]:
     return blown_up_grid
 
 
-def _bfs(grid: list[list[str]], start: tuple[int, int]) -> list[tuple[int, int]]:
-    queue = deque([start])
-    visited = {start}
-    box_coordinates = [start]
-    types = ["[", "]"]
-
-    while queue:
-        current = queue.popleft()
-        for direction in _DIRECTION_VECTORS.values():
-            next_node = current[0] + direction[0], current[1] + direction[1]
-            if next_node not in visited and grid[next_node[0]][next_node[1]] in types:
-                queue.append(next_node)
-                visited.add(next_node)
-                box_coordinates.append(next_node)
-
-    return box_coordinates
-
-
-def _get_boxes_to_move(
-    grid: list[list[str]], first_box: tuple[int, int]
-) -> list[tuple[int, int]]:
-    boxes = _bfs(grid=grid, start=first_box)
-    return boxes  # Assume the bfs gets everything correctly for now
-    # boxes_to_move = [first_box]
-    # next_neighbours = [
-    #     (first_box[0], first_box[1] - 1),
-    #     (first_box[0], first_box[1] + 1),
-    # ]
-    # if grid[first_box[0][0]][first_box[0][1]] == "[":
-    #     boxes_to_move.append(next_neighbours[1])
-    # else:
-    #     assert grid[first_box[0]][first_box[1]] == "]"
-    #     assert (
-    #         grid[first_box[0]][first_box[1]]
-    #         + grid[next_neighbours[0][0]][next_neighbours[0][1]]
-    #         == "["
-    #     )
-    #     boxes_to_move.append(next_neighbours[0])
-    # for box in boxes:
-    #     if box[0] != first_box[0]:
-    #         boxes_to_move.append(box)
-    # return boxes_to_move
-
-
 def _get_start_position(grid: list[list[str]]) -> tuple[int, int]:
     for r, row in enumerate(grid):
         for c, col in enumerate(row):
             if col == "@":
                 return r, c
     raise ValueError(f"No start_position position found")
+
+
+def _is_box(grid, row, col):
+    """Check if the current cell and the one below form a valid box."""
+    if 0 <= row < len(grid) - 1 and 0 <= col < len(grid[0]):
+        return grid[row][col] == "[" and grid[row + 1][col] == "]"
+    return False
+
+
+def _bfs(
+    grid: list[list[str]], start: tuple[int, int], direction: str
+) -> list[tuple[int, int]]:
+    """Find all boxes that will be pushed in the specified direction."""
+    dir_vector = _DIRECTION_VECTORS[direction]
+    queue = deque([start])
+    visited = set()
+    box_coordinates = []
+
+    while queue:
+        current = queue.popleft()
+        row, col = current
+
+        # Check if the current cell is part of a box
+        if _is_box(grid, row, col) and (row, col) not in visited:
+            visited.add((row, col))
+            visited.add((row + 1, col))  # Include the paired closing "]"
+            box_coordinates.append((row, col))
+            box_coordinates.append((row + 1, col))
+
+            # Check the next position in the push direction
+            next_row, next_col = row + dir_vector[0], col + dir_vector[1]
+            if 0 <= next_row < len(grid) and 0 <= next_col < len(grid[0]):
+                # If the next position interacts with another box, add it to the queue
+                if _is_box(grid, next_row, next_col):
+                    queue.append((next_row, next_col))
+
+                # If the next position partially overlaps with a box, also add it
+                if _is_box(grid, next_row - 1, next_col):  # Overlap from above
+                    queue.append((next_row - 1, next_col))
+
+    return sorted(set(box_coordinates))  #
 
 
 def sum_gps_coordinates_2(file_path: str):
@@ -105,7 +102,7 @@ def sum_gps_coordinates_2(file_path: str):
             dr, dc = _DIRECTION_VECTORS[move]
             print("-------------------------------------------------------")
             if n >= 1:
-                print(f"Next move: {moves[n - 1]}")
+                print(f"Next move: {moves[n]}")
             else:
                 print("Start position: ")
             for line in grid:
@@ -139,45 +136,66 @@ def sum_gps_coordinates_2(file_path: str):
                             "]",
                         ]:
                             i += 1
-                        if look_ahead[i - 1] != ".":
+                        if grid[look_ahead[i][0]][look_ahead[i][1]] == "#":
                             current = next_
                             continue
                         else:
+                            assert grid[look_ahead[i][0]][look_ahead[i][1]] == "."
                             # shift each node along one space in direction
-                            for node in look_ahead[:i]:
-                                grid[node[0]][node[1] + dc] = grid[node[0]][node[1]]
+                            for node in look_ahead[1:i]:
+                                if grid[node[0]][node[1]] == "[":
+                                    grid[node[0]][node[1]] = "]"
+                                else:
+                                    assert grid[node[0]][node[1]] == "]"
+                                    grid[node[0]][node[1]] = "["
+                            if move == "<":
+                                grid[look_ahead[i][0]][look_ahead[i][1]] = "["
+                            else:
+                                assert move == ">"
+                                grid[look_ahead[i][0]][look_ahead[i][1]] = "]"
+                            grid[look_ahead[0][0]][look_ahead[0][1]] = "@"
+                            grid[current[0]][current[1]] = "."
                         current = next_
-
                 else:
                     # perform a bfs starting at next_ get all connected boxes
-                    boxes_to_move = _get_boxes_to_move(grid=grid, first_box=next_)
-                    all_box_rows = [box[0] for box in boxes_to_move]
-                    cols_to_check = [
-                        box[1] for box in boxes_to_move if box[0] == row_to_check
-                    ]
+                    boxes_to_move = _bfs(grid=grid, start=next_, direction=move)
+                    all_box_rows = sorted([box[0] for box in boxes_to_move])
+
                     if move == "^":
-                        row_to_check = min(all_box_rows) - 1
+                        last_box_row = min(all_box_rows)
+                        assert last_box_row == all_box_rows[0]
                     else:
                         assert move == "v"
-                        row_to_check = max(all_box_rows) + 1
+                        last_box_row = max(all_box_rows)
+                        assert last_box_row == all_box_rows[-1]
                     # then make sure all squares in the direction of travel are "."
-                    for col in cols_to_check:
-                        if grid[row_to_check][col] != ".":
-                            continue  # Assumption: if one box cannot move none can move (check edge case!)
+                    cols_to_check = [
+                        box[1] for box in boxes_to_move if box[0] == last_box_row
+                    ]
+                    if any(
+                        [grid[last_box_row + dr][col] != "." for col in cols_to_check]
+                    ):
+                        continue  # Assumption: if one box cannot move none can move (check edge case!)
+                    else:
+                        # move all box-parts in direction of travel
+                        for row in all_box_rows:
+                            for box in boxes_to_move:
+                                if box[0] == row:
+                                    symbol = grid[box[0]][box[1]]
+                                    prev_symbol = grid[box[0] - dr][box[1]]
+                                    if symbol in ["]", "["]:
+                                        grid[box[0] + dr][box[1]] = symbol
+                                    if prev_symbol == "." or prev_symbol == "@":
+                                        grid[box[0]][box[1]] = prev_symbol
 
-                    # move all box-parts in direction of travel
-                    new_box_positions_by_half = {
-                        grid[br][bc]: (br + dr, bc + dc) for br, bc in boxes_to_move
-                    }
-
-                    # move the robot one position
-
+                        # evacuate the robot one position
+                        grid[current[0]][current[1]] = "."
                     current = next_
 
         gps_sums = []
         for r, row in enumerate(grid):
             for c, col in enumerate(row):
-                if col == "O":
+                if col == "[":
                     gps_sums.append(100 * r + c)
         return sum(gps_sums)
 
