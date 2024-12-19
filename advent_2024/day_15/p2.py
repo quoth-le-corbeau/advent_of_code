@@ -128,16 +128,24 @@ def sum_gps_coordinates_2(file_path: str):
                     while 0 < p[0] < rows - 1 and 0 < p[1] < cols - 1:
                         p = r + (i * dr), c + (i * dc)
                         look_ahead.append(p)
-                    i += 1
+                        i += 1
                     if not any([grid[node[0]][node[1]] == "." for node in look_ahead]):
                         continue  # boxes all the way to the wall
                     else:
                         # TODO: do horizontal move if possible
                         i = 0
-                        while look_ahead[i] == "[" or look_ahead[i] == "]":
+                        while grid[look_ahead[i][0]][look_ahead[i][1]] in [
+                            "[",
+                            "]",
+                        ]:
                             i += 1
-                        for j, node in enumerate(look_ahead[i:]):
-                            grid[node[0]][node[1] * j * dc] = "#"
+                        if look_ahead[i - 1] != ".":
+                            current = next_
+                            continue
+                        else:
+                            # shift each node along one space in direction
+                            for node in look_ahead[:i]:
+                                grid[node[0]][node[1] + dc] = grid[node[0]][node[1]]
                         current = next_
 
                 else:
