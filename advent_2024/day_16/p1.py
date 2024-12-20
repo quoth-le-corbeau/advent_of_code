@@ -1,7 +1,7 @@
 import time
 import pathlib
-from collections import deque
-from typing import List, Tuple
+import heapq
+from typing import List, Tuple, Optional
 
 
 def _get_start_end(grid) -> tuple[tuple[int, int], tuple[int, int]]:
@@ -18,79 +18,139 @@ def _get_start_end(grid) -> tuple[tuple[int, int], tuple[int, int]]:
     return start_, end_
 
 
-def _dfs_all_paths(
+def _get_path_score(path: list[tuple[int, int]]) -> int:
+    turn_count = 0
+    total_forward_steps = len(path) - 1
+    current_direction = "east"
+    for i in range(2, len(path)):
+        next_direction = _get_current_direction(path[i], path[i - 1])
+        if next_direction != current_direction:
+            turn_count += 1
+            current_direction = next_direction
+
+    return turn_count * 1000 + total_forward_steps
+
+
+def _get_current_direction(node, prev):
+    if node[0] == prev[0]:
+        if node[1] - prev[1] == 1:
+            return "east"
+        else:
+            assert node[1] - prev[1] == -1
+            return "west"
+    else:
+        assert node[0] != prev[0]
+        if node[0] - prev[0] == 1:
+            return "south"
+        else:
+            assert node[0] - prev[0] == -1
+            return "north"
+
+
+# this returns the shortest path using only manhattan heuristic (not part of solution)
+def _a_star(
     grid: List[List[str]], start: Tuple[int, int], end: Tuple[int, int]
-) -> List[List[Tuple[int, int]]]:
+) -> List[Tuple[int, int]]:
     row_count = len(grid)
     col_count = len(grid[0])
-    all_paths = []
-    path = []
 
-    def dfs(r, c):
-        if (r, c) == end:
-            all_paths.append(path.copy())
-            return
+    def heuristic(a: Tuple[int, int], b: Tuple[int, int]) -> int:
+        return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
-        # Explore neighbors
+    pq = []
+    heapq.heappush(pq, (0, start, [start]))
+
+    visited = set()
+    visited.add(start)
+
+    while pq:
+        cost, current, path = heapq.heappop(pq)
+
+        if current == end:
+            return path
+
         for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-            nr, nc = r + dr, c + dc
+            nr, nc = current[0] + dr, current[1] + dc
 
             if (
                 0 <= nr < row_count
                 and 0 <= nc < col_count
                 and (grid[nr][nc] == "." or (nr, nc) == end)
             ):
-                if (nr, nc) not in path:  # Avoid revisiting nodes in this path
-                    path.append((nr, nc))
-                    dfs(nr, nc)
-                    path.pop()  # Backtrack
+                neighbor = (nr, nc)
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    # Priority: path cost + heuristic estimate to goal
+                    priority = cost + 1 + heuristic(neighbor, end)
+                    heapq.heappush(pq, (priority, neighbor, path + [neighbor]))
 
-    path.append(start)
-    dfs(start[0], start[1])
-    return all_paths
-
-
-def _get_current_direction(node, prev):
-    r, c = node
-    pr, pc = prev
-    if r == pr:
-        if c - pc == 1:
-            return 0, 1
-        else:
-            return 0, -1
-    else:
-        if r - pr == 1:
-            return 1, 0
-        else:
-            return -1, 0
+    return []
 
 
-def _get_path_score(path: list[tuple[int, int]]) -> int:
-    path = sorted(path)
-    turn_count = 0
-    current_direction = _get_current_direction(node=path[1], prev=path[0])
-    for i in range(2, len(path)):
-        next_direction = _get_current_direction(path[i], path[i - 1])
-        if next_direction != current_direction:
-            turn_count += 1000
-            current_direction = next_direction
-        else:
-            turn_count += 1
-    return turn_count
+# this returns the best path according to the turn minimization rule
+def _a_star_minimize_turns(
+    grid: List[List[str]], start: Tuple[int, int], end: Tuple[int, int]
+) -> Optional[List[Tuple[int, int]]]:
+    row_count = len(grid)
+    col_count = len(grid[0])
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # (up, down, left, right)
+    direction_labels = ["up", "down", "left", "right"]
+
+    def heuristic(a: Tuple[int, int], b: Tuple[int, int]) -> int:
+        return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
+    pq = []
+    heapq.heappush(pq, (0, 0, start, None, [start]))
+    visited = {}
+
+    while pq:
+        priority, cost, current, current_direction, path = heapq.heappop(pq)
+
+        if current == end:
+            return path
+
+        if current in visited and visited[current] <= cost:
+            continue
+        visited[current] = cost
+
+        for i, (dr, dc) in enumerate(directions):
+            nr, nc = current[0] + dr, current[1] + dc
+            next_direction = direction_labels[i]
+
+            if (
+                0 <= nr < row_count
+                and 0 <= nc < col_count
+                and (grid[nr][nc] == "." or (nr, nc) == end)
+            ):
+                turn_penalty = (
+                    1000
+                    if current_direction and current_direction != next_direction
+                    else 0
+                )
+                next_cost = cost + 1 + turn_penalty
+                next_priority = next_cost + heuristic((nr, nc), end)
+                heapq.heappush(
+                    pq,
+                    (
+                        next_priority,
+                        next_cost,
+                        (nr, nc),
+                        next_direction,
+                        path + [(nr, nc)],
+                    ),
+                )
+
+    return None
 
 
 def find_best_reindeer_path(file_path: str):
     with open(pathlib.Path(__file__).parent / file_path, "r") as puzzle_input:
         grid = [list(line) for line in puzzle_input.read().splitlines()]
         start_, end_ = _get_start_end(grid)
-        print(f"{start_=}")
-        print(f"{end_=}")
-        paths = _dfs_all_paths(grid=grid, start=start_, end=end_)
-        print(f"{paths=}")
-        path_scores = []
-        for path in paths:
-            path_scores.append(_get_path_score(path))
-        return min(path_scores)
+        # best_path = _a_star(grid=grid, start=start_, end=end_)
+        best_path = _a_star_minimize_turns(grid=grid, start=start_, end=end_)
+        print(f"{best_path=}")
+        return _get_path_score(best_path)
 
 
 start = time.perf_counter()
