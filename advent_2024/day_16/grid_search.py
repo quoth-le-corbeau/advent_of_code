@@ -2,6 +2,8 @@ import heapq
 import pathlib
 from collections import deque
 
+_UNIT_VECTORS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
 
 def _get_grid():
     file_path = str(
@@ -24,14 +26,26 @@ def _get_grid():
     return grid, start, end, len(grid), len(grid[0])
 
 
-GRID, START, END, ROWS, COLS = _get_grid()
+def _show_all_nodes(
+    grid: list[list[str]],
+    path: list[tuple[int, int]],
+    message: str = "",
+) -> None:
+    for node in path:
+        grid[node[0]][node[1]] = "*"
+    pprint(grid=grid, path=path, message=message)
 
-_UNIT_VECTORS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+def pprint(grid: list[list[str]], path: list[tuple[int, int]], message: str) -> None:
+    print("------------------------------------------------")
+    print(message)
+    print(path)
+    for line in grid:
+        print("".join(line))
 
 
-def bfs(
-    start: tuple[int, int], end: tuple[int, int], grid: list[list[str]]
-) -> tuple[list[tuple[int, int]], set[tuple[int, int]]]:
+def bfs() -> list[tuple[int, int]]:
+    grid, start, end, rows, cols = _get_grid()
     q = deque([[start]])
     visited = {start}
 
@@ -40,11 +54,16 @@ def bfs(
         current = path[-1]
 
         if current == end:
-            return path, visited
+            _show_all_nodes(
+                grid=grid,
+                path=path,
+                message=f"BFS searched {len(visited)} nodes and found shortest path: ",
+            )
+            return path
 
         for direction in _UNIT_VECTORS:
             next_ = current[0] + direction[0], current[1] + direction[1]
-            if 0 <= next_[0] < ROWS and 0 <= next_[1] < COLS:
+            if 0 <= next_[0] < rows and 0 <= next_[1] < cols:
                 if grid[next_[0]][next_[1]] != "#" and next_ not in visited:
                     q.append(path + [next_])
                     visited.add(next_)
@@ -52,28 +71,58 @@ def bfs(
     raise ValueError
 
 
-def a_star(
-    start: tuple[int, int], end: tuple[int, int], grid: list[list[str]]
-) -> tuple[list[tuple[int, int]], set[tuple[int, int]]]:
+def bfs_least_turns() -> list[tuple[int, int]]:
+    grid, start, end, rows, cols = _get_grid()
+    q = deque([[start]])
+    visited = {start}
+
+    while q:
+        path = q.popleft()
+        current = path[-1]
+
+        if current == end:
+            _show_all_nodes(
+                grid=grid,
+                path=path,
+                message=f"BFS_LT searched {len(visited)} nodes and found path with least turns: ",
+            )
+            return path
+
+        for direction in _UNIT_VECTORS:
+            next_ = current[0] + direction[0], current[1] + direction[1]
+            if 0 <= next_[0] < rows and 0 <= next_[1] < cols:
+                if grid[next_[0]][next_[1]] != "#" and next_ not in visited:
+                    q.append(path + [next_])
+                    visited.add(next_)
+
+    raise ValueError
+
+
+def a_star() -> list[tuple[int, int]]:
+    grid, start, end, rows, cols = _get_grid()
 
     def heuristic(node1: tuple[int, int], node2: tuple[int, int]) -> int:
         return abs(node1[0] - node2[0]) + abs(node1[1] - node2[1])
 
     pq = []
-    heapq.heappush(pq, (0, start, [start]))  # cost, current, path
+    heapq.heappush(pq, (0, start, [start]))
     visited = {start}
 
     while pq:
         cost, current, path = heapq.heappop(pq)
 
         if current == end:
-            return path, visited
-
+            _show_all_nodes(
+                grid=grid,
+                path=path,
+                message=f"A_STAR searched {len(visited)} nodes and found shortest path: ",
+            )
+            return path
         for direction in _UNIT_VECTORS:
             next_ = current[0] + direction[0], current[1] + direction[1]
             if (
-                0 <= next_[0] < ROWS
-                and 0 <= next_[1] < COLS
+                0 <= next_[0] < rows
+                and 0 <= next_[1] < cols
                 and grid[next_[0]][next_[1]] != "#"
                 and next_ not in visited
             ):
@@ -84,39 +133,5 @@ def a_star(
     raise ValueError
 
 
-def show_all_nodes(
-    grid: list[list[str]], nodes: list[tuple[int, int]], message: str = ""
-) -> None:
-    for node in nodes:
-        grid[node[0]][node[1]] = "*"
-    pprint(grid=grid, message=message)
-
-
-def pprint(grid: list[list[str]], message: str) -> None:
-    print("------------------------------------------------")
-    print(message)
-    for line in grid:
-        print("".join(line))
-
-
-bfs_path, all_bfs_checked_nodes = bfs(start=START, end=END, grid=GRID)
-a_star_path, all_a_star_checked_nodes = a_star(start=START, end=END, grid=GRID)
-print(
-    f"Path found with BFS: {bfs_path}\nwith length: {len(bfs_path)} \nhad to check: {len(all_bfs_checked_nodes)} nodes:"
-)
-print(
-    f"Path found with A_STAR: {a_star_path}\nwith length: {len(a_star_path)} \nhad to check: {len(all_a_star_checked_nodes)} nodes:"
-)
-print(
-    f"BFS-checked nodes ignored by A_STAR: {all_bfs_checked_nodes - all_a_star_checked_nodes}"
-)
-show_all_nodes(grid=GRID, nodes=bfs_path, message="BFS found best path: ")
-show_all_nodes(grid=GRID, nodes=a_star_path, message="A_STAR found best path: ")
-show_all_nodes(
-    grid=GRID, nodes=list(all_bfs_checked_nodes), message="All BFS nodes checked: "
-)
-show_all_nodes(
-    grid=GRID,
-    nodes=list(all_a_star_checked_nodes),
-    message="All A_STAR nodes checked: ",
-)
+bfs()
+a_star()
