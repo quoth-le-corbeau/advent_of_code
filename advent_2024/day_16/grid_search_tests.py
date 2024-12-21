@@ -5,14 +5,8 @@ from collections import deque
 _UNIT_VECTORS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
 
-def _get_grid():
-    file_path = str(
-        (
-            pathlib.Path(__file__).resolve().parents[2]
-            / "my_inputs/2024/day_16"
-            / "eg.txt"
-        )
-    )
+def _get_grid(file_path: str):
+
     with open(pathlib.Path(__file__).parent / file_path, "r") as puzzle_input:
         grid = [list(line) for line in puzzle_input.read().splitlines()]
     start = None
@@ -23,6 +17,10 @@ def _get_grid():
                 start = r, c
             if col == "E":
                 end = r, c
+    if start is None:
+        start = (0, 0)
+    if end is None:
+        end = len(grid) - 1, len(grid[0]) - 1
     return grid, start, end, len(grid), len(grid[0])
 
 
@@ -44,8 +42,8 @@ def pprint(grid: list[list[str]], path: list[tuple[int, int]], message: str) -> 
         print("".join(line))
 
 
-def bfs() -> list[tuple[int, int]]:
-    grid, start, end, rows, cols = _get_grid()
+def bfs(file_path) -> list[tuple[int, int]]:
+    grid, start, end, rows, cols = _get_grid(file_path)
     q = deque([[start]])
     visited = {start}
 
@@ -57,7 +55,7 @@ def bfs() -> list[tuple[int, int]]:
             _show_all_nodes(
                 grid=grid,
                 path=path,
-                message=f"BFS searched {len(visited)} nodes and found shortest path: ",
+                message=f"BFS searched {len(visited)} nodes and found shortest path: with length {len(path)} ",
             )
             return path
 
@@ -71,8 +69,8 @@ def bfs() -> list[tuple[int, int]]:
     raise ValueError
 
 
-def bfs_least_turns() -> list[tuple[int, int]]:
-    grid, start, end, rows, cols = _get_grid()
+def bfs_least_turns(file_path: str) -> list[tuple[int, int]]:
+    grid, start, end, rows, cols = _get_grid(file_path)
     q = deque([[start]])
     visited = {start}
 
@@ -84,7 +82,7 @@ def bfs_least_turns() -> list[tuple[int, int]]:
             _show_all_nodes(
                 grid=grid,
                 path=path,
-                message=f"BFS_LT searched {len(visited)} nodes and found path with least turns: ",
+                message=f"BFS_LT searched {len(visited)} nodes and found path with least turns with length {len(path)}: ",
             )
             return path
 
@@ -98,8 +96,8 @@ def bfs_least_turns() -> list[tuple[int, int]]:
     raise ValueError
 
 
-def a_star() -> list[tuple[int, int]]:
-    grid, start, end, rows, cols = _get_grid()
+def a_star(file_path: str) -> list[tuple[int, int]]:
+    grid, start, end, rows, cols = _get_grid(file_path)
 
     def heuristic(node1: tuple[int, int], node2: tuple[int, int]) -> int:
         return abs(node1[0] - node2[0]) + abs(node1[1] - node2[1])
@@ -115,7 +113,7 @@ def a_star() -> list[tuple[int, int]]:
             _show_all_nodes(
                 grid=grid,
                 path=path,
-                message=f"A_STAR searched {len(visited)} nodes and found shortest path: ",
+                message=f"A_STAR searched {len(visited)} nodes and found shortest path with length {len(path)}: ",
             )
             return path
         for direction in _UNIT_VECTORS:
@@ -133,5 +131,23 @@ def a_star() -> list[tuple[int, int]]:
     raise ValueError
 
 
-bfs()
-a_star()
+bfs(
+    file_path=str(
+        (
+            pathlib.Path(__file__).resolve().parents[2]
+            / "my_inputs/2024/day_16"
+            / "eg.txt"
+        )
+    )
+)
+a_star(
+    file_path=str(
+        (
+            pathlib.Path(__file__).resolve().parents[2]
+            / "my_inputs/2024/day_16"
+            / "eg.txt"
+        )
+    )
+)
+bfs(file_path="day_18_input.txt")
+a_star(file_path="day_18_input.txt")
