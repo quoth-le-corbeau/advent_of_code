@@ -24,29 +24,28 @@ def dict_parametrize(test_cases_by_id: Dict[str, Dict[str, Any]]):
     {
         "adv": {
             "registers": (0, 0, 9),
-            "op_code": 2,
-            "operand": 6,
+            "program": [2, 6],
             "expected_registers": (0, 1, 9),
-            "expected_output": None,
+            "expected_output": "",
         },
         "bxl": {
             "registers": (0, 29, 0),
-            "op_code": 1,
-            "operand": 7,
+            "program": [1, 7],
             "expected_registers": (0, 26, 0),
-            "expected_output": None,
+            "expected_output": "",
         },
     }
 )
-def test_computer(registers, op_code, operand, expected_registers, expected_output):
+def test_computer(registers, program, expected_registers, expected_output):
     computer = Computer(
-        register_A=registers[0], register_B=registers[1], register_C=registers[2]
+        register_A=registers[0],
+        register_B=registers[1],
+        register_C=registers[2],
     )
-    computer.instruction_map[op_code](operand)
+    computer.run(program)
     assert (
         computer.register_A,
         computer.register_B,
         computer.register_C,
     ) == expected_registers
-    if expected_output is not None:
-        assert computer.output == expected_output
+    assert computer.output == expected_output
