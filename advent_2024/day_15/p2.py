@@ -218,12 +218,12 @@ def sum_gps_coordinates_2(file_path: str):
                     try:
                         assert len(contact_filter) == 1
                     except AssertionError:
-                        print(f"contact filter {contact_filter} SOMETHING WRONG!")
-                        print(f"robot at: {current}")
-                        print(f"current move: {move}")
-                        print(f"last_move: {moves[n - 1]}")
-                        print(f"{len(moves) - n} moves left")
-                        print(f"move number: {n}")
+                        # print(f"contact filter {contact_filter} SOMETHING WRONG!")
+                        # print(f"robot at: {current}")
+                        # print(f"current move: {move}")
+                        # print(f"last_move: {moves[n - 1]}")
+                        # print(f"{len(moves) - n} moves left")
+                        # print(f"move number: {n}")
                         raise AssertionError
                     contact_box = contact_filter[0]
                     touching_boxes = [contact_box]
