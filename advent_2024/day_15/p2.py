@@ -172,6 +172,8 @@ def sum_gps_coordinates_2(file_path: str):
                     p = start_position
                     while 0 < p[0] < rows - 1 and 0 < p[1] < cols - 1:
                         p = r + (i * dr), c + (i * dc)
+                        if grid[p[0]][p[1]] == "#":
+                            break
                         look_ahead.append(p)
                         i += 1
                     if not any([grid[node[0]][node[1]] == "." for node in look_ahead]):
@@ -295,3 +297,4 @@ print(
     )
 )
 print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+# 1576353
