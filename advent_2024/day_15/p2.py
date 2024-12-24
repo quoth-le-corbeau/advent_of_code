@@ -1,7 +1,6 @@
 import time
 import pathlib
 from collections import deque
-from typing import List, Tuple
 
 """
 Warehouse Woes Part II
@@ -10,7 +9,14 @@ having blown up the grid
 follow similar rules to part I
 Note: horizontal moves are similar but now require moving two brackets
       vertical moves are more complex and require a bfs to find connected boxes 
-        of which some will still not move
+      of which some will still not move.
+  vertical and horizontal movement:
+  when a box is encountered by the robot in the up or down directions use the following methods:
+      - get all adjacent boxes
+      - filter adjacent boxes for those that will be pushed
+      - check the space at the end of the block into which the outer most boxes should move for walls
+      - if walls do nothing
+      - else move all the filtered selection of boxes one space in the direction
 
 
 """
@@ -40,7 +46,7 @@ def _blow_up_grid(grid: list[list[str]]) -> list[list[str]]:
     return blown_up_grid
 
 
-def _get_start_position(grid: list[list[str]]) -> tuple[int, int]:
+def _get_robo_start(grid: list[list[str]]) -> tuple[int, int]:
     for r, row in enumerate(grid):
         for c, col in enumerate(row):
             if col == "@":
@@ -49,11 +55,11 @@ def _get_start_position(grid: list[list[str]]) -> tuple[int, int]:
 
 
 def _get_adjacent_boxes(
-    grid: list[list[str]], start: tuple[int, int]
+    grid: list[list[str]], start_: tuple[int, int]
 ) -> list[tuple[tuple[int, int], tuple[int, int]]]:
-    queue = deque([start])
-    visited = {start}
-    box_coordinates = [start]
+    queue = deque([start_])
+    visited = {start_}
+    box_coordinates = [start_]
     types = ["[", "]"]
 
     while queue:
@@ -71,37 +77,69 @@ def _get_adjacent_boxes(
     return boxes
 
 
-def _should_move(
-    box: tuple[tuple[int, int], tuple[int, int]],
-    contact_box: tuple[tuple[int, int], tuple[int, int]],
-    move: str,
-) -> bool:
-    dr, dc = _DIRECTION_VECTORS[move]
-    if dc != 0 or dr not in [1, -1]:
-        raise ValueError("Invalid non vertical move direction!")
-    f, b = box
-    cf, cb = contact_box
-    row_delta = f[0] - cf[0]
-    if row_delta == 0:
-        raise ValueError(
-            "should not have any boxes at the same level as the contact box!"
+def _debugger_print(grid, moves, n):
+    print("---------------------DEBUGGING-----------------------------")
+    if n >= 1:
+        print(f"Next move: {moves[n]}. Move number: {n} of {len(moves)}")
+    else:
+        print("Start position: ")
+    for line in grid:
+        print("".join(line))
+
+
+def _get_touching_boxes(
+    boxes: list[tuple[tuple[int, int], tuple[int, int]]],
+    dr: int,
+    contact_start: tuple[int, int],
+) -> list[tuple[tuple[int, int], tuple[int, int]]]:
+    adjacent_boxes = sorted(boxes, key=lambda box: (box[0][0], box[0][1]))
+    contact_boxes = [
+        box
+        for box in adjacent_boxes
+        if box[0][0] == contact_start[0]
+        and (box[0][1] == contact_start[1] or box[1][1] == contact_start[1])
+    ]
+    touching_boxes = [contact_boxes[0]]
+    if dr == -1:
+        all_rows = sorted(
+            list(
+                set(
+                    [
+                        box[0][0]
+                        for box in adjacent_boxes
+                        if box[0][0] < contact_start[0]
+                    ]
+                )
+            ),
+            reverse=True,
         )
-    col_range = range(cf[1] - abs(row_delta), cb[1] + abs(row_delta) + 1)
-    if row_delta < 0:
-        if dr != -1:
-            return False
-        else:
-            assert dr == -1
     else:
-        assert row_delta > 0
-        if dr == -1:
-            return False
-        else:
-            assert dr == 1
-    if f[1] in col_range and b[1] in col_range:
-        return True
-    else:
-        return False
+        all_rows = sorted(
+            list(
+                set(
+                    [
+                        box[0][0]
+                        for box in adjacent_boxes
+                        if box[0][0] > contact_start[0]
+                    ]
+                )
+            ),
+            reverse=False,
+        )
+    for row in all_rows:
+        all_boxes_in_row = [box for box in adjacent_boxes if box[0][0] == row]
+        contact_cols = []
+        for contact_box in contact_boxes:
+            contact_cols.append(contact_box[0][1])
+            contact_cols.append(contact_box[1][1])
+        new_contact_boxes = [
+            box
+            for box in all_boxes_in_row
+            if box[0][1] in contact_cols or box[1][1] in contact_cols
+        ]
+        touching_boxes += new_contact_boxes
+        contact_boxes = new_contact_boxes
+    return touching_boxes
 
 
 def _can_move(
@@ -136,25 +174,17 @@ def _move_boxes(
     return grid
 
 
-def sum_gps_coordinates_2(file_path: str):
+def sum_gps_coordinates_2(file_path: str) -> int:
     with open(pathlib.Path(__file__).parent / file_path, "r") as puzzle_input:
-        grid, moves = puzzle_input.read().strip().split("\n\n")
-        grid = [list(line) for line in grid.splitlines()]
+        warehouse_floor, moves = puzzle_input.read().strip().split("\n\n")
+        grid = [list(line) for line in warehouse_floor.splitlines()]
         moves = moves.replace("\n", "")
         grid = _blow_up_grid(grid=grid)
-        start_position = _get_start_position(grid=grid)
-        cols = len(grid[0])
-        rows = len(grid)
+        start_position = _get_robo_start(grid=grid)
         current = start_position
         for n, move in enumerate(moves):
             dr, dc = _DIRECTION_VECTORS[move]
-            print("---------------------DEBUGGING-----------------------------")
-            if n >= 1:
-                print(f"Next move: {moves[n]}. Move number: {n} of {len(moves)}")
-            else:
-                print("Start position: ")
-            for line in grid:
-                print("".join(line))
+            # _debugger_print(grid, moves, n)
             r, c = current
             next_ = r + dr, c + dc
             if grid[next_[0]][next_[1]] == "#":
@@ -170,8 +200,8 @@ def sum_gps_coordinates_2(file_path: str):
                     look_ahead = []
                     i = 1
                     p = start_position
-                    while 0 < p[0] < rows - 1 and 0 < p[1] < cols - 1:
-                        p = r + (i * dr), c + (i * dc)
+                    while 0 < p[0] < len(grid) - 1 and 0 < p[1] < len(grid[0]) - 1:
+                        p = r, c + (i * dc)
                         if grid[p[0]][p[1]] == "#":
                             break
                         look_ahead.append(p)
@@ -180,54 +210,31 @@ def sum_gps_coordinates_2(file_path: str):
                         continue  # boxes all the way to the wall
                     else:
                         i = 0
-                        while grid[look_ahead[i][0]][look_ahead[i][1]] in [
-                            "[",
-                            "]",
-                        ]:
+                        while grid[look_ahead[i][0]][look_ahead[i][1]] in ["[", "]"]:
                             i += 1
-                        if grid[look_ahead[i][0]][look_ahead[i][1]] == "#":
-                            current = next_
-                            continue
-                        else:
-                            assert grid[look_ahead[i][0]][look_ahead[i][1]] == "."
-                            # shift each node along one space in direction
-                            for node in look_ahead[1:i]:
-                                if grid[node[0]][node[1]] == "[":
-                                    grid[node[0]][node[1]] = "]"
-                                else:
-                                    assert grid[node[0]][node[1]] == "]"
-                                    grid[node[0]][node[1]] = "["
+                        for node in look_ahead[1:i]:
+                            if grid[node[0]][node[1]] == "[":
+                                grid[node[0]][node[1]] = "]"
+                            else:
+                                grid[node[0]][node[1]] = "["
                             if move == "<":
                                 grid[look_ahead[i][0]][look_ahead[i][1]] = "["
                             else:
-                                assert move == ">"
                                 grid[look_ahead[i][0]][look_ahead[i][1]] = "]"
                             grid[look_ahead[0][0]][look_ahead[0][1]] = "@"
                             grid[current[0]][current[1]] = "."
                         current = next_
                 else:
                     will_move = True
-                    # perform a bfs starting at next_ get all connected boxes
-                    adjacent_boxes = _get_adjacent_boxes(start=next_, grid=grid)
+                    adjacent_boxes = _get_adjacent_boxes(start_=next_, grid=grid)
                     touching_boxes = _get_touching_boxes(
                         boxes=adjacent_boxes, dr=dr, contact_start=next_
                     )
-                    # for box in adjacent_boxes:
-                    #     if box == contact_box:
-                    #         continue
-                    #     elif box[0][0] == contact_box[0][0]:
-                    #         continue
-                    #     else:
-                    #         if _should_move(
-                    #             box=box, contact_box=contact_box, move=move
-                    #         ):
-                    #             touching_boxes.append(box)
                     for box in touching_boxes:
                         if not _can_move(box=box, move=move, grid=grid):
                             will_move = False
                             break
                     if will_move:
-                        # perform the move
                         grid = _move_boxes(
                             to_move=touching_boxes, move=move, grid=grid, robot=current
                         )
@@ -239,47 +246,6 @@ def sum_gps_coordinates_2(file_path: str):
                 if col == "[":
                     gps_sums.append(100 * r + c)
         return sum(gps_sums)
-
-
-def _get_touching_boxes(
-    boxes: list[tuple[tuple[int, int], tuple[int, int]]],
-    dr: int,
-    contact_start: tuple[int, int],
-) -> list[tuple[tuple[int, int], tuple[int, int]]]:
-    adjacent_boxes = sorted(boxes, key=lambda box: (box[0][0], box[0][1]))
-    contact_boxes = [
-        box
-        for box in adjacent_boxes
-        if box[0][0] == contact_start[0]
-        and (box[0][1] == contact_start[1] or box[1][1] == contact_start[1])
-    ]
-    try:
-        assert len(contact_boxes) == 1
-    except AssertionError:
-        raise AssertionError
-    touching_boxes = []
-    if dr == 1:
-        reversed_ = False
-    else:
-        assert dr == -1
-        reversed_ = True
-    all_rows = sorted(
-        list(set([box[0][0] for box in adjacent_boxes])), reverse=reversed_
-    )
-    for row in all_rows:
-        all_boxes_in_row = [box for box in adjacent_boxes if box[0][0] == row]
-        contact_cols = []
-        for contact_box in contact_boxes:
-            contact_cols.append(contact_box[0][1])
-            contact_cols.append(contact_box[1][1])
-        new_contact_boxes = [
-            box
-            for box in all_boxes_in_row
-            if box[0][1] in contact_cols or box[1][1] in contact_cols
-        ]
-        touching_boxes += new_contact_boxes
-        contact_boxes = new_contact_boxes
-    return touching_boxes
 
 
 start = time.perf_counter()
@@ -296,31 +262,30 @@ print(
 )
 print(f"SMALL TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
-# start = time.perf_counter()
-# print(
-#    sum_gps_coordinates_2(
-#        str(
-#            (
-#                pathlib.Path(__file__).resolve().parents[2]
-#                / "my_inputs/2024/day_15"
-#                / "eg.txt"
-#            )
-#        )
-#    )
-# )
-# print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+start = time.perf_counter()
+print(
+    sum_gps_coordinates_2(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2024/day_15"
+                / "eg.txt"
+            )
+        )
+    )
+)
+print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
-# start = time.perf_counter()
-# print(
-#    sum_gps_coordinates_2(
-#        str(
-#            (
-#                pathlib.Path(__file__).resolve().parents[2]
-#                / "my_inputs/2024/day_15"
-#                / "input.txt"
-#            )
-#        )
-#    )
-# )
-# print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
-# 1576353
+start = time.perf_counter()
+print(
+    sum_gps_coordinates_2(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2024/day_15"
+                / "input.txt"
+            )
+        )
+    )
+)
+print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
