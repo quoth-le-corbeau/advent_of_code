@@ -256,33 +256,33 @@ def sum_gps_coordinates_2(file_path: str):
         return sum(gps_sums)
 
 
-start = time.perf_counter()
-print(
-    sum_gps_coordinates_2(
-        str(
-            (
-                pathlib.Path(__file__).resolve().parents[2]
-                / "my_inputs/2024/day_15"
-                / "small_eg_2.txt"
-            )
-        )
-    )
-)
-print(f"SMALL TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+# start = time.perf_counter()
+# print(
+#    sum_gps_coordinates_2(
+#        str(
+#            (
+#                pathlib.Path(__file__).resolve().parents[2]
+#                / "my_inputs/2024/day_15"
+#                / "small_eg_2.txt"
+#            )
+#        )
+#    )
+# )
+# print(f"SMALL TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
-start = time.perf_counter()
-print(
-    sum_gps_coordinates_2(
-        str(
-            (
-                pathlib.Path(__file__).resolve().parents[2]
-                / "my_inputs/2024/day_15"
-                / "eg.txt"
-            )
-        )
-    )
-)
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+# start = time.perf_counter()
+# print(
+#    sum_gps_coordinates_2(
+#        str(
+#            (
+#                pathlib.Path(__file__).resolve().parents[2]
+#                / "my_inputs/2024/day_15"
+#                / "eg.txt"
+#            )
+#        )
+#    )
+# )
+# print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 start = time.perf_counter()
 print(
