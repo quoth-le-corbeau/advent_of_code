@@ -68,7 +68,7 @@ def _get_adjacent_boxes(
     coordinates = sorted(box_coordinates)
     for i in range(0, len(coordinates) - 1, 2):
         boxes.append((coordinates[i], coordinates[i + 1]))
-    return sorted(boxes, key=lambda x: (x[1], x[0]))
+    return boxes
 
 
 def _should_move(
@@ -150,7 +150,7 @@ def sum_gps_coordinates_2(file_path: str):
             dr, dc = _DIRECTION_VECTORS[move]
             print("---------------------DEBUGGING-----------------------------")
             if n >= 1:
-                print(f"Next move: {moves[n]}")
+                print(f"Next move: {moves[n]}. Move number: {n} of {len(moves)}")
             else:
                 print("Start position: ")
             for line in grid:
@@ -209,34 +209,19 @@ def sum_gps_coordinates_2(file_path: str):
                     will_move = True
                     # perform a bfs starting at next_ get all connected boxes
                     adjacent_boxes = _get_adjacent_boxes(start=next_, grid=grid)
-                    contact_filter = [
-                        box
-                        for box in adjacent_boxes
-                        if box[0][0] == next_[0]
-                        and (box[0][1] == next_[1] or box[1][1] == next_[1])
-                    ]
-                    try:
-                        assert len(contact_filter) == 1
-                    except AssertionError:
-                        # print(f"contact filter {contact_filter} SOMETHING WRONG!")
-                        # print(f"robot at: {current}")
-                        # print(f"current move: {move}")
-                        # print(f"last_move: {moves[n - 1]}")
-                        # print(f"{len(moves) - n} moves left")
-                        # print(f"move number: {n}")
-                        raise AssertionError
-                    contact_box = contact_filter[0]
-                    touching_boxes = [contact_box]
-                    for box in adjacent_boxes:
-                        if box == contact_box:
-                            continue
-                        elif box[0][0] == contact_box[0][0]:
-                            continue
-                        else:
-                            if _should_move(
-                                box=box, contact_box=contact_box, move=move
-                            ):
-                                touching_boxes.append(box)
+                    touching_boxes = _get_touching_boxes(
+                        boxes=adjacent_boxes, dr=dr, contact_start=next_
+                    )
+                    # for box in adjacent_boxes:
+                    #     if box == contact_box:
+                    #         continue
+                    #     elif box[0][0] == contact_box[0][0]:
+                    #         continue
+                    #     else:
+                    #         if _should_move(
+                    #             box=box, contact_box=contact_box, move=move
+                    #         ):
+                    #             touching_boxes.append(box)
                     for box in touching_boxes:
                         if not _can_move(box=box, move=move, grid=grid):
                             will_move = False
@@ -256,19 +241,60 @@ def sum_gps_coordinates_2(file_path: str):
         return sum(gps_sums)
 
 
-# start = time.perf_counter()
-# print(
-#    sum_gps_coordinates_2(
-#        str(
-#            (
-#                pathlib.Path(__file__).resolve().parents[2]
-#                / "my_inputs/2024/day_15"
-#                / "small_eg_2.txt"
-#            )
-#        )
-#    )
-# )
-# print(f"SMALL TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+def _get_touching_boxes(
+    boxes: list[tuple[tuple[int, int], tuple[int, int]]],
+    dr: int,
+    contact_start: tuple[int, int],
+) -> list[tuple[tuple[int, int], tuple[int, int]]]:
+    adjacent_boxes = sorted(boxes, key=lambda box: (box[0][0], box[0][1]))
+    contact_boxes = [
+        box
+        for box in adjacent_boxes
+        if box[0][0] == contact_start[0]
+        and (box[0][1] == contact_start[1] or box[1][1] == contact_start[1])
+    ]
+    try:
+        assert len(contact_boxes) == 1
+    except AssertionError:
+        raise AssertionError
+    touching_boxes = []
+    if dr == 1:
+        reversed_ = False
+    else:
+        assert dr == -1
+        reversed_ = True
+    all_rows = sorted(
+        list(set([box[0][0] for box in adjacent_boxes])), reverse=reversed_
+    )
+    for row in all_rows:
+        all_boxes_in_row = [box for box in adjacent_boxes if box[0][0] == row]
+        contact_cols = []
+        for contact_box in contact_boxes:
+            contact_cols.append(contact_box[0][1])
+            contact_cols.append(contact_box[1][1])
+        new_contact_boxes = [
+            box
+            for box in all_boxes_in_row
+            if box[0][1] in contact_cols or box[1][1] in contact_cols
+        ]
+        touching_boxes += new_contact_boxes
+        contact_boxes = new_contact_boxes
+    return touching_boxes
+
+
+start = time.perf_counter()
+print(
+    sum_gps_coordinates_2(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2024/day_15"
+                / "small_eg_2.txt"
+            )
+        )
+    )
+)
+print(f"SMALL TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
 # start = time.perf_counter()
 # print(
@@ -284,17 +310,17 @@ def sum_gps_coordinates_2(file_path: str):
 # )
 # print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
-start = time.perf_counter()
-print(
-    sum_gps_coordinates_2(
-        str(
-            (
-                pathlib.Path(__file__).resolve().parents[2]
-                / "my_inputs/2024/day_15"
-                / "input.txt"
-            )
-        )
-    )
-)
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+# start = time.perf_counter()
+# print(
+#    sum_gps_coordinates_2(
+#        str(
+#            (
+#                pathlib.Path(__file__).resolve().parents[2]
+#                / "my_inputs/2024/day_15"
+#                / "input.txt"
+#            )
+#        )
+#    )
+# )
+# print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 # 1576353
