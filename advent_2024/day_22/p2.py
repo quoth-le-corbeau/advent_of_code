@@ -38,21 +38,20 @@ print(f"{SEQ=}")
 def find_best_sequence(file_path: str) -> int:
     with open(pathlib.Path(__file__).parent / file_path, "r") as puzzle_input:
         secret_starts = list(map(int, puzzle_input.read().splitlines()))
-        total = 0
-        bananas = []
-        for ss in secret_starts:
-            secret = ss
+        bananas_by_start = {secret_start: {} for secret_start in secret_starts}
+        for secret_start in secret_starts:
+            bananas = [int(str(secret_start)[-1])]
+            secret = secret_start
             bananas.append(int(str(secret)[-1]))
             for _ in range(2000):
                 secret = _get_next_secret_number(secret_number=secret)
                 bananas.append(int(str(secret)[-1]))
-            total += secret
-        print(bananas)
-        diffs = []
-        for i in range(len(bananas) - 1):
-            diffs.append(bananas[i + 1] - bananas[i])
-        print(diffs)
-        return total
+            ordered_bananas = sorted(bananas, reverse=True)
+            diffs = []
+            for i in range(len(bananas) - 1):
+                diffs.append(bananas[i + 1] - bananas[i])
+            bananas_by_start[secret_start]["bananas"] = ordered_bananas
+            bananas_by_start[secret_start]["diffs"] = diffs
 
 
 start = time.perf_counter()
