@@ -8,33 +8,6 @@ def _get_next_secret_number(secret_number: int) -> int:
     return ((step_two * 2048) ^ step_two) % 16777216
 
 
-BANA = [3]
-SEC = _get_next_secret_number(123)
-BANA.append(int(str(SEC)[-1]))
-for _ in range(8):
-    SEC = _get_next_secret_number(SEC)
-    BANA.append(int(str(SEC)[-1]))
-print(f"{BANA=}")
-DIFFS = []
-for i in range(len(BANA) - 1):
-    DIFFS.append(BANA[i + 1] - BANA[i])
-print(f"{DIFFS=}")
-MOST_BANA = max(BANA)
-print(f"{MOST_BANA=}")
-INDEXES_OF_MO = []
-for n, B in enumerate(BANA):
-    if B == MOST_BANA:
-        INDEXES_OF_MO.append(n)
-print(f"{INDEXES_OF_MO=}")
-SEQ = []
-for I in INDEXES_OF_MO:
-    if I < 3:
-        continue
-    else:
-        SEQ += DIFFS[I : I - 4 : -1]
-print(f"{SEQ=}")
-
-
 def find_best_sequence(file_path: str) -> int:
     with open(pathlib.Path(__file__).parent / file_path, "r") as puzzle_input:
         secret_starts = list(map(int, puzzle_input.read().splitlines()))
@@ -47,10 +20,22 @@ def find_best_sequence(file_path: str) -> int:
                 secret = _get_next_secret_number(secret_number=secret)
                 bananas.append(int(str(secret)[-1]))
             ordered_bananas = sorted(bananas, reverse=True)
+            max_bananas = ordered_bananas[0:4]
+            most_bananas = (max_bananas[0], -1)
+            found = False
+            for max_banana in max_bananas:
+                if found:
+                    break
+                for i, banana in enumerate(bananas):
+                    if banana == max_banana and i >= 3:
+                        most_bananas = (banana, i)
+                        found = True
+                        break
+
             diffs = []
             for i in range(len(bananas) - 1):
                 diffs.append(bananas[i + 1] - bananas[i])
-            bananas_by_start[secret_start]["bananas"] = ordered_bananas
+            bananas_by_start[secret_start]["most_bananas"] = most_bananas
             bananas_by_start[secret_start]["diffs"] = diffs
 
 
