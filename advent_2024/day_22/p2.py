@@ -7,15 +7,14 @@ Monkey Market Part II
 
 create a dictionary with the secret starts as keys
 the values are dictionaries storing the bananas and the diffs list
-create a sequence-banana defaultdict(int)
-
-now choose a diffs list BUT HOW BEST TO CHOOSE?
-loop through it in groups of four i:i+4
-find this sequence in all the other diffs lists if it exists
-if the sequence is found break and return the last index in the sequence
-    - this will be i+4 in the first diffs list and whatever in the other diff lists
-get the banana value at that index in all the lists store it in the sequence-banana dict
-if the sequence is not found in a diffs list then simply do not add any bananas to the total for that sequence
+create a sequence-banana defaultdict(list) 
+which collects all four-digit sequences as keys
+where the corresponding value is a tuple
+the number of bananas at the index of the sequence's end 
+from the bananas list is stored in position 0 of the tuple
+and the number of the buyer is stored in position 1
+making sure to only take one bunch of bananas from each buyer 
+return the largest sum of bananas
 
 """
 
@@ -51,44 +50,28 @@ def find_best_sequence(file_path: str) -> int:
         diffs_by_start = _get_price_diffs_by_start(secret_starts)
         all_diffs = [diffs_by_start[s]["diffs"] for s in diffs_by_start]
         all_bananas = [diffs_by_start[s]["bananas"] for s in diffs_by_start]
-        print(len(all_bananas[0]))
-        print(len(all_diffs[0]))
-        # bananas_by_sequence = defaultdict(int)
-        # for j, diff_list in enumerate(all_diffs):
-        #     for i in range(len(all_diffs[j]) - 3):
-        #         sequence = tuple(diff_list[i : i + 4])
-        #         bananas_by_sequence[sequence] += all_bananas[j][i + 4]
-
-        # Prepare `all_diffs` and `all_bananas`
-        all_diffs = [diffs_by_start[s]["diffs"] for s in diffs_by_start]
-        all_bananas = [diffs_by_start[s]["bananas"] for s in diffs_by_start]
-
-        # Dictionary to store sequences and their occurrences
-        sequences_data = defaultdict(list)
-
-        # Step 1: Collect all sequences and their occurrences
+        bananas_by_sequence = defaultdict(list)
         for j, diff_list in enumerate(all_diffs):
-            for i in range(len(diff_list) - 3):  # Sliding window of size 4
+            for i in range(len(all_diffs[j]) - 3):
                 sequence = tuple(diff_list[i : i + 4])
-                # Store the list index, the end index of the sequence, and the corresponding banana value
-                sequences_data[sequence].append((j, i + 3, all_bananas[j][i + 3]))
-
-        # Step 2: Process results (if needed)
-        for sequence, occurrences in sequences_data.items():
-            for list_index, end_index, banana_value in occurrences:
-                if sequence == (-2, 1, -1, 3) and banana_value in [7, 9]:
-                    print(f"  - sequence {sequence} with bananas: {banana_value}")
-
-        # total = 0
-        # best_seq = (0, 0, 0, 0)
-        # for seq, bananas in bananas_by_sequence.items():
-        #    if bananas > total:
-        #        total = bananas
-        #        best_seq = seq
-        #    if seq == (-2, 1, -1, 3):
-        #        print(f"found: {seq} with total bananas: {bananas}")
-        # print(f"best_seq: {best_seq}")
-        # print(f"most_bananas: {total}")
+                bananas_by_sequence[sequence].append((all_bananas[j][i + 4], j))
+        max_bananas = 0
+        for seq, banana_secrets in bananas_by_sequence.items():
+            total = 0
+            seen_buyers = set()
+            for banana_secret in banana_secrets:
+                buyer = banana_secret[1]
+                bananas = banana_secret[0]
+                if buyer in seen_buyers:
+                    # Each buyer only wants to buy one hiding spot,
+                    # so after the hiding spot is sold, the monkey will move on to the next buyer.
+                    continue
+                else:
+                    total += bananas
+                    seen_buyers.add(buyer)
+            if total > max_bananas:
+                max_bananas = total
+        return max_bananas
 
 
 start = time.perf_counter()
@@ -98,23 +81,23 @@ print(
             (
                 pathlib.Path(__file__).resolve().parents[2]
                 / "my_inputs/2024/day_22"
-                / "eg.txt"
+                / "eg2.txt"
             )
         )
     )
 )
 print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
-# start = time.perf_counter()
-# print(
-#    find_best_sequence(
-#        str(
-#            (
-#                    pathlib.Path(__file__).resolve().parents[2]
-#                    / "my_inputs/2024/day_22"
-#                    / "input.txt"
-#            )
-#        )
-#    )
-# )
-# print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+start = time.perf_counter()
+print(
+    find_best_sequence(
+        str(
+            (
+                pathlib.Path(__file__).resolve().parents[2]
+                / "my_inputs/2024/day_22"
+                / "input.txt"
+            )
+        )
+    )
+)
+print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
