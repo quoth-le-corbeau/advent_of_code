@@ -49,9 +49,46 @@ def find_best_sequence(file_path: str) -> int:
     with open(pathlib.Path(__file__).parent / file_path, "r") as puzzle_input:
         secret_starts = list(map(int, puzzle_input.read().splitlines()))
         diffs_by_start = _get_price_diffs_by_start(secret_starts)
-        seq_bananas = defaultdict(int)
         all_diffs = [diffs_by_start[s]["diffs"] for s in diffs_by_start]
         all_bananas = [diffs_by_start[s]["bananas"] for s in diffs_by_start]
+        print(len(all_bananas[0]))
+        print(len(all_diffs[0]))
+        # bananas_by_sequence = defaultdict(int)
+        # for j, diff_list in enumerate(all_diffs):
+        #     for i in range(len(all_diffs[j]) - 3):
+        #         sequence = tuple(diff_list[i : i + 4])
+        #         bananas_by_sequence[sequence] += all_bananas[j][i + 4]
+
+        # Prepare `all_diffs` and `all_bananas`
+        all_diffs = [diffs_by_start[s]["diffs"] for s in diffs_by_start]
+        all_bananas = [diffs_by_start[s]["bananas"] for s in diffs_by_start]
+
+        # Dictionary to store sequences and their occurrences
+        sequences_data = defaultdict(list)
+
+        # Step 1: Collect all sequences and their occurrences
+        for j, diff_list in enumerate(all_diffs):
+            for i in range(len(diff_list) - 3):  # Sliding window of size 4
+                sequence = tuple(diff_list[i : i + 4])
+                # Store the list index, the end index of the sequence, and the corresponding banana value
+                sequences_data[sequence].append((j, i + 3, all_bananas[j][i + 3]))
+
+        # Step 2: Process results (if needed)
+        for sequence, occurrences in sequences_data.items():
+            for list_index, end_index, banana_value in occurrences:
+                if sequence == (-2, 1, -1, 3) and banana_value in [7, 9]:
+                    print(f"  - sequence {sequence} with bananas: {banana_value}")
+
+        # total = 0
+        # best_seq = (0, 0, 0, 0)
+        # for seq, bananas in bananas_by_sequence.items():
+        #    if bananas > total:
+        #        total = bananas
+        #        best_seq = seq
+        #    if seq == (-2, 1, -1, 3):
+        #        print(f"found: {seq} with total bananas: {bananas}")
+        # print(f"best_seq: {best_seq}")
+        # print(f"most_bananas: {total}")
 
 
 start = time.perf_counter()
