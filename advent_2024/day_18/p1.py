@@ -71,7 +71,7 @@ def part_one(input: str, size: int, cutoff: int) -> int:
         return len(path) - 1
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 result_eg = part_one(
     input=str(
         pathlib.Path(__file__).resolve().parents[2] / "my_inputs/2024/day_18" / "eg.txt"
@@ -81,9 +81,9 @@ result_eg = part_one(
 )
 
 print(f"Part 1 example: {result_eg}")
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 result = part_one(
     input=str(
         pathlib.Path(__file__).resolve().parents[2]
@@ -94,4 +94,4 @@ result = part_one(
     cutoff=1024,
 )
 print(f"Part 2 example: {result}")
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

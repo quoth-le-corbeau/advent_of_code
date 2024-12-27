@@ -46,7 +46,7 @@ def scan_enabled_corrupted_memory(file_path: str) -> int:
         # return sum([x * y for x, y in list(zip(nums[::2], nums[1::2]))])
 
 
-START = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     scan_enabled_corrupted_memory(
         str(
@@ -58,9 +58,9 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - START:2.4f} seconds.")
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-START = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     scan_enabled_corrupted_memory(
         str(
@@ -72,4 +72,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - START:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

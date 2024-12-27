@@ -48,7 +48,7 @@ def _bottom_right_to_top_left(df: pandas.DataFrame) -> list[tuple[int, int]]:
     return results
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     find_x_mas(
         str(
@@ -60,9 +60,9 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     find_x_mas(
         str(
@@ -74,4 +74,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

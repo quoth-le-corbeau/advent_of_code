@@ -75,7 +75,7 @@ def sum_trailhead_ratings(file_path: str) -> int:
     return rating_score
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     sum_trailhead_ratings(
         str(
@@ -87,9 +87,9 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     sum_trailhead_ratings(
         str(
@@ -101,4 +101,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

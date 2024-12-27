@@ -52,7 +52,7 @@ def calculate_safety_factor(file_path: str, rows: int, cols: int) -> int:
         return len(top_left) * len(top_right) * len(bottom_left) * len(bottom_right)
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     calculate_safety_factor(
         file_path=str(
@@ -66,9 +66,9 @@ print(
         cols=11,
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     calculate_safety_factor(
         str(
@@ -82,4 +82,4 @@ print(
         cols=101,
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

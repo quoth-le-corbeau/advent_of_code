@@ -86,7 +86,7 @@ def _parse_map(file: str) -> tuple[tuple[int, int], dict[int, set[int]], int, in
         return start, obstacles_by_row, col_bound, row_bound
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     unique_guard_positions(
         str(
@@ -98,9 +98,9 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     unique_guard_positions(
         str(
@@ -112,4 +112,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

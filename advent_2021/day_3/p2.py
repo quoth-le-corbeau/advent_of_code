@@ -59,7 +59,7 @@ def _read_diagnostic(file: str) -> pandas.DataFrame:
         return pandas.DataFrame(grid, columns=[i + 1 for i in range(len(lines[0]))])
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     calculate_power_consumption(
         str(
@@ -71,8 +71,8 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
-start = time.perf_counter()
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
+timer_start = time.perf_counter()
 print(
     calculate_power_consumption(
         str(
@@ -84,4 +84,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

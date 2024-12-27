@@ -98,9 +98,9 @@ def fibonacci(n: int) -> int:
     }
 )
 def test_fibonacci(n, expected):
-    start = time.perf_counter()
+    timer_start = time.perf_counter()
     assert fibonacci(n) == expected
-    print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+    print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
 
 def fibonacci_memo(n: int, memo=None) -> int:
@@ -126,6 +126,6 @@ def fibonacci_memo(n: int, memo=None) -> int:
     }
 )
 def test_fibonacci_memo(n, expected):
-    start = time.perf_counter()
+    timer_start = time.perf_counter()
     assert fibonacci_memo(n) == expected
-    print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+    print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

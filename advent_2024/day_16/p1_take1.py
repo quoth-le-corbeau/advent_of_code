@@ -3,6 +3,8 @@ import pathlib
 import heapq
 from typing import List, Tuple, Optional
 
+from reusables import timer
+
 
 def _get_start_end(grid) -> tuple[tuple[int, int], tuple[int, int]]:
     start_ = None
@@ -143,40 +145,37 @@ def _a_star_minimize_turns(
     return None
 
 
-def find_best_reindeer_path(file_path: str):
+def find_best_reindeer_path(file_path: pathlib.Path):
     with open(pathlib.Path(__file__).parent / file_path, "r") as puzzle_input:
         grid = [list(line) for line in puzzle_input.read().splitlines()]
         start_, end_ = _get_start_end(grid)
         # best_path = _a_star(grid=grid, start=start_, end=end_)
         best_path = _a_star_minimize_turns(grid=grid, start=start_, end=end_)
-        print(f"{best_path=}")
+        # print(f"{best_path=}")
         return _get_path_score(best_path)
 
 
-start = time.perf_counter()
-print(
-    find_best_reindeer_path(
-        str(
-            (
-                pathlib.Path(__file__).resolve().parents[2]
-                / "my_inputs/2024/day_16"
-                / "eg.txt"
-            )
+@timer
+def part_one_example():
+    print(
+        find_best_reindeer_path(
+            pathlib.Path(__file__).resolve().parents[2]
+            / "my_inputs/2024/day_16"
+            / "eg.txt"
         )
     )
-)
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 
-start = time.perf_counter()
-print(
-    find_best_reindeer_path(
-        str(
-            (
-                pathlib.Path(__file__).resolve().parents[2]
-                / "my_inputs/2024/day_16"
-                / "input.txt"
-            )
+
+@timer
+def part_one():
+    print(
+        find_best_reindeer_path(
+            pathlib.Path(__file__).resolve().parents[2]
+            / "my_inputs/2024/day_16"
+            / "input.txt"
         )
     )
-)
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+
+
+part_one_example()
+part_one()

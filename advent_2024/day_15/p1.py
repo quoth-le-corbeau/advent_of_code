@@ -86,7 +86,7 @@ def sum_gps_coordinates(file_path: str):
         return sum(gps_sums)
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     sum_gps_coordinates(
         str(
@@ -98,9 +98,9 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     sum_gps_coordinates(
         str(
@@ -112,4 +112,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

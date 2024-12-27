@@ -35,7 +35,7 @@ def _get_triple_with_target_sum(all_entries: List[int]) -> Tuple[int, int, int]:
     raise RuntimeError("No matching Triple found")
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     product_of_target_triple(
         str(
@@ -47,9 +47,9 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     product_of_target_triple(
         str(
@@ -61,4 +61,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

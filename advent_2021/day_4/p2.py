@@ -67,7 +67,7 @@ def _parse_bingo_game(file: str):
         return to_be_drawn_numbers, bingo_cards
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     let_the_squid_win(
         str(
@@ -79,8 +79,8 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
-start = time.perf_counter()
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
+timer_start = time.perf_counter()
 print(
     let_the_squid_win(
         str(
@@ -92,4 +92,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

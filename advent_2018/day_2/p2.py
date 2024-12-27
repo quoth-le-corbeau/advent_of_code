@@ -18,7 +18,7 @@ def get_common_box_id_letters(file_path: str) -> str:
         return "No Match Found!"
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     get_common_box_id_letters(
         str(
@@ -30,9 +30,9 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     get_common_box_id_letters(
         str(
@@ -44,4 +44,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

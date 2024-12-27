@@ -13,7 +13,7 @@ def _RENAME_FUNC(file: str):
         print(lines)
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     RENAME_FUNC(
         str(
@@ -25,8 +25,8 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-# start = time.perf_counter()
+# timer_start = time.perf_counter()
 # print(RENAME_FUNC(str((pathlib.Path(__file__).resolve().parents[2] / "my_inputs/2019/day_24" / "input.txt"))))
-# print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+# print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

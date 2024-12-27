@@ -33,7 +33,7 @@ def _get_pair_with_target_sum(
     raise RuntimeError("No target pair found in input!")
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     product_of_target_pair(
         str(
@@ -45,9 +45,9 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     product_of_target_pair(
         str(
@@ -59,4 +59,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

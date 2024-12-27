@@ -131,7 +131,7 @@ def _get_bid_hands(file: str) -> list[BidHand]:
     return bid_hands
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     find_total_camel_card_winnings_with_jokers(
         str(
@@ -143,8 +143,8 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
-start = time.perf_counter()
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
+timer_start = time.perf_counter()
 print(
     find_total_camel_card_winnings_with_jokers(
         str(
@@ -156,4 +156,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

@@ -35,7 +35,7 @@ def _parse_instructions(file: str) -> tuple[str, dict[str, tuple[str, str]]]:
     return directional_instructions.strip(), network_look_up
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     count_moves_to_navigate_wasteland(
         str(
@@ -47,11 +47,11 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
-start = time.perf_counter()
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
+timer_start = time.perf_counter()
 print(count_moves_to_navigate_wasteland("eg1.txt"))
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
-start = time.perf_counter()
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
+timer_start = time.perf_counter()
 print(
     count_moves_to_navigate_wasteland(
         str(
@@ -63,4 +63,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

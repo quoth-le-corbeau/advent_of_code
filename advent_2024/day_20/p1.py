@@ -111,7 +111,7 @@ def count_100_saving_cheats(file_path: pathlib.Path):
     return race_track.get_cheats(saved_picos=100)
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     count_100_saving_cheats(
         file_path=pathlib.Path(__file__).resolve().parents[2]
@@ -119,9 +119,9 @@ print(
         / "eg.txt"
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-# start = time.perf_counter()
+# timer_start = time.perf_counter()
 # print(
 #    count_100_saving_cheats(
 #        file_path=pathlib.Path(__file__).resolve().parents[2]
@@ -129,4 +129,4 @@ print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
 #        / "input.txt"
 #    )
 # )
-# print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+# print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

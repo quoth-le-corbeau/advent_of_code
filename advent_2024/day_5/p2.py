@@ -82,7 +82,7 @@ def _parse_input(file: str) -> tuple[list[tuple[int, int]], list[list[int]]]:
         return rules, updates
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     reorder_and_sum_middle_pages(
         str(
@@ -94,9 +94,9 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     reorder_and_sum_middle_pages(
         str(
@@ -108,4 +108,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

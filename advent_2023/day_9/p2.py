@@ -82,7 +82,7 @@ def _get_all_series_from_input(file: str) -> list[list[int]]:
         return all_series
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     sum_previous_terms_in_series(
         str(
@@ -94,8 +94,8 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
-start = time.perf_counter()
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
+timer_start = time.perf_counter()
 print(
     sum_previous_terms_in_series(
         str(
@@ -107,4 +107,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

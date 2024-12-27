@@ -53,7 +53,7 @@ def find_non_overlapping(file_path: str):
             raise RuntimeError(f"No non-overlapping rectangles in {file_path}")
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     find_non_overlapping(
         str(
@@ -65,9 +65,9 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     find_non_overlapping(
         str(
@@ -79,4 +79,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

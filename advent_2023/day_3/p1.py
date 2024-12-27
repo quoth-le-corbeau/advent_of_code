@@ -49,7 +49,7 @@ def parse_part_numbers(
     return all_part_numbers
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     sum_part_numbers(
         str(
@@ -61,8 +61,8 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
-start = time.perf_counter()
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
+timer_start = time.perf_counter()
 print(
     sum_part_numbers(
         str(
@@ -74,4 +74,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

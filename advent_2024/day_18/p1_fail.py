@@ -80,7 +80,7 @@ def find_best_escape_path(
         return len(best_escape_path) - 1  # exclude start
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     find_best_escape_path(
         str(
@@ -95,9 +95,9 @@ print(
         fallen_bytes=12,
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     find_best_escape_path(
         str(
@@ -109,4 +109,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

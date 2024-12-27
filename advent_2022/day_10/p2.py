@@ -39,7 +39,7 @@ def _parse_program_file(file: str) -> list[tuple[int, int]]:
         return program
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print_pixels_on_screen(
     str(
         (
@@ -49,8 +49,8 @@ print_pixels_on_screen(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
-start = time.perf_counter()
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
+timer_start = time.perf_counter()
 print_pixels_on_screen(
     str(
         (
@@ -60,4 +60,4 @@ print_pixels_on_screen(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

@@ -128,7 +128,7 @@ def _parse_map(file: str) -> tuple[tuple[int, int], dict[int, set[int]], int, in
         return start, obstacles_by_row, col_bound, row_bound
 
 
-START = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     count_possible_loop_creators(
         str(
@@ -140,9 +140,9 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - START:2.4f} seconds.")
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-START = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     count_possible_loop_creators(
         str(
@@ -154,4 +154,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - START:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

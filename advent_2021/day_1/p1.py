@@ -18,7 +18,7 @@ def _parse_depths(file: str) -> list[int]:
         return list(map(int, re.findall(r"\d+", lines)))
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     count_number_of_increased_depths(
         str(
@@ -30,8 +30,8 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
-start = time.perf_counter()
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
+timer_start = time.perf_counter()
 print(
     count_number_of_increased_depths(
         str(
@@ -43,4 +43,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

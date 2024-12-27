@@ -29,7 +29,7 @@ def _convert_digit(string: str) -> int:
         return SPELLED_DIGITS.index(string) + 1
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     sum_calibration_values_2(
         str(
@@ -41,8 +41,8 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
-start = time.perf_counter()
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
+timer_start = time.perf_counter()
 print(
     sum_calibration_values_2(
         str(
@@ -54,4 +54,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

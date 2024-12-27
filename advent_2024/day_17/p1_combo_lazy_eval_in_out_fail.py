@@ -96,7 +96,7 @@ class Computer:
 #         return computer.output
 #
 #
-# start = time.perf_counter()
+# timer_start = time.perf_counter()
 # print(
 #     chronospatial_output(
 #         str(
@@ -108,8 +108,8 @@ class Computer:
 #         )
 #     )
 # )
-# print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+# print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-# start = time.perf_counter()
+# timer_start = time.perf_counter()
 # print(chronospatial_output(str((pathlib.Path(__file__).resolve().parents[2] / "my_inputs/2024/day_17" / "input.txt"))))
-# print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+# print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

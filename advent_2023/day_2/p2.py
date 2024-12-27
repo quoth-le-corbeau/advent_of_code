@@ -28,7 +28,7 @@ def _find_highest_for_colour(cubes_by_colour: list[str]) -> int:
     return max([int(entry.split()[0]) for entry in cubes_by_colour])
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     get_minimum_cube_powers(
         str(
@@ -40,8 +40,8 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
-start = time.perf_counter()
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
+timer_start = time.perf_counter()
 print(
     get_minimum_cube_powers(
         str(
@@ -53,4 +53,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

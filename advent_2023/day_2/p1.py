@@ -38,7 +38,7 @@ def _is_game_impossible(cubes_by_colour: list[str], max_for_colour: int):
     return any(int(entry.split()[0]) > max_for_colour for entry in cubes_by_colour)
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     get_possible_games(
         str(
@@ -50,8 +50,8 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
-start = time.perf_counter()
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
+timer_start = time.perf_counter()
 print(
     get_possible_games(
         str(
@@ -63,4 +63,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

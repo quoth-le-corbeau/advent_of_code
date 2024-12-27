@@ -13,10 +13,10 @@ def _RENAME_FUNC(file: str):
         print(lines)
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(RENAME_FUNC("eg.txt"))
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-# start = time.perf_counter()
+# timer_start = time.perf_counter()
 # print(RENAME_FUNC("input.txt"))
-# print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+# print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

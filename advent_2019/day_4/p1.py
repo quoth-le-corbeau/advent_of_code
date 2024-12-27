@@ -23,7 +23,7 @@ def _contains_adjacent_pair(num_string: str) -> bool:
     return False
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     count_possible_passwords(
         str(
@@ -35,4 +35,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

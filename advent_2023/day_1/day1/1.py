@@ -18,9 +18,9 @@ def find_and_sum_digits(file: str) -> int:
         return sum(all_calibration_values)
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(sum_calibration_values("eg1.txt"))
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
-start = time.perf_counter()
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
+timer_start = time.perf_counter()
 print(sum_calibration_values("input.txt"))
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

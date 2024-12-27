@@ -42,7 +42,7 @@ def _parse_programs(file: str):
         return list(map(int, re.findall(r"\d+", puzzle_input.read())))
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     restore_1202_program_alarm(
         str(
@@ -54,4 +54,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")

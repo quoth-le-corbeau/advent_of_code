@@ -89,7 +89,7 @@ def _manhattan(p1: tuple[int, int], p2: tuple[int, int]) -> int:
     return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
 
 
-START = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     get_garden_group_price(
         str(
@@ -101,9 +101,9 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - START:2.4f} seconds.")
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-# start = time.perf_counter()
+# timer_start = time.perf_counter()
 # print(
 #    get_garden_group_price(
 #        str(
@@ -115,7 +115,7 @@ print(f"TEST -> Elapsed {time.perf_counter() - START:2.4f} seconds.")
 #        )
 #    )
 # )
-# print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+# print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
 new_plan = {
     "R": [

@@ -95,7 +95,7 @@ def find_best_seat(file_path: str):
         return len(all_tiles_on_best_paths)
 
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     find_best_seat(
         str(
@@ -107,9 +107,9 @@ print(
         )
     )
 )
-print(f"TEST -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
-start = time.perf_counter()
+timer_start = time.perf_counter()
 print(
     find_best_seat(
         str(
@@ -121,4 +121,4 @@ print(
         )
     )
 )
-print(f"REAL -> Elapsed {time.perf_counter() - start:2.4f} seconds.")
+print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
