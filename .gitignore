@@ -5,7 +5,7 @@ my_inputs/
 __pycache__
 *.swp
 organise.sh
+*fail.py
 *again.py
-*omit.txt
 *.txt
 *.DS_Store
