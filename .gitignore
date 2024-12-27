@@ -7,5 +7,6 @@ __pycache__
 organise.sh
 *fail.py
 *again.py
+*test.py
 *.txt
 *.DS_Store
