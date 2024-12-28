@@ -1,6 +1,6 @@
 from pathlib import Path
+from collections import deque
 import heapq
-
 from reusables import timer, INPUT_PATH
 
 
@@ -47,60 +47,93 @@ def _get_current_direction(node, prev):
             return "north"
 
 
-# this returns the best path according to the turn minimization rule
-def _find_paths(
-    grid: list[list[str]], start: tuple[int, int], end: tuple[int, int]
-) -> list[list[tuple[int, int]]]:
-    row_count = len(grid)
-    col_count = len(grid[0])
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # (up, down, left, right)
-    direction_labels = ["up", "down", "left", "right"]
+def _print_path(path: list[tuple[int, int]], grid: list[list[str]], file: str) -> None:
+    count = 0
+    for point in path:
+        r, c = point
+        grid[r][c] = "O"
+        count += 1
+    print(f"Path with {count} steps for {file} --------------------")
+    for line in grid:
+        print("".join(line))
 
-    def heuristic(a: tuple[int, int], b: tuple[int, int]) -> int:
-        return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
-    pq = []
-    heapq.heappush(pq, (0, 0, start, None, [start]))
-    visited = {}
+def _find_paths_bfs(grid, start, end):
+    q = deque([[start]])
     paths = []
 
-    while pq:
-        priority, cost, current, current_direction, path = heapq.heappop(pq)
+    while q:
+        path = q.popleft()
+        current = path[-1]
 
+        # If the end point is reached, save the path
         if current == end:
             paths.append(path)
             continue
 
-        if current in visited and visited[current] <= cost:
+        # Explore neighbors in all four directions
+        for vector in [(-1, 0), (0, 1), (1, 0), (0, -1)]:
+            dr, dc = vector
+            next_point = current[0] + dr, current[1] + dc
+            nr, nc = next_point
+
+            if (
+                0 <= nr < len(grid)
+                and 0 <= nc < len(grid[0])
+                and next_point not in path  # Avoid revisiting nodes in the current path
+                and (grid[nr][nc] == "." or grid[nr][nc] == "E")
+            ):
+                q.append(path + [next_point])
+
+    return paths
+
+
+def _find_paths(grid, start, end):
+    row_count = len(grid)
+    col_count = len(grid[0])
+
+    def heuristic(path):
+        # Score based on current path cost and estimated distance to the end
+        return (
+            _get_path_score(path)
+            + abs(path[-1][0] - end[0])
+            + abs(path[-1][1] - end[1])
+        )
+
+    pq = []
+    heapq.heappush(pq, (0, [start]))  # Priority queue of (priority, path)
+    best_score = float("inf")
+    paths = []
+
+    while pq:
+        current_score, path = heapq.heappop(pq)
+        current = path[-1]
+
+        # If the end is reached, evaluate the path
+        if current == end:
+            final_score = _get_path_score(path)
+            if final_score < best_score:
+                best_score = final_score
+                paths = [path]
+            elif final_score == best_score:
+                paths.append(path)
             continue
-        visited[current] = cost
 
-        for i, (dr, dc) in enumerate(directions):
+        # Prune paths with a cost exceeding the best score
+        if current_score > best_score:
+            continue
+
+        # Explore neighbors
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
             nr, nc = current[0] + dr, current[1] + dc
-            next_direction = direction_labels[i]
-
             if (
                 0 <= nr < row_count
                 and 0 <= nc < col_count
                 and (grid[nr][nc] == "." or (nr, nc) == end)
+                and (nr, nc) not in path  # Prevent cycles
             ):
-                turn_penalty = (
-                    1000
-                    if current_direction and current_direction != next_direction
-                    else 0
-                )
-                next_cost = cost + 1 + turn_penalty
-                next_priority = next_cost + heuristic((nr, nc), end)
-                heapq.heappush(
-                    pq,
-                    (
-                        next_priority,
-                        next_cost,
-                        (nr, nc),
-                        next_direction,
-                        path + [(nr, nc)],
-                    ),
-                )
+                new_path = path + [(nr, nc)]
+                heapq.heappush(pq, (heuristic(new_path), new_path))
 
     return paths
 
@@ -110,8 +143,19 @@ def find_best_reindeer_path(file_path: Path):
         grid = [list(line) for line in puzzle_input.read().splitlines()]
         start_, end_ = _get_start_end(grid)
         paths = _find_paths(grid=grid, start=start_, end=end_)
-        print(len(paths))
-        return min([_get_path_score(path) for path in paths])
+        scores_by_path = {i: _get_path_score(path) for i, path in enumerate(paths)}
+        min_score = min(scores_by_path.values())
+        best_paths = [
+            path for path in scores_by_path if scores_by_path[path] == min_score
+        ]
+        print(f"{len(paths)} paths found")
+        seats = set()
+        for i in best_paths:
+            path = paths[i]
+            _print_path(path=path, grid=grid, file=str(file_path))
+            for point in path:
+                seats.add(point)
+        return len(seats)
 
 
 @timer
