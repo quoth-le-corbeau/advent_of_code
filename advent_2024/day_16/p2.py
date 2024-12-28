@@ -1,7 +1,7 @@
-import time
-import pathlib
+from pathlib import Path
 import heapq
-from typing import List, Tuple, Optional
+
+from reusables import timer, INPUT_PATH
 
 
 def _get_start_end(grid) -> tuple[tuple[int, int], tuple[int, int]]:
@@ -18,35 +18,60 @@ def _get_start_end(grid) -> tuple[tuple[int, int], tuple[int, int]]:
     return start_, end_
 
 
-def _a_star_all_paths(
-    grid: List[List[str]], start: Tuple[int, int], end: Tuple[int, int]
-) -> List[List[Tuple[int, int]]]:
+def _get_path_score(path: list[tuple[int, int]]) -> int:
+    turn_count = 0
+    total_forward_steps = len(path) - 1
+    current_direction = "east"
+    for i in range(2, len(path)):
+        next_direction = _get_current_direction(path[i], path[i - 1])
+        if next_direction != current_direction:
+            turn_count += 1
+            current_direction = next_direction
+
+    return turn_count * 1000 + total_forward_steps
+
+
+def _get_current_direction(node, prev):
+    if node[0] == prev[0]:
+        if node[1] - prev[1] == 1:
+            return "east"
+        else:
+            assert node[1] - prev[1] == -1
+            return "west"
+    else:
+        assert node[0] != prev[0]
+        if node[0] - prev[0] == 1:
+            return "south"
+        else:
+            assert node[0] - prev[0] == -1
+            return "north"
+
+
+# this returns the best path according to the turn minimization rule
+def _find_paths(
+    grid: list[list[str]], start: tuple[int, int], end: tuple[int, int]
+) -> list[list[tuple[int, int]]]:
     row_count = len(grid)
     col_count = len(grid[0])
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # (up, down, left, right)
     direction_labels = ["up", "down", "left", "right"]
 
-    def heuristic(a: Tuple[int, int], b: Tuple[int, int]) -> int:
+    def heuristic(a: tuple[int, int], b: tuple[int, int]) -> int:
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
     pq = []
-    heapq.heappush(pq, (0, 0, start, None, [start]))  # Initial direction is None
+    heapq.heappush(pq, (0, 0, start, None, [start]))
     visited = {}
-    all_best_paths = []
-    min_cost = float("inf")
+    paths = []
 
     while pq:
         priority, cost, current, current_direction, path = heapq.heappop(pq)
 
         if current == end:
-            if cost < min_cost:
-                min_cost = cost
-                all_best_paths = [path]
-            elif cost == min_cost:
-                all_best_paths.append(path)
+            paths.append(path)
             continue
 
-        if current in visited and visited[current] < cost:
+        if current in visited and visited[current] <= cost:
             continue
         visited[current] = cost
 
@@ -59,66 +84,43 @@ def _a_star_all_paths(
                 and 0 <= nc < col_count
                 and (grid[nr][nc] == "." or (nr, nc) == end)
             ):
-                # Determine turn penalty
                 turn_penalty = (
-                    1
+                    1000
                     if current_direction and current_direction != next_direction
                     else 0
                 )
                 next_cost = cost + 1 + turn_penalty
                 next_priority = next_cost + heuristic((nr, nc), end)
+                heapq.heappush(
+                    pq,
+                    (
+                        next_priority,
+                        next_cost,
+                        (nr, nc),
+                        next_direction,
+                        path + [(nr, nc)],
+                    ),
+                )
 
-                if (nr, nc) not in visited or visited[(nr, nc)] >= next_cost:
-                    heapq.heappush(
-                        pq,
-                        (
-                            next_priority,
-                            next_cost,
-                            (nr, nc),
-                            next_direction,
-                            path + [(nr, nc)],
-                        ),
-                    )
-
-    return all_best_paths
+    return paths
 
 
-def find_best_seat(file_path: str):
-    with open(pathlib.Path(__file__).parent / file_path, "r") as puzzle_input:
+def find_best_reindeer_path(file_path: Path):
+    with open(Path(__file__).resolve().parents[2] / file_path, "r") as puzzle_input:
         grid = [list(line) for line in puzzle_input.read().splitlines()]
         start_, end_ = _get_start_end(grid)
-        # best_path = _a_star(grid=grid, start=start_, end=end_)
-        best_paths = _a_star_all_paths(grid=grid, start=start_, end=end_)
-        all_tiles_on_best_paths = set()
-        for path in best_paths:
-            all_tiles_on_best_paths |= set(path)
-        return len(all_tiles_on_best_paths)
+        paths = _find_paths(grid=grid, start=start_, end=end_)
+        print(len(paths))
+        return min([_get_path_score(path) for path in paths])
 
 
-timer_start = time.perf_counter()
-print(
-    find_best_seat(
-        str(
-            (
-                pathlib.Path(__file__).resolve().parents[2]
-                / "my_inputs/2024/day_16"
-                / "eg.txt"
-            )
-        )
-    )
-)
-print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
+@timer
+def part_two(file: str, year: int = 2024, day: int = 16) -> None:
+    input_file_path = INPUT_PATH.format(year=year, day=day, file=file)
+    print(find_best_reindeer_path(file_path=input_file_path))
+    print(f"solution ran with file: {file}.txt")
 
-timer_start = time.perf_counter()
-print(
-    find_best_seat(
-        str(
-            (
-                pathlib.Path(__file__).resolve().parents[2]
-                / "my_inputs/2024/day_16"
-                / "input.txt"
-            )
-        )
-    )
-)
-print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
+
+part_two(file="eg")
+part_two(file="eg2")
+part_two(file="input")
