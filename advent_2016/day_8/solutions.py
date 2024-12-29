@@ -10,7 +10,7 @@ def RENAME_FUNC(file_path: Path):
 
 
 @timer
-def part_one(file: str, day: int = "DAY", year: int = "YEAR"):
+def part_one(file: str, day: int = 8, year: int = 2016):
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
@@ -23,7 +23,7 @@ part_one(file="input")
 
 
 @timer
-def part_two(file: str, day: int = "DAY", year: int = "YEAR"):
+def part_two(file: str, day: int = 8, year: int = 2016):
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )

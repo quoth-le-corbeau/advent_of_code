@@ -33,9 +33,8 @@ for day_number in $(seq 1 25); do
     mkdir -p "$project_day_dir" || { echo "Creating ${project_day_dir} failed. Sorry!" ; exit 1; };
     mkdir -p "${my_inputs_dir}/day_${day_number}" || { echo "Creating ${my_inputs_dir}/day_${day_number} failed. Sorry!"; exit 1; };
 
-    # Copy and replace YEAR placeholder in template files
-    sed "s/YEAR/${project_year}/g" "$solution_template" > "${project_day_dir}/p1.py" || { echo "Creating ${project_day_dir}/p1.py failed. Sorry!" ; exit 1; };
-    sed "s/YEAR/${project_year}/g" "$solution_template" > "${project_day_dir}/p2.py" || { echo "Creating ${project_day_dir}/p2.py failed. Sorry!" ; exit 1; };
+    # Copy and replace YEAR and DAY placeholder in template files
+    sed -e 's/"YEAR"/'"${project_year}"'/g' -e 's/"DAY"/'"${day_number}"'/g' "$solution_template" > "${project_day_dir}/solutions.py" || { echo "Creating ${project_day_dir}/solutions.py failed. Sorry!" ; exit 1; }
 
     touch "${my_inputs_dir}/day_${day_number}/eg.txt" || { echo "Creating ${my_inputs_dir}/day_${day_number}/eg.txt failed. Sorry!" ; exit 1; };
     touch "${my_inputs_dir}/day_${day_number}/input.txt" || { echo "Creating ${my_inputs_dir}/day_${day_number}/input.txt failed. Sorry!" ; exit 1; };
