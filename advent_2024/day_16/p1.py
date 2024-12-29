@@ -29,38 +29,9 @@ def _get_start_end(grid) -> tuple[tuple[int, int], tuple[int, int]]:
     return start_, end_
 
 
-def _get_path_score(path: list[tuple[int, int]]) -> int:
-    turn_count = 0
-    total_forward_steps = len(path) - 1
-    current_direction = "east"
-    for i in range(2, len(path)):
-        next_direction = _get_current_direction(path[i], path[i - 1])
-        if next_direction != current_direction:
-            turn_count += 1
-            current_direction = next_direction
-
-    return turn_count * 1000 + total_forward_steps
-
-
-def _get_current_direction(node, prev):
-    if node[0] == prev[0]:
-        if node[1] - prev[1] == 1:
-            return "east"
-        else:
-            assert node[1] - prev[1] == -1
-            return "west"
-    else:
-        assert node[0] != prev[0]
-        if node[0] - prev[0] == 1:
-            return "south"
-        else:
-            assert node[0] - prev[0] == -1
-            return "north"
-
-
 def _a_star_minimize_turns(
     grid: list[list[str]], start: tuple[int, int], end: tuple[int, int]
-) -> list[tuple[int, int]]:
+) -> tuple[int, list[tuple[int, int]]]:
     row_count = len(grid)
     col_count = len(grid[0])
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # (up, down, left, right)
@@ -70,13 +41,13 @@ def _a_star_minimize_turns(
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
     pq = []
-    heapq.heappush(pq, (0, 0, start, None, [start]))
+    heapq.heappush(pq, (0, 0, start, (0, 1), [start]))
     visited = {}
 
     while pq:
         priority, cost, current, current_direction, path = heapq.heappop(pq)
         if current == end:
-            return path
+            return cost, path
         if current in visited and visited[current] <= cost:
             continue
         visited[current] = cost
@@ -88,11 +59,7 @@ def _a_star_minimize_turns(
                 and 0 <= nc < col_count
                 and (grid[nr][nc] == "." or (nr, nc) == end)
             ):
-                turn_penalty = (
-                    1000
-                    if current_direction and current_direction != next_direction
-                    else 0
-                )
+                turn_penalty = 1000 if current_direction != next_direction else 0
                 next_cost = cost + 1 + turn_penalty
                 next_priority = next_cost + heuristic((nr, nc), end)
                 heapq.heappush(
@@ -105,22 +72,24 @@ def _a_star_minimize_turns(
                         path + [(nr, nc)],
                     ),
                 )
-    return []
+    raise ValueError("No paths found!")
 
 
 def find_best_reindeer_path(file_path: Path):
     with open(Path(__file__).resolve().parents[2] / file_path, "r") as puzzle_input:
         grid = [list(line) for line in puzzle_input.read().splitlines()]
         start_, end_ = _get_start_end(grid)
-        best_path = _a_star_minimize_turns(grid=grid, start=start_, end=end_)
-        return _get_path_score(best_path)
+        score, best_path = _a_star_minimize_turns(grid=grid, start=start_, end=end_)
+        return score
 
 
 @timer
 def part_one(file: str, year: int = 2024, day: int = 16) -> None:
     input_file_path = INPUT_PATH.format(year=year, day=day, file=file)
-    print(find_best_reindeer_path(file_path=input_file_path))
-    print(f"solution ran with file: {file}.txt")
+    print(f"<-----------{file}.txt -------------->")
+    print(
+        f"Best Reindeer path score: {find_best_reindeer_path(file_path=input_file_path)}"
+    )
 
 
 part_one(file="eg")
