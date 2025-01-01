@@ -1,4 +1,4 @@
-from advent_2024.day_17.p1 import Computer
+from advent_2024.day_17.solutions import Computer
 from advent_2024.test.utility import dict_parametrize
 
 

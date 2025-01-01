@@ -139,5 +139,5 @@ def part_two(file: str, year: int = 2024, day: int = 16) -> None:
 
 
 part_two(file="eg")
-part_two(file="eg2")
+# part_two(file="eg2")
 part_two(file="input")

@@ -1,22 +1,7 @@
 import re
-import time
-import pathlib
+from pathlib import Path
 
-
-"""
-Chronospatial Computer Part II
-
-Analyze the program:
-    - look for the first _out 
-        - e.g 5, 4: 
-        - the result_1 of this must be the beginning of the program: 0
-        - the operand is 4 so we look at register A's current value and do % 8 
-        - deduce that result_1 at first output % 8 = 0
-    look at the previous command(s)
-        - e.g 0, 3
-        - so register A current // 2 ** 3 == result_1 so (register_A start // 8) % 8 == 0  
-        
-"""
+from reusables import timer, INPUT_PATH
 
 
 class Computer:
@@ -99,44 +84,46 @@ class Computer:
         self.register_C = numerator // denominator
 
 
-def chronospatial_output_copy(file_path: str):
-    with open(pathlib.Path(__file__).parent / file_path, "r") as puzzle_input:
+def _parse_input(file_path: Path) -> tuple[list[int], list[int]]:
+    with open(Path(__file__).resolve().parents[2] / file_path, "r") as puzzle_input:
         lines = puzzle_input.read().split("\n\n")
         registers = list(map(int, re.findall(r"\d+", lines[0])))
         program = list(map(int, re.findall(r"\d+", lines[1])))
-        computer = Computer(
-            register_A=registers[0], register_B=registers[1], register_C=registers[2]
-        )
-        output = computer.run(program)
-        print(f"{program=}")
-        print(f"{output=}")
-        assert list(map(int, output.split(","))) == program
+        return registers, program
 
 
-timer_start = time.perf_counter()
-print(
-    chronospatial_output_copy(
-        str(
-            (
-                pathlib.Path(__file__).resolve().parents[2]
-                / "my_inputs/2024/day_17"
-                / "eg_p2.txt"
-            )
-        )
+def chronospatial_output(file_path: Path) -> str:
+    registers, program = _parse_input(file_path)
+    computer = Computer(
+        register_A=registers[0], register_B=registers[1], register_C=registers[2]
     )
-)
-print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
+    output = computer.run(program)
+    return output
 
-# timer_start = time.perf_counter()
-# print(
-#    chronospatial_output_copy(
-#        str(
-#            (
-#                pathlib.Path(__file__).resolve().parents[2]
-#                / "my_inputs/2024/day_17"
-#                / "input.txt"
-#            )
-#        )
-#    )
-# )
-# print(f"REAL -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
+
+def chronospatial_output_reversed(file_path: Path):
+    registers, program = _parse_input(file_path)
+    assert registers[1] == registers[2] == 0
+    # want to overwrite registers[0] with a value such that computer.run(program) -> program
+
+
+@timer
+def part_one(file: str, year: int = 2024, day: int = 17) -> None:
+    input_file_path = INPUT_PATH.format(year=year, day=day, file=file)
+    print(f"<-----------{file}-------------->")
+    print(f"part one: {chronospatial_output(file_path=input_file_path)}")
+
+
+part_one(file="eg")
+part_one(file="input")
+
+
+@timer
+def part_two(file: str, year: int = 2024, day: int = 17) -> None:
+    input_file_path = INPUT_PATH.format(year=year, day=day, file=file)
+    print(f"<-----------{file}-------------->")
+    print(f"part two: {chronospatial_output_reversed(file_path=input_file_path)}")
+
+
+part_two(file="eg")
+part_two(file="input")
