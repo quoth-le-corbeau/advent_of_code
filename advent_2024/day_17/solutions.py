@@ -105,6 +105,7 @@ def chronospatial_output_reversed(file_path: Path):
     registers, program = _parse_input(file_path)
     assert registers[1] == registers[2] == 0
     # want to overwrite registers[0] with a value such that computer.run(program) -> program
+    # 2,4,1,5,7,5,4,3,1,6,0,3,5,5,3,0
 
 
 @timer
