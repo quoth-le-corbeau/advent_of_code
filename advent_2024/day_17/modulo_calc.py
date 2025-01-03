@@ -27,12 +27,18 @@ def part_two_composite():
     program = [2, 4, 1, 5, 7, 5, 4, 3, 1, 6, 0, 3, 5, 5, 3, 0]
     solutions = []
     # Define the total iterations in the loop
-    total_iterations = (2**46)
+    total_iterations = 2**46
     # Wrap the loop with tqdm to display progress
-    for a in tqdm(range(total_iterations-1000000000, total_iterations - 1000000000000, -1), desc="Processing", ncols=100):
+    for a in tqdm(
+        range(total_iterations - 1000000000, total_iterations - 1000000000000, -1),
+        desc="Processing",
+        ncols=100,
+    ):
         try:
-            if  (
-                (((a // 2**45) % 8) ^ 5) ^ ((a // 2**45) // (((a // 2**45) % 8) ^ 5)) ^ 6
+            if (
+                (((a // 2**45) % 8) ^ 5)
+                ^ ((a // 2**45) // (((a // 2**45) % 8) ^ 5))
+                ^ 6
             ) % 8 == 0:
                 solutions.append(a)
                 print(a)
