@@ -64,7 +64,7 @@ class Computer:
         self.register_B = self.operand_map[operand]["combo"]() % 8
 
     def _bxc(self, operand: int):
-        print(f"Ignoring {operand} for legacy reasons")
+        # print(f"Ignoring {operand} for legacy reasons")
         self.register_B = self.register_B ^ self.register_C
 
     def _jnz(self, operand: int):
@@ -109,10 +109,10 @@ def chronospatial_output_reversed(file_path: Path):
 
 
 @timer
-def part_one(file: str, year: int = 2024, day: int = 17) -> None:
+def part_one(file: str, year: int = 2024, day: int = 17):
     input_file_path = INPUT_PATH.format(year=year, day=day, file=file)
-    print(f"<-----------{file}-------------->")
-    print(f"part one: {chronospatial_output(file_path=input_file_path)}")
+    print(f"day {day} p1 with {file}: ")
+    print(chronospatial_output(file_path=input_file_path))
 
 
 part_one(file="eg")
@@ -120,10 +120,10 @@ part_one(file="input")
 
 
 @timer
-def part_two(file: str, year: int = 2024, day: int = 17) -> None:
+def part_two(file: str, year: int = 2024, day: int = 17):
     input_file_path = INPUT_PATH.format(year=year, day=day, file=file)
-    print(f"<-----------{file}-------------->")
-    print(f"part two: {chronospatial_output_reversed(file_path=input_file_path)}")
+    print(f"day {day} p2 with {file}: ")
+    print(chronospatial_output_reversed(file_path=input_file_path))
 
 
 part_two(file="eg")
