@@ -12,7 +12,6 @@ class Onsen:
             designs, towel_lines = puzzle_input.read().strip().split("\n\n")
             self.designs = designs.split(", ")
             self.towels = towel_lines.splitlines()
-            self.ways_by_towel = {towel: 0 for towel in self.possible_towels}
 
     @property
     def possible_towels(self):
@@ -25,7 +24,7 @@ class Onsen:
     def sum_possible_ways(self) -> int:
         total = 0
         for towel in self.possible_towels:
-                total += self._possible_ways(towel=towel)
+            total += self._possible_ways(towel=towel)
         return total
 
     def _possible_ways(self, towel: str, memo=None) -> int:
@@ -36,10 +35,10 @@ class Onsen:
         if towel in memo:
             return memo[towel]
         memo[towel] = 0
-        heads = [design for design in self.designs if towel.startswith(design)]
-        for head in heads:
-             memo[towel] += self._possible_ways(towel=towel[len(head):], memo=memo)
-
+        for design in self.designs:
+            if towel.startswith(design):
+                memo[towel] += self._possible_ways(towel[len(design) :], memo)
+        return memo[towel]
 
     def _is_possible(self, towel: str, memo=None) -> bool:
         if memo is None:
@@ -70,7 +69,7 @@ def part_one(file: str):
 
 
 # part_one(file="eg")
-# part_one(file="input")
+part_one(file="input")
 
 
 @timer
@@ -81,4 +80,5 @@ def part_two(file: str):
     print(onsen.sum_possible_ways())
 
 
-part_two(file="eg")
+# part_two(file="eg")
+part_two(file="input")
