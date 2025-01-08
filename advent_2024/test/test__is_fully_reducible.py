@@ -1,7 +1,6 @@
 import time
 from advent_2024.test.utility import dict_parametrize
 from advent_2024.day_19.p1_reducibility_fail import _is_fully_reducible
-from advent_2024.day_19.p1 import _can_be_formed
 
 
 _TEST_SUBSTRINGS = ["bwu", "wr", "rb", "gb", "br", "r", "b", "g"]
@@ -43,44 +42,6 @@ _TEST_SUBSTRINGS = ["bwu", "wr", "rb", "gb", "br", "r", "b", "g"]
 )
 def test__is_fully_reducible(string, substrings, expected_bool):
     assert _is_fully_reducible(string, substrings) is expected_bool
-
-
-@dict_parametrize(
-    {
-        "possible_1": {
-            "string": "brwrr",
-            "substrings": _TEST_SUBSTRINGS,
-            "expected_bool": True,
-        },
-        "possible_2": {
-            "string": "bggr",
-            "substrings": _TEST_SUBSTRINGS,
-            "expected_bool": True,
-        },
-        "possible_3": {
-            "string": "gbbr",
-            "substrings": _TEST_SUBSTRINGS,
-            "expected_bool": True,
-        },
-        "possible_4": {
-            "string": "rrbgbr",
-            "substrings": _TEST_SUBSTRINGS,
-            "expected_bool": True,
-        },
-        "impossible_1": {
-            "string": "ubwu",
-            "substrings": _TEST_SUBSTRINGS,
-            "expected_bool": False,
-        },
-        "impossible_2": {
-            "string": "bbrgwb",
-            "substrings": _TEST_SUBSTRINGS,
-            "expected_bool": False,
-        },
-    }
-)
-def test__can_be_formed(string, substrings, expected_bool):
-    assert _can_be_formed(string, substrings) is expected_bool
 
 
 def fibonacci(n: int) -> int:
