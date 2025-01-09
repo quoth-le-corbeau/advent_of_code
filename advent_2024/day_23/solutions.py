@@ -37,7 +37,34 @@ class Network:
         return len(triples)
 
     def find_most_connected(self):
-        pass
+        largest_group_size = 0
+        largest_group = {}
+        groups = []
+        for node, connected in self.connections.items():
+            connected = list(connected)
+            for c1 in connected:
+                group = {node, c1}
+                for c2 in connected[1:]:
+                    if (
+                        node in self.connections[c1]
+                        and c2 in self.connections[c1]
+                        and node in self.connections[c2]
+                        and c1 in self.connections[c2]
+                    ):
+                        group.add(c2)
+                groups.append(group)
+        for group in groups:
+            group = list(group)
+            for i, member in enumerate(group):
+                fully_connected = {member}
+                for other in group[:i] + group[i + 1 :]:
+                    if other in self.connections[member]:
+                        fully_connected.add(other)
+                if len(fully_connected) > largest_group_size:
+                    largest_group_size = len(fully_connected)
+                    largest_group = fully_connected
+
+        return largest_group_size, largest_group
 
 
 @timer
@@ -54,7 +81,11 @@ def part_one(filename: str, year: int = 2024, day: int = 23):
 def part_two(filename: str, year: int = 2024, day: int = 23):
     input_path = INPUT_PATH.format(file=filename, year=year, day=day)
     network = Network(file=input_path)
-    print(network.find_most_connected())
+    n, group = network.find_most_connected()
+    print(f"The largest group has length: {n} with members: {group}")
+    password = ",".join(x for x in sorted(group))
+    print(f"{password=}")
 
 
 part_two("eg")
+part_two("input")
