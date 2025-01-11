@@ -36,7 +36,12 @@ class CrossedWires:
 
     def convert(self, results_by_wire: dict[str, int]) -> int:
         targets = self.filter_z(results_by_wire)
-        print(targets)
+        result = 0
+        for i, target in enumerate(targets):
+            _, value = target
+            if value == 1:
+                result += 2**i
+        return result
 
     def filter_z(self, results_by_wire: dict[str, int]) -> list[tuple[str, int]]:
         targets = []
