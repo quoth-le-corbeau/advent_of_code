@@ -31,7 +31,11 @@ class CrossedWires:
                 wire_1, func, wire_2 = op.split(" ")
                 if wire_1 in self.inputs_by_wire and wire_2 in self.inputs_by_wire:
                     x, y = self.inputs_by_wire[wire_1], self.inputs_by_wire[wire_2]
-                    results_by_wire[wire] = self.ops[func](x, y)
+                elif wire_1 in results_by_wire and wire_2 in results_by_wire:
+                    x, y = results_by_wire[wire_1], results_by_wire[wire_2]
+                else:
+                    continue
+                results_by_wire[wire] = self.ops[func](x, y)
         return self.convert(results_by_wire)
 
     def convert(self, results_by_wire: dict[str, int]) -> int:
@@ -43,7 +47,8 @@ class CrossedWires:
                 result += 2**i
         return result
 
-    def filter_z(self, results_by_wire: dict[str, int]) -> list[tuple[str, int]]:
+    @staticmethod
+    def filter_z(results_by_wire: dict[str, int]) -> list[tuple[str, int]]:
         targets = []
         for wire, value in results_by_wire.items():
             if wire[0] == "z":
@@ -59,6 +64,6 @@ def part_one(file: str, year: int = 2024, day: int = 24):
     print(results_by_wire)
 
 
-part_one("eg")
-part_one("eg2")
-# part_one("input")
+# part_one("eg")
+# part_one("eg2")
+part_one("input")
