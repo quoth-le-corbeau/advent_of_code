@@ -1,5 +1,5 @@
 import time
-from advent_2024.test.utility import dict_parametrize
+from reusables import dict_parametrize
 from advent_2024.day_19.p1_reducibility_fail import _is_fully_reducible
 
 

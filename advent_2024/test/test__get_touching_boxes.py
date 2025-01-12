@@ -1,5 +1,5 @@
 from advent_2024.day_15.p2 import _get_touching_boxes, _can_move, _move_boxes
-from advent_2024.test.utility import dict_parametrize
+from reusables import dict_parametrize
 
 TOWER_SCENARIO = [
     ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"],

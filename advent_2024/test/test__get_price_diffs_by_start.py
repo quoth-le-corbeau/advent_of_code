@@ -1,5 +1,5 @@
 from advent_2024.day_22.p2 import _get_price_diffs_by_start
-from advent_2024.test.utility import dict_parametrize
+from reusables import dict_parametrize
 
 
 @dict_parametrize(

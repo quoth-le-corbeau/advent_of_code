@@ -115,8 +115,8 @@ def part_one(file: str, year: int = 2024, day: int = 17):
     print(chronospatial_output(file_path=input_file_path))
 
 
-part_one(file="eg")
-part_one(file="input")
+# part_one(file="eg")
+# part_one(file="input")
 
 
 @timer
@@ -126,5 +126,5 @@ def part_two(file: str, year: int = 2024, day: int = 17):
     print(chronospatial_output_reversed(file_path=input_file_path))
 
 
-part_two(file="eg")
-part_two(file="input")
+# part_two(file="eg")
+# part_two(file="input")
