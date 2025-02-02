@@ -67,22 +67,49 @@ part_1(file="input")
 def part_2(file: str, year: int = 2024, day: int = 17):
     input_file_path = INPUT_PATH.format(year=year, day=day, file=file)
     _, program = _parse_input(file=input_file_path)
-
-    def find(program, ans):
-        for i in range(8):
-            a = ans << 3 | i
-            b = a % 8
-            b = b ^ 5
-            c = a >> b
-            b = b ^ c
-            b = b ^ 6
-            if b % 8 == program[:-1]:
-                sub = find(program[:-1], a)
-                if sub is None:
-                    continue
-                return sub
-
-    print(find(program=program, ans=0))
+    _run_program(a=24, b=0, c=0, program=program)
 
 
 part_2(file="input")
+"""
+prog: 2,4,1,5,7,5,4,3,1,6,0,3,5,5,3,0
+
+b = a % 8
+b = b ^ 5
+c = a >> b
+b = b ^ c
+b = b ^ 6
+a = a >> 3
+out(b % 8)
+if a != 0: jump to position 0
+
+on the final iteration 0 <= a <= 7 so that a >> 3 = 0
+and b % 8 needs to be 0 so the last three bits of b must be 0
+
+try a == 3 bin 011
+b = 3 bin 011
+b = b ^ 5 = 011 ^ 101 = 110 = 6
+c = a >> b shift a by 6 bits to the right = 0 
+b = 6 ^ 0 = 6
+b = 6 ^ 6 = 0
+a = 0 (last 3 bits of 0 = 0)
+out(b % 8) = 3
+
+so in the last loop a needs to be 3 
+so the result of a = a >> 3 is 3 so a = ...011xxx so minimum 24
+
+"""
+
+
+def check(a):
+    b = a % 8
+    b = b ^ 5
+    c = a >> b
+    b = b ^ c
+    b = b ^ 6
+    a = a >> 3
+    print("check")
+    print(b % 8)
+
+
+print(check(a=24))
