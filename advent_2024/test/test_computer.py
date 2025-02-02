@@ -1,4 +1,4 @@
-from advent_2024.day_17.solutions import Computer
+from advent_2024.day_17.solutions_old import ChronospatialComputer
 from reusables import dict_parametrize
 
 
@@ -37,7 +37,7 @@ from reusables import dict_parametrize
     }
 )
 def test_computer(registers, program, expected_registers, expected_output):
-    computer = Computer(
+    computer = ChronospatialComputer(
         register_A=registers[0],
         register_B=registers[1],
         register_C=registers[2],
