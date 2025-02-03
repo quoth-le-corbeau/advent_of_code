@@ -1,4 +1,4 @@
-from advent_2024.day_17.solutions_old import ChronospatialComputer
+from advent_2024.day_17.solutions import ChronospatialComputer
 from reusables import dict_parametrize
 
 
