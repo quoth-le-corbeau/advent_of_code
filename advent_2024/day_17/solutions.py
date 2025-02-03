@@ -63,14 +63,6 @@ def part_1(file: str, year: int = 2024, day: int = 17):
 part_1(file="input")
 
 
-@timer
-def part_2(file: str, year: int = 2024, day: int = 17):
-    input_file_path = INPUT_PATH.format(year=year, day=day, file=file)
-    _, program = _parse_input(file=input_file_path)
-    _run_program(a=24, b=0, c=0, program=program)
-
-
-part_2(file="input")
 """
 prog: 2,4,1,5,7,5,4,3,1,6,0,3,5,5,3,0
 
@@ -98,7 +90,54 @@ out(b % 8) = 3
 so in the last loop a needs to be 3 
 so the result of a = a >> 3 is 3 so a = ...011xxx so minimum 24
 
+24 in binary is 11000
+so to have 24 in A at the beginning of the penultimate loop we need ...11000xxx
+for example 11000000 128 + 64 = 192 (check works ;-) 
+
+so so far we know that in round:
+16/6 a = 3 (b011) then 3 << 3 = 24
+15/16 a = 24 (b11000) then 24 << 3 = 192 
+14/16 a = 192  (b11000000) then 192 << 3 = 1536 
+Uh Oh! running 1536 gets 3,5,3,0 instead of 5,5,3,0 in round 13  !!!
+This could have to do with the step where c depends on a (c = a >> b)
 """
+
+
+def _reverse_engineer(program: list[int], expected: int) -> int:
+    if len(program) == 0:
+        return expected
+    for i in range(8):
+        a = (expected << i) + 3
+        b = a % 8
+        b = b ^ 5
+        c = a >> b
+        b = b ^ c
+        b = b ^ 6
+        if (b % 8) == program[-1]:
+            sub = _reverse_engineer(program[:-1], expected=a)
+            if sub is None:
+                continue
+            else:
+                return sub
+
+
+@timer
+def part_2(file: str, year: int = 2024, day: int = 17):
+    input_file_path = INPUT_PATH.format(year=year, day=day, file=file)
+    _, program = _parse_input(file=input_file_path)
+    # test_a = 192
+    # print(
+    #     f"(Test A value: {test_a}): {_run_program(a=test_a, b=0, c=0, program=program)}"
+    # )
+    test_prog = [3]
+    test_expected = 24
+    print(
+        f"Test reverse engineering with prog={test_prog}, expected={test_expected}: {_reverse_engineer(program=test_prog,expected=test_expected)}"
+    )
+    print(f"part 2: {_reverse_engineer(program=program, expected=0)}")
+
+
+part_2(file="input")
 
 
 def check(a):
@@ -108,8 +147,8 @@ def check(a):
     b = b ^ c
     b = b ^ 6
     a = a >> 3
-    print("check")
-    print(b % 8)
+    return b % 8
 
 
-print(check(a=24))
+test_check = 192
+print(f"Check with {test_check}: {check(a=test_check)}")
