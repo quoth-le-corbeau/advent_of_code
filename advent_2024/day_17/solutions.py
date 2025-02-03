@@ -48,7 +48,7 @@ def _run_program(a: int, b: int, c: int, program: list[int]) -> list[int]:
             case 7:
                 c = a >> combo(operand)
         pointer += 2
-    print(f"output for program: {program}: {output}")
+    print(f"part1: output for program: {program}: {output}")
     return output
 
 
@@ -104,10 +104,10 @@ This could have to do with the step where c depends on a (c = a >> b)
 
 
 def _reverse_engineer(program: list[int], expected: int) -> int:
-    if len(program) == 0:
+    if program == []:
         return expected
     for i in range(8):
-        a = (expected << i) + 3
+        a = expected << i | 3
         b = a % 8
         b = b ^ 5
         c = a >> b
@@ -117,23 +117,23 @@ def _reverse_engineer(program: list[int], expected: int) -> int:
             sub = _reverse_engineer(program[:-1], expected=a)
             if sub is None:
                 continue
-            else:
-                return sub
+            return sub
 
 
 @timer
 def part_2(file: str, year: int = 2024, day: int = 17):
     input_file_path = INPUT_PATH.format(year=year, day=day, file=file)
     _, program = _parse_input(file=input_file_path)
+    print(program)
     # test_a = 192
     # print(
     #     f"(Test A value: {test_a}): {_run_program(a=test_a, b=0, c=0, program=program)}"
     # )
-    test_prog = [3]
-    test_expected = 24
-    print(
-        f"Test reverse engineering with prog={test_prog}, expected={test_expected}: {_reverse_engineer(program=test_prog,expected=test_expected)}"
-    )
+    # test_prog = [3]
+    # test_expected = 24
+    # print(
+    #    f"Test reverse engineering with prog={test_prog}, expected={test_expected}: {_reverse_engineer(program=test_prog,expected=test_expected)}"
+    # )
     print(f"part 2: {_reverse_engineer(program=program, expected=0)}")
 
 
@@ -150,5 +150,5 @@ def check(a):
     return b % 8
 
 
-test_check = 192
+test_check = 391
 print(f"Check with {test_check}: {check(a=test_check)}")
