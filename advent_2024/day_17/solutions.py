@@ -125,10 +125,12 @@ def part_2(file: str, year: int = 2024, day: int = 17):
     input_file_path = INPUT_PATH.format(year=year, day=day, file=file)
     _, program = _parse_input(file=input_file_path)
     print(program)
-    # test_a = 192
-    # print(
-    #     f"(Test A value: {test_a}): {_run_program(a=test_a, b=0, c=0, program=program)}"
-    # )
+    # test_a = 12304 # works
+    # test_a = 98434 # works 0, 3, 5, 5, 3, 0
+    # test_a =
+    print(
+        f"(Test A value: {test_a}): {_run_program(a=test_a, b=0, c=0, program=program)}"
+    )
     # test_prog = [3]
     # test_expected = 24
     # print(
