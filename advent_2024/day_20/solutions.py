@@ -97,18 +97,39 @@ def _count_cheats(
     .x.
     ...
     """
-    picoseconds_by_cheat_count = defaultdict(int)
+
+    def sub_grid_bfs(
+        sub_grid: list[tuple[int, int]], start: tuple[int, int]
+    ) -> list[int]:
+        queue = deque([[start]])
+        visited = set()
+        cheat_nodes = []
+        while len(queue) > 0:
+            cheat_path = queue.popleft()
+            current = cheat_path[-1]
+
+            if current in path:
+                cheat_nodes.append(len(path) - path.index(current))
+
+            for dr, dc in _VECTORS:
+                nr, nc = current[0] + dr, current[1] + dc
+                if (nr, nc) in sub_grid and (nr, nc) not in visited:
+                    queue.append(cheat_path + [(nr, nc)])
+                    visited.add((nr, nc))
+        return cheat_nodes
+
+    picoseconds_by_cheat_count = {n: 0 for n in range(len(path))}
     for i, step in enumerate(path):
-        distance_to_end = i
+        distance_to_end = len(path) - i
         sub_grid = _create_sub_grid(
             search_range=search_range,
             row_bound=len(grid),
             col_bound=len(grid[0]),
             node=step,
         )
-
-        pass
-
+        for cheat_score in sub_grid_bfs(sub_grid=sub_grid, start=step):
+            cheat_picoseconds = distance_to_end + cheat_score
+            picoseconds_by_cheat_count[cheat_picoseconds] += 1
     return picoseconds_by_cheat_count
 
 
@@ -118,9 +139,10 @@ def part_one(file: str) -> None:
     start, end, racecourse = _parse_input(file=input_file)
     racetrack: list[tuple[int, int]] = _bfs(start=start, end=end, grid=racecourse)
     # _verify_path(grid=racecourse, path=racetrack)
-    pico_seconds_by_cheat_count = _count_cheats(
+    picoseconds_by_cheat_count = _count_cheats(
         grid=racecourse, path=racetrack, search_range=2
     )
+    print(f"{picoseconds_by_cheat_count=}")
 
 
 part_one(file="eg")
