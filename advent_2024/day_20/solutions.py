@@ -70,20 +70,42 @@ def _verify_path(grid: list[list[str]], path: list[tuple[int, int]]) -> None:
                 )
 
 
+def _create_sub_grid(
+    search_range: int, row_bound: int, col_bound: int, node: tuple[int, int]
+) -> list[tuple[int, int]]:
+    left_col_bound = max(node[1] - search_range, 0)
+    right_col_bound = min(node[1] + search_range, col_bound)
+    top_bound = max(node[0] - search_range, 0)
+    bottom_bound = min(node[0] + search_range, row_bound)
+    sub_grid = []
+    for row in range(top_bound, bottom_bound + 1):
+        for col in range(left_col_bound, right_col_bound + 1):
+            sub_grid.append((row, col))
+    return sub_grid
+
+
 def _count_cheats(
     grid: list[list[str]], path: list[tuple[int, int]], search_range: int
 ) -> dict[int, int]:
+    """
+    loop through the path nodes
+    create a sub-grid around the current path node search using bfs
+    total picoseconds without cheats is len(path) - path.index(node)
+    if we arrive at another path node with a higher index in the path list
+    total picoseconds with cheat is len(path) - path.index_of(other_node) + path.index(current_node)
+    ...
+    .x.
+    ...
+    """
     picoseconds_by_cheat_count = defaultdict(int)
-    for step in path:
-        for vector in _VECTORS:
-            nr, nc = step[0] + vector[0], step[1] + vector[1]
-            sr, sc = (
-                step[0] + search_range * vector[0],
-                step[1] + search_range * vector[1],
-            )
-            if 0 < sr < len(grid) and 0 < sc < len(grid[0]):
-                if grid[nr][nc] == "#" and (sr, sc) in path:
-                    pass
+    for i, step in enumerate(path):
+        distance_to_end = i
+        sub_grid = _create_sub_grid(
+            search_range=search_range,
+            row_bound=len(grid),
+            col_bound=len(grid[0]),
+            node=step,
+        )
 
         pass
 
