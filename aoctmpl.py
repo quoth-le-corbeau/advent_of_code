@@ -14,7 +14,7 @@ def part_one(file: str, day: int = "DAY", year: int = "YEAR"):
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    print(f"part 1: {RENAME_FUNC(file_path=input_file_path)}")
+    return RENAME_FUNC(file_path=input_file_path)
 
 
 part_one(file="eg")
@@ -26,7 +26,7 @@ def part_two(file: str, day: int = "DAY", year: int = "YEAR"):
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    print(f"part 2: {RENAME_FUNC(file_path=input_file_path)}")
+    return RENAME_FUNC(file_path=input_file_path)
 
 
 part_two(file="eg")

@@ -124,7 +124,7 @@ def _get_numeric_part(code: str) -> int:
 
 
 @timer
-def part_one(filename: str) -> None:
+def part_one(filename: str) -> int:
     codes = _parse_input(
         path=BASE_PATH / INPUT_PATH.format(file=filename, year=2024, day=21)
     )
@@ -151,7 +151,7 @@ def part_one(filename: str) -> None:
     for code, sequence in final_sequences.items():
         print(f"{_get_numeric_part(code)} * {len(sequence)}")
         total += len(sequence) * _get_numeric_part(code)
-    print(f"part 1: {total}")
+    return total
 
 
 part_one(filename="eg")

@@ -89,12 +89,12 @@ class CityMap:
 
 
 @timer
-def part_one(filename: str) -> None:
+def part_one(filename: str) -> int:
     city_map = CityMap(
         path=BASE_PATH / INPUT_PATH.format(file=filename, year=2024, day=8)
     )
     all_antinodes = city_map.all_antinodes
-    print(f"part 1: {len(all_antinodes)} <- ({filename})")
+    return len(all_antinodes)
     # city_map.print_antennae()
 
 
@@ -103,12 +103,12 @@ part_one(filename="input")
 
 
 @timer
-def part_two(filename: str) -> None:
+def part_two(filename: str) -> int:
     city_map = CityMap(
         path=BASE_PATH / INPUT_PATH.format(file=filename, year=2024, day=8)
     )
     all_resonant_antinodes = city_map.resonant_antinodes
-    print(f"part 2: {len(all_resonant_antinodes)} <- ({filename})")
+    return len(all_resonant_antinodes)
     # city_map.print_antennae()
 
 

@@ -55,10 +55,9 @@ def _contains_loop(altered_grid: list[list[str]], start: tuple[int, int]) -> boo
 
 
 @timer
-def part_one(filename: str) -> None:
+def part_one(filename: str) -> int:
     grid, start = _initialise_puzzle(filename=filename)
-    total_steps = len(_trace_guard_path(grid=grid, start=start))
-    print(f"part 1: {total_steps} <- ({filename})")
+    return len(_trace_guard_path(grid=grid, start=start))
 
 
 part_one(filename="eg")
@@ -66,7 +65,7 @@ part_one(filename="input")
 
 
 @timer
-def part_two(filename: str) -> None:
+def part_two(filename: str) -> int:
     grid, start = _initialise_puzzle(filename=filename)
     guard_path = _trace_guard_path(grid=grid, start=start)
     guard_trappers = set()
@@ -78,7 +77,7 @@ def part_two(filename: str) -> None:
             if _contains_loop(altered_grid=grid, start=start):
                 guard_trappers.add((r, c))
             grid[r][c] = "."
-    print(f"part 2: {len(guard_trappers)} <- ({filename})")
+    return len(guard_trappers)
 
 
 part_two(filename="eg")

@@ -139,9 +139,9 @@ def chronospatial_output(file_path: Path) -> str:
 
 
 @timer
-def part_one(file: str, year: int = 2024, day: int = 17):
+def part_one(file: str, year: int = 2024, day: int = 17) -> str:
     input_file_path = INPUT_PATH.format(year=year, day=day, file=file)
-    print(f"part 1 with {file}.txt: {chronospatial_output(file_path=input_file_path)}")
+    return chronospatial_output(file_path=input_file_path)
 
 
 # part_one(file="eg")
@@ -149,15 +149,14 @@ part_one(file="input")
 
 
 @timer
-def part_two(file: str, year: int = 2024, day: int = 17):
+def part_two(file: str, year: int = 2024, day: int = 17) -> int:
     input_file_path = INPUT_PATH.format(year=year, day=day, file=file)
     print(f"part 2 with {file}.txt: ")
     registers, program = _parse_input(file_path=input_file_path)
     a, b, c = registers
     computer = ChronospatialComputer(register_A=a, register_B=b, register_C=c)
     pairs = computer.parse_program(program=program)
-    a = computer.reverse_engineer(program=program, program_pairs=pairs, expected=0)
-    print(a)
+    return computer.reverse_engineer(program=program, program_pairs=pairs, expected=0)
 
 
 # part_two(file="eg_p2")

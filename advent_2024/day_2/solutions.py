@@ -48,9 +48,9 @@ def _initialise_puzzle(file: str, year: int = 2024, day: int = 2) -> RedNoseRepo
 
 
 @timer
-def part_one(file: str):
+def part_one(file: str) -> int:
     report = _initialise_puzzle(file=file)
-    print(report.safe_count)
+    return report.safe_count
 
 
 # part_one(file="eg")
@@ -58,9 +58,9 @@ part_one(file="input")
 
 
 @timer
-def part_two(file: str):
+def part_two(file: str) -> int:
     report = _initialise_puzzle(file=file)
-    print(report.tolerant_safe_count)
+    return report.tolerant_safe_count
 
 
 # part_two("eg")

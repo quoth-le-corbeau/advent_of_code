@@ -56,12 +56,12 @@ def sum_middle_values(updates: list[list[int]]) -> int:
 
 
 @timer
-def part_one(filename: str) -> None:
+def part_one(filename: str) -> int:
     updates, rules_by_page = _parse_puzzle_input(filename=filename)
     ordered, unordered, re_ordered_updates = _get_ordered_and_unordered_updates(
         updates=updates, rules_by_page=rules_by_page
     )
-    print(f"Part one: {sum_middle_values(updates=ordered)} <- ({filename})")
+    return sum_middle_values(updates=ordered)
 
 
 # part_one(filename="eg")
@@ -69,12 +69,12 @@ part_one(filename="input")
 
 
 @timer
-def part_two(filename: str) -> None:
+def part_two(filename: str) -> int:
     updates, rules_by_page = _parse_puzzle_input(filename=filename)
     ordered, unordered, re_ordered_updates = _get_ordered_and_unordered_updates(
         updates=updates, rules_by_page=rules_by_page
     )
-    print(f"Part two: {sum_middle_values(updates=re_ordered_updates)} <- ({filename})")
+    return sum_middle_values(updates=re_ordered_updates)
 
 
 # part_two(filename="eg")

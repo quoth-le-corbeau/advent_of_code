@@ -39,20 +39,20 @@ def _initialize_puzzle(file: str, year: int = 2024, day: int = 1) -> AdjacentLis
 
 
 @timer
-def part_one(file: str):
+def part_one(file: str) -> int:
     adjacent_lists = _initialize_puzzle(file=file)
-    print(adjacent_lists.sum_ordered_diffs())
+    return adjacent_lists.sum_ordered_diffs()
 
 
 # part_one("eg")
-part_one("input")
+part_one(file="input")
 
 
 @timer
-def part_two(file: str, year: int = 2024, day: int = 1):
+def part_two(file: str) -> int:
     adjacent_lists = _initialize_puzzle(file=file)
-    print(adjacent_lists.similarity_score)
+    return adjacent_lists.similarity_score
 
 
 # part_two("eg")
-part_two("input")
+part_two(file="input")

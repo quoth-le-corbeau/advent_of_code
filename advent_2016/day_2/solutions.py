@@ -50,22 +50,13 @@ class BathroomButtons:
         return "".join([str(c) for c in code])
 
 
-def get_bathroom_code(file_path: Path) -> str:
-    bathroom_button = BathroomButtons(file_path=file_path)
-    return bathroom_button.find_code()
-
-
-def get_bathroom_code_2(file_path: Path) -> str:
-    bathroom_button = BathroomButtons(file_path=file_path)
-    return bathroom_button.find_code_2()
-
-
 @timer
-def part_one(file: str, day: int = 2, year: int = 2016):
+def part_one(file: str, day: int = 2, year: int = 2016) -> str:
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    print(f"part 1: {get_bathroom_code(file_path=input_file_path)}")
+    bathroom_button = BathroomButtons(file_path=input_file_path)
+    return bathroom_button.find_code()
 
 
 # part_one(file="eg")
@@ -77,7 +68,8 @@ def part_two(file: str, day: int = 2, year: int = 2016):
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    print(f"part 2: {get_bathroom_code_2(file_path=input_file_path)}")
+    bathroom_button = BathroomButtons(file_path=input_file_path)
+    return bathroom_button.find_code_2()
 
 
 # part_two(file="eg")

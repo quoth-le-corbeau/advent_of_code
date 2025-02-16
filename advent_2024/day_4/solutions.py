@@ -114,9 +114,9 @@ def _initialise_puzzle(file: str) -> WordSearch:
 
 
 @timer
-def part_one(filename: str):
+def part_one(filename: str) -> int:
     word_search = _initialise_puzzle(file=filename)
-    print(f"part 1 (with {filename}): {word_search.count_all_occurrences()}")
+    return word_search.count_all_occurrences()
 
 
 # part_one("eg")
@@ -124,9 +124,9 @@ part_one("input")
 
 
 @timer
-def part_two(filename: str):
+def part_two(filename: str) -> int:
     word_search = _initialise_puzzle(file=filename)
-    print(f"part 2 (with {filename}): {word_search.count_all_criss_cross()}")
+    return word_search.count_all_criss_cross()
 
 
 # part_two("eg")

@@ -55,12 +55,12 @@ def find_possible_equations(
 
 
 @timer
-def part_one(filename: str, operators: str) -> None:
+def part_one(filename: str, operators: str) -> list[int]:
     calibrations = _initialize_puzzle(filename=filename)
     possible_results = find_possible_equations(
         calibrations=calibrations, operators=operators
     )
-    print(f"part 1: {sum(possible_results)} <- ({filename})")
+    return possible_results
 
 
 # part_one(filename="eg", operators="+*")
@@ -68,12 +68,12 @@ part_one(filename="input", operators="+*")
 
 
 @timer
-def part_two(filename: str, operators: str) -> None:
+def part_two(filename: str, operators: str) -> int:
     calibrations = _initialize_puzzle(filename=filename)
     possible_results = find_possible_equations(
         calibrations=calibrations, operators=operators
     )
-    print(f"part 2: {sum(possible_results)} <- ({filename})")
+    return sum(possible_results)
 
 
 # part_two(filename="eg", operators="+*|")

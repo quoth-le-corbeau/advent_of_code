@@ -95,9 +95,9 @@ def _initialise_puzzle(file: str, year: int = 2024, day: int = 3) -> Computer:
 
 
 @timer
-def part_one(file: str):
+def part_one(file: str) -> int:
     computer = _initialise_puzzle(file=file)
-    print(f"part 1: {computer.sum_multiplier_results()}")
+    return computer.sum_multiplier_results()
 
 
 # part_one("eg")
@@ -105,9 +105,9 @@ part_one("input")
 
 
 @timer
-def part_two(file: str):
+def part_two(file: str) -> int:
     computer = _initialise_puzzle(file=file)
-    print(f"part 2: {computer.sum_multiplier_results(filter_by_do=True)}")
+    return computer.sum_multiplier_results(filter_by_do=True)
 
 
 # part_two("eg2")
