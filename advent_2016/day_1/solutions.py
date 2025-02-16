@@ -62,11 +62,11 @@ def locate_easter_bunny_hq_2(file_path: Path) -> int:
 
 
 @timer
-def part_one(file: str, day: int = 1, year: int = 2016):
+def part_one(file: str, day: int = 1, year: int = 2016) -> int:
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    print(f"Part 1: {locate_easter_bunny_hq(file_path=input_file_path)}")
+    return locate_easter_bunny_hq(file_path=input_file_path)
 
 
 part_one(file="eg")
@@ -74,11 +74,11 @@ part_one(file="input")
 
 
 @timer
-def part_two(file: str, day: int = 1, year: int = 2016):
+def part_two(file: str, day: int = 1, year: int = 2016) -> int:
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    print(f"Part 2: {locate_easter_bunny_hq_2(file_path=input_file_path)}")
+    return locate_easter_bunny_hq_2(file_path=input_file_path)
 
 
 part_two(file="eg2")

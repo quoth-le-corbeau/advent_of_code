@@ -1,5 +1,6 @@
 import time
 from typing import Dict, Any
+from functools import wraps
 
 import pytest
 
@@ -7,12 +8,19 @@ INPUT_PATH = "my_inputs/{year}/day_{day}/{file}.txt"
 
 
 def timer(func):
-    def solution_function(*args, **kwargs):
+    @wraps(func)
+    def timed_function(*args, **kwargs):
         timer_start = time.perf_counter()
-        func(*args, **kwargs)
-        print(f"Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
+        result = func(*args, **kwargs)
+        elapsed_time = time.perf_counter() - timer_start
+        print(result)
+        print(
+            f"Function '{func.__name__}' with input file {kwargs.get("file")}"
+            f" executed in {elapsed_time:.4f} seconds."
+        )
+        return result
 
-    return solution_function
+    return timed_function
 
 
 def dict_parametrize(test_cases_by_id: Dict[str, Dict[str, Any]]):
