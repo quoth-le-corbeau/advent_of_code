@@ -49,24 +49,14 @@ class Grid:
         )
 
 
-def locate_easter_bunny_hq(file_path: Path) -> int:
-    grid = Grid(file_path=file_path)
-    location = grid.move()
-    return location
-
-
-def locate_easter_bunny_hq_2(file_path: Path) -> int:
-    grid = Grid(file_path=file_path)
-    location = grid.move_until_cross()
-    return location
-
-
 @timer
 def part_one(file: str, day: int = 1, year: int = 2016) -> int:
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    return locate_easter_bunny_hq(file_path=input_file_path)
+    grid = Grid(file_path=input_file_path)
+    location = grid.move()
+    return location
 
 
 part_one(file="eg")
@@ -78,7 +68,9 @@ def part_two(file: str, day: int = 1, year: int = 2016) -> int:
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    return locate_easter_bunny_hq_2(file_path=input_file_path)
+    grid = Grid(file_path=input_file_path)
+    location = grid.move_until_cross()
+    return location
 
 
 part_two(file="eg2")
