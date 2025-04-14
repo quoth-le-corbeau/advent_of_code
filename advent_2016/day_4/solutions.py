@@ -4,6 +4,8 @@ from collections import defaultdict
 
 from reusables import timer, INPUT_PATH
 
+ALPHABET_LENGTH = 26
+
 
 def _count_real(file_path: Path) -> tuple[int, list[str]]:
     with open(file_path, "r") as puzzle_input:
@@ -31,6 +33,24 @@ def _is_real(name: str, checksum: str) -> bool:
         calculated_full_checksum += "".join(sorted(list(chars)))
     calculated_checksum = calculated_full_checksum[:5]
     return calculated_checksum == checksum
+
+
+def _alphabet_shift(input_string: str, shift_steps: int) -> str:
+    chars = list(input_string)
+    new_chars = []
+    for char in chars:
+        if char == "-":
+            new_chars.append(" ")
+            continue
+        shifted_ord = ord(char) + (shift_steps % ALPHABET_LENGTH)
+        if shifted_ord > ord("z"):
+            shifted_ord -= ALPHABET_LENGTH
+        elif shifted_ord < ord("a"):
+            raise ValueError("somehow we subtracted from ord('a')")
+        else:
+            assert ord("a") <= shifted_ord <= ord("z")
+        new_chars.append(chr(shifted_ord))
+    return "".join(new_chars)
 
 
 @timer
