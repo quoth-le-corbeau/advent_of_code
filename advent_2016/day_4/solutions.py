@@ -7,7 +7,7 @@ from reusables import timer, INPUT_PATH
 ALPHABET_LENGTH = 26
 
 
-def _count_real(file_path: Path) -> tuple[int, list[str]]:
+def _count_real(file_path: Path) -> tuple[int, list[tuple[str, int]]]:
     with open(file_path, "r") as puzzle_input:
         real_sum = 0
         real_names = []
@@ -16,10 +16,11 @@ def _count_real(file_path: Path) -> tuple[int, list[str]]:
             checksum_pattern = r"\[(.*?)\]"
             sector_id = re.findall(pattern=number_pattern, string=line)[0]
             checksum = re.findall(pattern=checksum_pattern, string=line)[0]
-            name = line[: line.index(sector_id)].replace("-", "")
+            name_raw = line[: line.index(sector_id)]
+            name = name_raw.replace("-", "")
             if _is_real(name=name, checksum=checksum):
                 real_sum += int(sector_id)
-                real_names.append(name)
+                real_names.append((name_raw, int(sector_id)))
         return real_sum, real_names
 
 
@@ -58,22 +59,28 @@ def part_one(file: str, day: int = 4, year: int = 2016):
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    total, real_names = _count_real(file_path=input_file_path)
+    total, _ = _count_real(file_path=input_file_path)
     return total
 
 
-part_one(file="eg")
+# part_one(file="eg")
 part_one(file="input")
 
 
 @timer
-def part_two(file: str, day: int = 4, year: int = 2016):
+def part_two(file: str, day: int = 4, year: int = 2016) -> int:
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    total, real_names = _count_real(file_path=input_file_path)
-    print(real_names)
+    _, real_names_and_sector_ids = _count_real(file_path=input_file_path)
+    for pair in real_names_and_sector_ids:
+        name, sector_id = pair
+        decrypted = _alphabet_shift(input_string=name, shift_steps=sector_id)
+        if "north" in decrypted:
+            print(f"{decrypted}")
+            return sector_id
+    return -1
 
 
-part_two(file="eg")
+# part_two(file="eg")
 part_two(file="input")
