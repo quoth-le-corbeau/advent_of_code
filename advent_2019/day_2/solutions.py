@@ -14,7 +14,6 @@ def part_one(file: str, day: int = 2, year: int = 2019):
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    print(f"<-----------{input_file_path} -------------->")
     print(f"part 1: {RENAME_FUNC(file_path=input_file_path)}")
 
 
