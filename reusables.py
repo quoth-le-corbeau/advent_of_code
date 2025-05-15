@@ -14,8 +14,9 @@ def timer(func):
         result = func(*args, **kwargs)
         elapsed_time = time.perf_counter() - timer_start
         print(result)
+        string = "file"
         print(
-            f"Returned by '{func.__name__}(input_file={kwargs.get("file")})'"
+            f"Returned by '{func.__name__}(input_file={kwargs.get(string)})'"
             f" executed in {elapsed_time:.4f} seconds."
         )
         return result
