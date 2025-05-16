@@ -29,16 +29,16 @@ def _parse_input(file_path: Path) -> tuple[list[str], list[str]]:
         return wires[0].split(","), wires[1].split(",")
 
 
-def _all_visited_nodes(instructions: list[str]) -> set[Node]:
+def _all_visited_nodes(instructions: list[str]) -> list[Node]:
     x, y = 0, 0
-    visited = set()
+    visited = []
     for instruction in instructions:
         p, q = _VECTOR_LOOK_UP[instruction[0]]
         i = 0
         while i < int(instruction[1:]):
             x += p
             y += q
-            visited.add(Node(x, y))
+            visited.append(Node(x, y))
             i += 1
     return visited
 
@@ -51,7 +51,7 @@ def part_one(file: str, day: int = 3, year: int = 2019) -> int:
     wire_1, wire_2 = _parse_input(file_path=input_file_path)
     visited_1 = _all_visited_nodes(wire_1)
     visited_2 = _all_visited_nodes(wire_2)
-    cross_nodes = sorted(list(visited_1.intersection(visited_2)))
+    cross_nodes = sorted(list(set(visited_1).intersection(set(visited_2))))
     return min(cross_nodes).manhattan()
 
 
@@ -65,6 +65,13 @@ def part_two(file: str, day: int = 3, year: int = 2019):
         year=year, day=day, file=file
     )
     wire_1, wire_2 = _parse_input(file_path=input_file_path)
+    visited_1 = _all_visited_nodes(wire_1)
+    visited_2 = _all_visited_nodes(wire_2)
+    cross_node = sorted(
+        sorted(list(set(visited_1).intersection(set(visited_2)))),
+        key=lambda x: sum([visited_1.index(x), visited_2.index(x)]),
+    )[0]
+    return visited_1.index(cross_node) + visited_2.index(cross_node) + 2
 
 
 part_two(file="eg")

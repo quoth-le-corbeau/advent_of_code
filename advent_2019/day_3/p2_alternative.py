@@ -1,8 +1,6 @@
 import time
 import pathlib
-import re
 import dataclasses
-from typing import List, Dict, Tuple
 
 
 @dataclasses.dataclass(frozen=True)
@@ -12,10 +10,10 @@ class Node:
     total_step_count: int
 
     @property
-    def coordinates(self) -> Tuple[int, int]:
+    def coordinates(self) -> tuple[int, int]:
         return self.x, self.y
 
-    def move_in_str_ln(self, direction: str, spaces: int):
+    def move_in_str_ln(self, direction: str, spaces: int) -> list:
         direction_map = {
             "R": (1, 0),
             "L": (-1, 0),
@@ -36,6 +34,21 @@ class Node:
 
 
 def find_earliest_intersection(file_path: str) -> int:
+    """
+    Avoids the use of list.index() that was the bottleneck
+    in the simpler-looking solution in solutions.py
+
+    intersections = set(visited_1).intersection(set(visited_2))
+    for node in intersections:
+        visited_1.index(node)  # O(n)
+        visited_2.index(node)  # O(n)
+
+
+    key=lambda x: sum([visited_1.index(x), visited_2.index(x)])
+    This is quadratic time hidden in a nice-looking line of code
+
+    """
+
     wires = _parse_wires(file=file_path)
     visited_nodes_by_wire = _get_visited_nodes(instructions=wires)
     assert len(visited_nodes_by_wire) == 2
@@ -48,8 +61,8 @@ def find_earliest_intersection(file_path: str) -> int:
     return min(step_counts_by_node_coordinates.values())
 
 
-def _sum_step_counts_by_coordinates(nodes: List[Node]) -> Dict[Tuple[int, int], int]:
-    step_counts_by_coordinates: Dict[Tuple[int, int], int] = dict()
+def _sum_step_counts_by_coordinates(nodes: list[Node]) -> dict[tuple[int, int], int]:
+    step_counts_by_coordinates: dict[tuple[int, int], int] = dict()
     for node in nodes:
         if node.coordinates in step_counts_by_coordinates:
             step_counts_by_coordinates[node.coordinates] += node.total_step_count
@@ -59,8 +72,8 @@ def _sum_step_counts_by_coordinates(nodes: List[Node]) -> Dict[Tuple[int, int], 
 
 
 def _get_intersections_with_step_counts(
-    node_list_1: List[Node], node_list_2: List[Node]
-) -> List[Node]:
+    node_list_1: list[Node], node_list_2: list[Node]
+) -> list[Node]:
     coordinates_1 = {node.coordinates for node in node_list_1}
     coordinates_2 = {node.coordinates for node in node_list_2}
     common_coordinates = coordinates_1.intersection(coordinates_2)
@@ -74,18 +87,14 @@ def _get_intersections_with_step_counts(
     return intersections
 
 
-def _get_visited_nodes(instructions: List[str]) -> Dict[int, List[Node]]:
+def _get_visited_nodes(instructions: list[str]) -> dict[int, list[Node]]:
     visited_nodes_by_wire = {k: [] for k in range(1, len(instructions) + 1)}
     for i, wire in enumerate(instructions):
-        visited_nodes: List[Node] = list()
+        visited_nodes: list[Node] = list()
         current_node = Node(x=0, y=0, total_step_count=0)
         for instruction in wire.split(","):
-            match = re.match(r"([A-Za-z])(\d+)", instruction)
-            if match:
-                direction = match.group(1)
-                spaces = int(match.group(2))
-            else:
-                raise ValueError("The input string does not match the expected format")
+            direction = instruction[0]
+            spaces = int(instruction[1:])
             visited_nodes += current_node.move_in_str_ln(
                 direction=direction, spaces=spaces
             )
@@ -94,24 +103,10 @@ def _get_visited_nodes(instructions: List[str]) -> Dict[int, List[Node]]:
     return visited_nodes_by_wire
 
 
-def _parse_wires(file: str) -> List[str]:
+def _parse_wires(file: str) -> list[str]:
     with open(pathlib.Path(__file__).parent / file, "r") as puzzle_input:
         return puzzle_input.read().strip().splitlines()
 
-
-timer_start = time.perf_counter()
-print(
-    find_earliest_intersection(
-        str(
-            (
-                pathlib.Path(__file__).resolve().parents[2]
-                / "my_inputs/2019/day_3"
-                / "eg.txt"
-            )
-        )
-    )
-)
-print(f"TEST -> Elapsed {time.perf_counter() - timer_start:2.4f} seconds.")
 
 timer_start = time.perf_counter()
 print(
