@@ -11,48 +11,7 @@ def _parse_file(file_path: Path) -> list[int]:
         return list(map(int, puzzle_input.read().strip().split(",")))
 
 
-def _run_1(program: list[int], input_code: int) -> int:
-    output = -1
-    pointer = 0
-    while pointer < len(program) - 4:
-        position_zero = str(program[pointer])
-        while len(position_zero) < 5:
-            position_zero = "0" + position_zero
-        opcode = int(position_zero[-2:])
-        mode_1 = position_zero[-3]
-        mode_2 = position_zero[-4]
-        if opcode == 99:
-            print("Final diagnostic output: ")
-            break
-        elif opcode == 1:
-            param_1, param_2 = _get_param_values(pointer, mode_1, mode_2, program)
-            program[program[pointer + 3]] = param_1 + param_2
-            pointer += 4
-        elif opcode == 2:
-            param_1, param_2 = _get_param_values(pointer, mode_1, mode_2, program)
-            program[program[pointer + 3]] = param_1 * param_2
-            pointer += 4
-        elif opcode == 3:
-            program[program[pointer + 1]] = input_code
-            pointer += 2
-        elif opcode == 4:
-            param_1 = (
-                program[program[pointer + 1]] if mode_1 == "0" else program[pointer + 1]
-            )
-            output = param_1
-            if output == 0:
-                print(
-                    f"Test at position {pointer} success! {round(((pointer + 1) / len(program)) * 100, ndigits=2)}%"
-                )
-            pointer += 2
-        else:
-            raise ValueError(f"Invalid opcode: {opcode}")
-    if output == -1:
-        raise ValueError("No diagnostic output")
-    return output
-
-
-def _run_2(program: list[int], input_code: int) -> int:
+def _run(program: list[int], input_code: int) -> int:
     output = -1
     pointer = 0
     while pointer < len(program) - 2:
@@ -63,7 +22,6 @@ def _run_2(program: list[int], input_code: int) -> int:
         mode_1 = position_zero[-3]
         mode_2 = position_zero[-4]
         if opcode == 99:
-            print("Final diagnostic output: ")
             break
         elif opcode == 1:
             param_1, param_2 = _get_param_values(pointer, mode_1, mode_2, program)
@@ -83,7 +41,8 @@ def _run_2(program: list[int], input_code: int) -> int:
             output = param_1
             if output == 0:
                 print(
-                    f"Test at position {pointer} success! {round(((pointer + 1) / len(program)) * 100, ndigits=2)}%"
+                    f"Test at position {pointer} success! "
+                    f"{round(((pointer + 1) / len(program)) * 100, ndigits=2)}%"
                 )
             pointer += 2
         elif opcode == 5:
@@ -100,22 +59,17 @@ def _run_2(program: list[int], input_code: int) -> int:
                 pointer += 3
         elif opcode == 7:
             param_1, param_2 = _get_param_values(pointer, mode_1, mode_2, program)
-            if param_1 < param_2:
-                program[program[pointer + 3]] = 1
-            else:
-                program[program[pointer + 3]] = 0
+            program[program[pointer + 3]] = 1 if param_1 < param_2 else 0
             pointer += 4
         elif opcode == 8:
             param_1, param_2 = _get_param_values(pointer, mode_1, mode_2, program)
-            if param_1 == param_2:
-                program[program[pointer + 3]] = 1
-            else:
-                program[program[pointer + 3]] = 0
+            program[program[pointer + 3]] = 1 if param_1 == param_2 else 0
             pointer += 4
         else:
             raise ValueError(f"Invalid opcode: {opcode}")
     if output == -1:
         raise ValueError("No diagnostic output")
+    print("Diagnostic output: ")
     return output
 
 
@@ -133,7 +87,7 @@ def part_one(file: str, day: int = 5, year: int = 2019) -> int:
         year=year, day=day, file=file
     )
     program = _parse_file(input_file_path)
-    return _run_1(program=program, input_code=_AIR_CONDITIONER_UNIT_ID)
+    return _run(program=program, input_code=_AIR_CONDITIONER_UNIT_ID)
 
 
 # part_one(file="eg")
@@ -146,7 +100,7 @@ def part_two(file: str, day: int = 5, year: int = 2019):
         year=year, day=day, file=file
     )
     program = _parse_file(file_path=input_file_path)
-    return _run_2(program=program, input_code=_THERMAL_RADIATOR_UNIT_ID)
+    return _run(program=program, input_code=_THERMAL_RADIATOR_UNIT_ID)
 
 
 # part_two(file="eg")
