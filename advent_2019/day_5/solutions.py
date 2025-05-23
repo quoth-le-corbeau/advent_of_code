@@ -55,7 +55,7 @@ def _run_1(program: list[int], input_code: int) -> int:
 def _run_2(program: list[int], input_code: int) -> int:
     output = -1
     pointer = 0
-    while pointer < len(program) - 4:
+    while pointer < len(program) - 2:
         position_zero = str(program[pointer])
         while len(position_zero) < 5:
             position_zero = "0" + position_zero
@@ -137,7 +137,7 @@ def part_one(file: str, day: int = 5, year: int = 2019) -> int:
 
 
 # part_one(file="eg")
-# part_one(file="input")
+part_one(file="input")
 
 
 @timer
