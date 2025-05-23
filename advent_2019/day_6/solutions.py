@@ -39,31 +39,20 @@ def part_two(file: str, day: int = 6, year: int = 2019):
         year=year, day=day, file=file
     )
     orbit_map = _parse_orbit_map(file_path=input_file_path)
-    from_you = []
     from_san = []
-    for orbiter, orbited in orbit_map.items():
-        if orbiter == "YOU":
-            current_key = orbited
-            from_you.append(current_key)
-            while current_key in orbit_map.keys():
-                current_key = orbit_map[current_key]
-                from_you.append(current_key)
-        elif orbiter == "SAN":
-            current_key = orbited
-            from_san.append(current_key)
-            while current_key in orbit_map.keys():
-                current_key = orbit_map[current_key]
-                from_san.append(current_key)
-        else:
-            continue
-
-    orbital_transfers = 0
-    for orb in from_you:
+    current_key = orbit_map["SAN"]
+    from_san.append(current_key)
+    while current_key in orbit_map.keys():
+        current_key = orbit_map[current_key]
+        from_san.append(current_key)
+    current_key = orbit_map["YOU"]
+    orbital_transfers = 1
+    while current_key in orbit_map.keys():
+        current_key = orbit_map[current_key]
         orbital_transfers += 1
-        if orb in from_san:
-            orbital_transfers += from_san.index(orb) - 1
+        if current_key in from_san:
+            orbital_transfers += from_san.index(current_key) - 1
             break
-
     return orbital_transfers
 
 
