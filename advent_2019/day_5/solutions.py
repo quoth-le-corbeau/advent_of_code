@@ -2,16 +2,13 @@ from pathlib import Path
 
 from reusables import timer, INPUT_PATH
 
-_AIR_CONDITIONER_UNIT_ID = 1
-_THERMAL_RADIATOR_UNIT_ID = 5
-
 
 def _parse_file(file_path: Path) -> list[int]:
     with open(file_path, "r") as puzzle_input:
         return list(map(int, puzzle_input.read().strip().split(",")))
 
 
-def _run(program: list[int], input_code: int) -> int:
+def _run(program: list[int]) -> int:
     output = -1
     pointer = 0
     while pointer < len(program) - 2:
@@ -32,6 +29,10 @@ def _run(program: list[int], input_code: int) -> int:
             program[program[pointer + 3]] = param_1 * param_2
             pointer += 4
         elif opcode == 3:
+            input_code = int(input("input (day 5 part 1 is 1, part 2 is 5: "))
+            if input_code not in [1, 5]:
+                print("^^^^^^^^read this prompt oida! ^^^^^^^^^^^^^^^^")
+                exit(1)
             program[program[pointer + 1]] = input_code
             pointer += 2
         elif opcode == 4:
@@ -87,7 +88,7 @@ def part_one(file: str, day: int = 5, year: int = 2019) -> int:
         year=year, day=day, file=file
     )
     program = _parse_file(input_file_path)
-    return _run(program=program, input_code=_AIR_CONDITIONER_UNIT_ID)
+    return _run(program=program)
 
 
 # part_one(file="eg")
@@ -100,7 +101,7 @@ def part_two(file: str, day: int = 5, year: int = 2019):
         year=year, day=day, file=file
     )
     program = _parse_file(file_path=input_file_path)
-    return _run(program=program, input_code=_THERMAL_RADIATOR_UNIT_ID)
+    return _run(program=program)
 
 
 # part_two(file="eg")
