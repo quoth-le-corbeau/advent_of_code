@@ -29,10 +29,7 @@ def _run(program: list[int]) -> int:
             program[program[pointer + 3]] = param_1 * param_2
             pointer += 4
         elif opcode == 3:
-            input_code = int(input(""))
-            if input_code not in [1, 5]:
-                print("^^^^^^^^read this prompt oida! ^^^^^^^^^^^^^^^^")
-                exit(1)
+            input_code = int(input("enter something: "))
             program[program[pointer + 1]] = input_code
             pointer += 2
         elif opcode == 4:
@@ -83,7 +80,7 @@ def _get_param_values(
 
 
 @timer
-def part_one(file: str, day: int = 5, year: int = 2019) -> int:
+def part_one(file: str, day: int = 7, year: int = 2019) -> int:
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
@@ -96,7 +93,7 @@ part_one(file="input")
 
 
 @timer
-def part_two(file: str, day: int = 5, year: int = 2019):
+def part_two(file: str, day: int = 7, year: int = 2019):
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
