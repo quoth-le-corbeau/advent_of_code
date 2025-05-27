@@ -1,6 +1,7 @@
 from reusables import dict_parametrize
 from advent_2019.day_7.solutions import (
     _get_max_thrust_permutation,
+    _get_max_thrust_permutation_feedback_mode,
 )
 
 TEST_PROG_2 = [
@@ -202,4 +203,6 @@ def test__get_max_thrust_permutation(
 def test__get_max_thrust_permutation_feedback_mode(
     program, expected_max_thrust, expected_max_thrust_phase_setting
 ):
-    pass
+    max_thrust, permutation = _get_max_thrust_permutation_feedback_mode(program=program)
+    assert max_thrust == expected_max_thrust
+    assert permutation == expected_max_thrust_phase_setting
