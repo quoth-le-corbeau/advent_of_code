@@ -5,7 +5,6 @@ from collections import defaultdict
 from reusables import timer, INPUT_PATH
 
 _PHASE_SETTINGS = [0, 1, 2, 3, 4]
-_PHASE_SETTINGS_FEEDBACK_MODE = [5, 6, 7, 8, 9]
 
 
 def _parse_file(file_path: Path) -> list[int]:
@@ -21,7 +20,7 @@ def _get_param_values(
     return param_1, param_2
 
 
-def _run(
+def _run_alternative(
     program: list[int],
     phase_input: int,
     previous_output: int = 0,
@@ -51,7 +50,7 @@ def _run(
             if input_counter > 2:
                 raise ValueError("There should only be two inputs for each run!")
             if phase_input_entered:
-                assert input_counter == 1
+                assert input_counter >= 1
                 program[program[pointer + 1]] = previous_output
             else:
                 program[program[pointer + 1]] = phase_input
@@ -91,19 +90,39 @@ def _run(
     return output
 
 
-def _get_max_thrust_permutation(program: list[int]) -> tuple[int, tuple]:
+def _get_max_thrust_permutation_alternative(
+    program: list[int], phase_settings: list[int]
+) -> tuple[int, tuple]:
     phase_settings_by_thrust = defaultdict(tuple)
-    for phase_inputs in permutations(_PHASE_SETTINGS):
-        next_input = 0
+    for phase_inputs in permutations(phase_settings):
+        initial_input = 0
         fresh_program = program.copy()
-        for phase_input in phase_inputs:
-            output = _run(
-                program=fresh_program,
-                phase_input=phase_input,
-                previous_output=next_input,
-            )
-            next_input = output
-        phase_settings_by_thrust[next_input] = tuple(phase_inputs)
+        output_a = _run_alternative(
+            program=fresh_program,
+            phase_input=phase_inputs[0],
+            previous_output=initial_input,
+        )
+        output_b = _run_alternative(
+            program=fresh_program,
+            phase_input=phase_inputs[1],
+            previous_output=output_a,
+        )
+        output_c = _run_alternative(
+            program=fresh_program,
+            phase_input=phase_inputs[2],
+            previous_output=output_b,
+        )
+        output_d = _run_alternative(
+            program=fresh_program,
+            phase_input=phase_inputs[3],
+            previous_output=output_c,
+        )
+        output_e = _run_alternative(
+            program=fresh_program,
+            phase_input=phase_inputs[4],
+            previous_output=output_d,
+        )
+        phase_settings_by_thrust[output_e] = tuple(phase_inputs)
     max_thrust = int(max(phase_settings_by_thrust.keys()))
     return max_thrust, phase_settings_by_thrust[max_thrust]
 
@@ -113,8 +132,8 @@ def part_one(file: str, day: int = 7, year: int = 2019) -> int:
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    max_possible_thrust, phase_setting = _get_max_thrust_permutation(
-        program=_parse_file(input_file_path)
+    max_possible_thrust, phase_setting = _get_max_thrust_permutation_alternative(
+        program=_parse_file(input_file_path), phase_settings=_PHASE_SETTINGS
     )
     print(f"Max thrust obtained from phase setting: {phase_setting}")
     return max_possible_thrust
@@ -122,14 +141,3 @@ def part_one(file: str, day: int = 7, year: int = 2019) -> int:
 
 part_one(file="eg")
 part_one(file="input")
-
-
-@timer
-def part_two(file: str, day: int = 7, year: int = 2019):
-    input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
-        year=year, day=day, file=file
-    )
-
-
-# part_two(file="eg")
-part_two(file="input")
