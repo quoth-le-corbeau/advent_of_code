@@ -29,7 +29,6 @@ def _run(
 ) -> int:
     output = -1
     pointer = 0
-    input_counter = 0
     while pointer < len(program) - 2:
         position_zero = str(program[pointer])
         while len(position_zero) < 5:
@@ -48,15 +47,11 @@ def _run(
             program[program[pointer + 3]] = param_1 * param_2
             pointer += 4
         elif opcode == 3:
-            if input_counter > 2:
-                raise ValueError("There should only be two inputs for each run!")
             if phase_input_entered:
-                assert input_counter == 1
                 program[program[pointer + 1]] = previous_output
             else:
                 program[program[pointer + 1]] = phase_input
                 phase_input_entered = True
-                input_counter += 1
             pointer += 2
         elif opcode == 4:
             param_1 = (
