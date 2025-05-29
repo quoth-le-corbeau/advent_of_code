@@ -13,7 +13,7 @@ def _run(program: list[int], relative_base=0) -> int:
     pointer = 0
     while pointer < len(program) - 2:
         position_zero = str(program[pointer])
-        while len(position_zero) < 5:
+        while len(position_zero) < 6:
             position_zero = "0" + position_zero
         opcode = int(position_zero[-2:])
         mode_1 = position_zero[-3]
@@ -24,24 +24,29 @@ def _run(program: list[int], relative_base=0) -> int:
             param_1, param_2 = _get_param_values(
                 pointer, mode_1, mode_2, program, relative_base
             )
-            program[program[pointer + 3]] = param_1 + param_2
+            write_addr = _get_write_address(
+                position_zero[-5], pointer + 3, program, relative_base
+            )
+            program[write_addr] = param_1 + param_2
             pointer += 4
         elif opcode == 2:
             param_1, param_2 = _get_param_values(
                 pointer, mode_1, mode_2, program, relative_base
             )
-            program[program[pointer + 3]] = param_1 * param_2
+            write_addr = _get_write_address(
+                position_zero[-5], pointer + 3, program, relative_base
+            )
+            program[write_addr] = param_1 * param_2
             pointer += 4
         elif opcode == 3:
             input_code = int(input("input: "))
-            if input_code not in [1]:
-                print(f"invalid input code: {input_code}")
-                exit(1)
-            program[program[pointer + 1]] = input_code
+            write_addr = _get_write_address(
+                position_zero[-3], pointer + 1, program, relative_base
+            )
+            program[write_addr] = input_code
             pointer += 2
         elif opcode == 4:
-            param_1 = _get_value(mode_1, pointer, program, relative_base)
-            output = param_1
+            output = _get_value(mode_1, pointer, program, relative_base)
             print(f"Output without halting: {output}")
             pointer += 2
         elif opcode == 5:
@@ -64,16 +69,22 @@ def _run(program: list[int], relative_base=0) -> int:
             param_1, param_2 = _get_param_values(
                 pointer, mode_1, mode_2, program, relative_base
             )
-            program[program[pointer + 3]] = 1 if param_1 < param_2 else 0
+            write_addr = _get_write_address(
+                position_zero[-5], pointer + 3, program, relative_base
+            )
+            program[write_addr] = 1 if param_1 < param_2 else 0
             pointer += 4
         elif opcode == 8:
             param_1, param_2 = _get_param_values(
                 pointer, mode_1, mode_2, program, relative_base
             )
-            program[program[pointer + 3]] = 1 if param_1 == param_2 else 0
+            write_addr = _get_write_address(
+                position_zero[-5], pointer + 3, program, relative_base
+            )
+            program[write_addr] = 1 if param_1 == param_2 else 0
             pointer += 4
         elif opcode == 9:
-            param_value = program[pointer + 1]
+            param_value = _get_value(mode_1, pointer, program, relative_base)
             relative_base += param_value
             pointer += 2
         else:
@@ -82,6 +93,18 @@ def _run(program: list[int], relative_base=0) -> int:
         raise ValueError("No diagnostic output")
     print("Final output after halting: ")
     return output
+
+
+def _get_write_address(
+    mode: str, pointer: int, program: list[int], relative_base: int
+) -> int:
+    param = program[pointer]
+    if mode == "0":
+        return param
+    elif mode == "2":
+        return relative_base + param
+    else:
+        raise ValueError("Immediate mode not allowed for write parameters")
 
 
 def _get_param_values(
