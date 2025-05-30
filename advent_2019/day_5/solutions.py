@@ -1,14 +1,37 @@
+from collections import defaultdict
 from pathlib import Path
+from dataclasses import dataclass
 
 from reusables import timer, INPUT_PATH
 
 
-def _parse_file(file_path: Path) -> list[int]:
+@dataclass(frozen=True, order=True)
+class Parameter:
+    mode: str
+    raw_value: int
+
+    def value(self, program: dict[int, int]) -> int:
+        if self.mode == "0":
+            # access the value stored at the raw value address
+            return program[self.raw_value]
+        elif self.mode == "1":
+            # literal mode
+            return self.raw_value
+        else:
+            raise NotImplementedError
+
+
+def _parse_file(file_path: Path) -> dict[int, int]:
     with open(file_path, "r") as puzzle_input:
-        return list(map(int, puzzle_input.read().strip().split(",")))
+        software_memory_map = defaultdict(int)
+        for i, value in enumerate(
+            list(map(int, puzzle_input.read().strip().split(",")))
+        ):
+            software_memory_map[i] = value
+        return software_memory_map
 
 
-def _run(program: list[int]) -> int:
+def _run(program: dict[int, int]) -> int:
     output = -1
     pointer = 0
     while pointer < len(program) - 2:
@@ -21,25 +44,38 @@ def _run(program: list[int]) -> int:
         if opcode == 99:
             break
         elif opcode == 1:
-            param_1, param_2 = _get_param_values(pointer, mode_1, mode_2, program)
-            program[program[pointer + 3]] = param_1 + param_2
+            parameter_1 = Parameter(mode=mode_1, raw_value=program[pointer + 1]).value(
+                program
+            )
+            parameter_2 = Parameter(mode=mode_2, raw_value=program[pointer + 2]).value(
+                program
+            )
+            write_address = program[pointer + 3]
+            program[write_address] = parameter_1 + parameter_2
             pointer += 4
         elif opcode == 2:
-            param_1, param_2 = _get_param_values(pointer, mode_1, mode_2, program)
-            program[program[pointer + 3]] = param_1 * param_2
+            parameter_1 = Parameter(mode=mode_1, raw_value=program[pointer + 1]).value(
+                program
+            )
+            parameter_2 = Parameter(mode=mode_2, raw_value=program[pointer + 2]).value(
+                program
+            )
+            write_address = program[pointer + 3]
+            program[write_address] = parameter_1 * parameter_2
             pointer += 4
         elif opcode == 3:
-            input_code = int(input("input (day 5 part 1 is 1, part 2 is 5: "))
+            input_code = int(input("input (day 5 part 1 is 1, part 2 is 5): "))
             if input_code not in [1, 5]:
                 print("^^^^^^^^read this prompt oida! ^^^^^^^^^^^^^^^^")
                 exit(1)
-            program[program[pointer + 1]] = input_code
+            write_address = program[pointer + 1]
+            program[write_address] = input_code
             pointer += 2
         elif opcode == 4:
-            param_1 = (
-                program[program[pointer + 1]] if mode_1 == "0" else program[pointer + 1]
+            parameter_1 = Parameter(mode=mode_1, raw_value=program[pointer + 1]).value(
+                program
             )
-            output = param_1
+            output = parameter_1
             if output == 0:
                 print(
                     f"Test at position {pointer} success! "
@@ -47,24 +83,46 @@ def _run(program: list[int]) -> int:
                 )
             pointer += 2
         elif opcode == 5:
-            param_1, param_2 = _get_param_values(pointer, mode_1, mode_2, program)
-            if param_1 != 0:
-                pointer = param_2
+            parameter_1 = Parameter(mode=mode_1, raw_value=program[pointer + 1]).value(
+                program
+            )
+            parameter_2 = Parameter(mode=mode_2, raw_value=program[pointer + 2]).value(
+                program
+            )
+            if parameter_1 != 0:
+                pointer = parameter_2
             else:
                 pointer += 3
         elif opcode == 6:
-            param_1, param_2 = _get_param_values(pointer, mode_1, mode_2, program)
-            if param_1 == 0:
-                pointer = param_2
+            parameter_1 = Parameter(mode=mode_1, raw_value=program[pointer + 1]).value(
+                program
+            )
+            parameter_2 = Parameter(mode=mode_2, raw_value=program[pointer + 2]).value(
+                program
+            )
+            if parameter_1 == 0:
+                pointer = parameter_2
             else:
                 pointer += 3
         elif opcode == 7:
-            param_1, param_2 = _get_param_values(pointer, mode_1, mode_2, program)
-            program[program[pointer + 3]] = 1 if param_1 < param_2 else 0
+            parameter_1 = Parameter(mode=mode_1, raw_value=program[pointer + 1]).value(
+                program
+            )
+            parameter_2 = Parameter(mode=mode_2, raw_value=program[pointer + 2]).value(
+                program
+            )
+            write_address = program[pointer + 3]
+            program[write_address] = 1 if parameter_1 < parameter_2 else 0
             pointer += 4
         elif opcode == 8:
-            param_1, param_2 = _get_param_values(pointer, mode_1, mode_2, program)
-            program[program[pointer + 3]] = 1 if param_1 == param_2 else 0
+            parameter_1 = Parameter(mode=mode_1, raw_value=program[pointer + 1]).value(
+                program
+            )
+            parameter_2 = Parameter(mode=mode_2, raw_value=program[pointer + 2]).value(
+                program
+            )
+            write_address = program[pointer + 3]
+            program[write_address] = 1 if parameter_1 == parameter_2 else 0
             pointer += 4
         else:
             raise ValueError(f"Invalid opcode: {opcode}")
@@ -72,14 +130,6 @@ def _run(program: list[int]) -> int:
         raise ValueError("No diagnostic output")
     print("Diagnostic output: ")
     return output
-
-
-def _get_param_values(
-    pointer: int, mode_1: str, mode_2: str, program: list[int]
-) -> tuple[int, int]:
-    param_1 = program[program[pointer + 1]] if mode_1 == "0" else program[pointer + 1]
-    param_2 = program[program[pointer + 2]] if mode_2 == "0" else program[pointer + 2]
-    return param_1, param_2
 
 
 @timer
