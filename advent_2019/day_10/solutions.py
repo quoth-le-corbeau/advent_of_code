@@ -1,6 +1,12 @@
 from pathlib import Path
-
+import itertools
 from reusables import timer, INPUT_PATH
+
+NORTH = (0, -1)
+EAST = (1, 0)
+SOUTH = (0, 1)
+WEST = (-1, 0)
+NESW_UNIT_VECTORS = {(0, 1), (0, -1), (1, 0), (-1, 0)}
 
 
 def _parse_grid(file_path: Path) -> tuple[dict[tuple[int, int], bool], list[list[str]]]:
@@ -13,8 +19,40 @@ def _parse_grid(file_path: Path) -> tuple[dict[tuple[int, int], bool], list[list
         }, grid
 
 
-def _get_vectors(y: int, x: int, rows: int, cols: int) -> list[tuple[int, int]]:
-    pass
+def _get_nesw_vectors(
+    point: tuple[int, int], rows: int, cols: int
+) -> set[tuple[int, int]]:
+    vectors = NESW_UNIT_VECTORS
+    x, y = point
+    if x == 0:
+        vectors.remove(WEST)
+    if y == 0:
+        vectors.remove(NORTH)
+    if x == cols - 1:
+        vectors.remove(EAST)
+    if y == rows - 1:
+        vectors.remove(SOUTH)
+    return vectors
+
+
+def _get_vectors(point: tuple[int, int], rows: int, cols: int) -> set[tuple[int, int]]:
+    vectors = _get_nesw_vectors(point=point, rows=rows, cols=cols)
+    x, y = point
+    for i in range(1, cols - x):
+        # q1
+        for j in range(1, y + 1):
+            vectors.add((i, -j))
+        # q2
+        for j in range(1, rows - y):
+            vectors.add((i, j))
+    for i in range(1, x + 1):
+        # q3
+        for j in range(1, rows - y):
+            vectors.add((-i, j))
+        # q4
+        for j in range(1, y + 1):
+            vectors.add((-i, -j))
+    return vectors
 
 
 def _count_visible(
@@ -36,7 +74,7 @@ def part_one(file: str, day: int = 10, year: int = 2019) -> int:
         for c in range(cols):
             if grid[r][c] != "#":
                 continue
-            unit_vectors = _get_vectors(r, c, rows, cols)
+            # unit_vectors = _get_vectors(point=(c, r), rows=rows, cols=cols)
 
 
 #            visible_look_up[(c, r)] = _count_visible(
