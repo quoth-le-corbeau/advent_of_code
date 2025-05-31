@@ -19,6 +19,10 @@ def part_one(file: str, day: int = 10, year: int = 2019):
 
 
 part_one(file="eg")
+part_one(file="eg_1_2_35")
+part_one(file="eg_5_8_33")
+part_one(file="eg_6_3_41")
+part_one(file="eg_11_13_210")
 part_one(file="input")
 
 
@@ -30,5 +34,5 @@ def part_two(file: str, day: int = 10, year: int = 2019):
     print(f"part 2: {RENAME_FUNC(file_path=input_file_path)}")
 
 
-part_two(file="eg")
-part_two(file="input")
+# part_two(file="eg")
+# part_two(file="input")
