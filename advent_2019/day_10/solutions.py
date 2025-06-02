@@ -2,12 +2,6 @@ from pathlib import Path
 import itertools
 from reusables import timer, INPUT_PATH
 
-NORTH = (0, -1)
-EAST = (1, 0)
-SOUTH = (0, 1)
-WEST = (-1, 0)
-NESW_UNIT_VECTORS = {(0, 1), (0, -1), (1, 0), (-1, 0)}
-
 
 def _parse_grid(file_path: Path) -> tuple[dict[tuple[int, int], bool], list[list[str]]]:
     with open(file_path, "r") as puzzle_input:
@@ -19,39 +13,39 @@ def _parse_grid(file_path: Path) -> tuple[dict[tuple[int, int], bool], list[list
         }, grid
 
 
-def _get_nesw_vectors(
-    point: tuple[int, int], rows: int, cols: int
-) -> set[tuple[int, int]]:
-    vectors = NESW_UNIT_VECTORS
+def _get_vectors(point: tuple[int, int], rows: int, cols: int) -> set[tuple[int, int]]:
+    all_vectors = set()
+    # vectors |= _add_unit_vectors(cols=cols, rows=rows, point=point)
     x, y = point
-    if x == 0:
-        vectors.remove(WEST)
-    if y == 0:
-        vectors.remove(NORTH)
-    if x == cols - 1:
-        vectors.remove(EAST)
-    if y == rows - 1:
-        vectors.remove(SOUTH)
+    cols_to_left = x
+    rows_below = rows - y - 1
+    rows_above = y
+    cols_to_right = cols - x - 1
+    for col in range(cols_to_right + 1):
+        for row in range(rows_above + 1):
+            all_vectors.add((col, -row))
+        for row in range(rows_below + 1):
+            all_vectors.add((col, row))
+    for col in range(cols_to_left + 1):
+        for row in range(rows_above + 1):
+            all_vectors.add((-col, -row))
+        for row in range(rows_below + 1):
+            all_vectors.add((-col, row))
+    vectors = _filter(all_vectors)
     return vectors
 
 
-def _get_vectors(point: tuple[int, int], rows: int, cols: int) -> set[tuple[int, int]]:
-    vectors = _get_nesw_vectors(point=point, rows=rows, cols=cols)
-    x, y = point
-    for i in range(1, cols - x):
-        # q1
-        for j in range(1, y + 1):
-            vectors.add((i, -j))
-        # q2
-        for j in range(1, rows - y):
-            vectors.add((i, j))
-    for i in range(1, x + 1):
-        # q3
-        for j in range(1, rows - y):
-            vectors.add((-i, j))
-        # q4
-        for j in range(1, y + 1):
-            vectors.add((-i, -j))
+def _filter(all_vectors):
+    vectors = set()
+    for vector in all_vectors:
+        i, j = vector
+        if (
+            (abs(i) == abs(j) and abs(i) != 1)
+            or (j == 0 and abs(i) != 1)
+            or (i == 0 and abs(j) != 1)
+        ):
+            continue
+        vectors.add(vector)
     return vectors
 
 
@@ -88,8 +82,8 @@ def part_one(file: str, day: int = 10, year: int = 2019) -> int:
 #    return max_asteroids
 
 
-part_one(file="eg")
-part_one(file="eg_1_2_35")
+# part_one(file="eg")
+# part_one(file="eg_1_2_35")
 # part_one(file="eg_5_8_33")
 # part_one(file="eg_6_3_41")
 # part_one(file="eg_11_13_210")
