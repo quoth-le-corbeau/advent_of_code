@@ -1,5 +1,6 @@
 from pathlib import Path
-import itertools
+from math import gcd
+
 from reusables import timer, INPUT_PATH
 
 
@@ -35,29 +36,28 @@ def _get_vectors(point: tuple[int, int], rows: int, cols: int) -> set[tuple[int,
     return vectors
 
 
-def _filter(all_vectors: set[tuple[int, int]]) -> set[tuple[int, int]]:
-    vectors = set()
-    for vector in all_vectors:
-        x, y = vector
-        if (
-            (abs(x) == abs(y) and abs(x) != 1)
-            or (y == 0 and abs(x) != 1)
-            or (x == 0 and abs(y) != 1)
-            or _is_scalar_multiple(vector=vector, all_vectors=all_vectors)
-        ):
-            continue
-        vectors.add(vector)
-    return vectors
-
-
-def _is_scalar_multiple(
-    vector: tuple[int, int], all_vectors: set[tuple[int, int]]
-) -> bool:
+def _normalize(vector: tuple[int, int]) -> tuple[int, int]:
     x, y = vector
-    for n in range(2, 1000):
-        if ((x * n), (y * n)) in all_vectors:
-            return True
-    return False
+    if x == 0 and y == 0:
+        return 0, 0
+    g = gcd(x, y)
+    x //= g
+    y //= g
+    # Ensure consistent direction (e.g., first non-zero coordinate positive)
+    if x < 0 or (x == 0 and y < 0):
+        x, y = -x, -y
+    return x, y
+
+
+def _filter(all_vectors: set[tuple[int, int]]) -> set[tuple[int, int]]:
+    seen = set()
+    result = set()
+    for vector in all_vectors:
+        norm = _normalize(vector)
+        if norm not in seen:
+            seen.add(norm)
+            result.add(vector)
+    return result
 
 
 def _get_visible(
@@ -65,26 +65,27 @@ def _get_visible(
     look_up: dict[tuple[int, int], bool],
     point: tuple[int, int],
 ) -> set[tuple[int, int]]:
+
     x, y = point
-    seen = set()
+    seen_directions = set()
     visible = set()
-    for vector in vectors:
-        i, j = vector
+
+    for dx, dy in vectors:
+        dir_vector = _normalize(vector=(dx, dy))
+        if dir_vector in seen_directions:
+            continue
+        seen_directions.add(dir_vector)
+
         n = 1
         while True:
-            scalar_x = n * i
-            scalar_y = n * j
-            current = (x + scalar_x, y + scalar_y)
+            current = (x + n * dx, y + n * dy)
             if current not in look_up:
                 break
-            for k in range(1, n):
-                if (i // k, j // k) in seen:
-                    n += 1
-                    continue
             if look_up[current]:
-                seen.add((i, j))
                 visible.add(current)
+                break  # First visible object in this direction
             n += 1
+
     return visible
 
 
