@@ -15,37 +15,19 @@ def _parse_grid(file_path: Path) -> list[tuple[int, int]]:
         return asteroid_locations
 
 
-def _gcd(x: int, y: int) -> int:
-    pass
+def _gcd(smaller: int, larger: int) -> int:
+    if smaller == 1:
+        return smaller
+    return _gcd(smaller, larger // smaller)
 
 
 def _get_unit_vector(from_: tuple[int, int], to_: [int, int]) -> tuple[int, int]:
     pass
 
 
-CACHE = {}
-
-
-def fib(n):
-    if n in CACHE:
-        return CACHE[n]
-    if n in [1, 2]:
-        return 1
-    else:
-        CACHE[n] = fib(n - 1) + fib(n - 2)
-        return fib(n - 1) + fib(n - 2)
-
-
 @timer
 def part_one(file: str, day: int = 10, year: int = 2019) -> dict[tuple[int, int], int]:
 
-    print(f"{fib(23)=}")
-    print(f"{fib(5)=}")
-    print(f"{fib(3)=}")
-    print(f"{fib(7)=}")
-    print(f"{fib(6)=}")
-    print(f"{fib(2)=}")
-    print(f"{fib(333)=}")
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )

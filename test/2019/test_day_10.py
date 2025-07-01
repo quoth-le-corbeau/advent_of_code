@@ -1,117 +1,35 @@
 from reusables import dict_parametrize
-from advent_2019.day_10.solutions import _get_vectors
+from advent_2019.day_10.solutions import _gcd, _get_unit_vector
 
 
 @dict_parametrize(
     {
-        "3_rows_4_cols_middle_right": {
-            # . . . .
-            # . . x .
-            # . . . .
-            "rows": 3,
-            "columns": 4,
-            "point": (2, 1),
-            "expected_vectors": {
-                (0, -1),  # N
-                (1, -1),  # NE
-                (1, 0),  # E
-                (0, 1),  # S
-                (-1, 0),  # W
-                (1, 1),  # SE
-                (-1, 1),  # SW
-                (-1, -1),  # NW
-                (-2, -1),  # WNW
-                (-2, 1),  # WSW
-            },
+        "coprime": {"x": 4, "y": 9, "expected_gcd": 1},
+        "very_divisible": {"x": 36, "y": 48, "expected_gcd": 12},
+    }
+)
+def test__gcd(x, y, expected_gcd):
+    assert _gcd(x, y) == expected_gcd
+
+
+@dict_parametrize(
+    {
+        "already_unit_vector_close": {
+            "from_": (3, 7),
+            "to_": (2, 5),
+            "expected_unit_vector": (-1, -2),
         },
-        "3_rows_4_cols_furthest_from_origin": {
-            # . . . .
-            # . . . .
-            # . . . x
-            "rows": 3,
-            "columns": 4,
-            "point": (3, 2),
-            "expected_vectors": {
-                (0, -1),  # N
-                (-1, 0),  # W
-                (-1, -1),  # NW
-                (-1, -2),  # NNW
-                (-2, -1),  # WNW
-                (-3, -1),  # WNW
-                (-3, -2),  # WNW
-            },
+        "already_unit_vector_far": {
+            "from_": (13, 17),
+            "to_": (22, 21),
+            "expected_unit_vector": (9, 4),
         },
-        "4_rows_4_cols_middle_top_right": {
-            # . . . .
-            # . . x .
-            # . . . .
-            # . . . .
-            "rows": 4,
-            "columns": 4,
-            "point": (2, 1),
-            "expected_vectors": {
-                (0, -1),  # N
-                (1, 0),  # E
-                (0, 1),  # S
-                (-1, 0),  # W
-                (1, -1),  # NE
-                (1, 1),  # SE
-                (1, 2),  # SSE
-                (-1, 1),  # SW
-                (-1, 2),  # SSW
-                (-1, -1),  # NW
-                (-2, -1),  # WNW
-                (-2, 1),  # WSW
-            },
-        },
-        "4_rows_5_cols_middle_top_right": {
-            # . . . . .
-            # . . x . .
-            # . . . . .
-            # . . . . .
-            "rows": 4,
-            "columns": 5,
-            "point": (2, 1),
-            "expected_vectors": {
-                (0, -1),
-                (1, 0),
-                (0, 1),
-                (-1, 0),
-                (1, -1),
-                (1, 1),
-                (1, 2),
-                (-1, 1),
-                (-1, 2),
-                (-1, -1),
-                (-2, -1),
-                (-2, 1),
-                (2, 1),
-                (2, -1),
-            },
-        },
-        "4_rows_4_cols_middle_origin": {
-            # x . . .
-            # . . . .
-            # . . . .
-            # . . . .
-            "rows": 4,
-            "columns": 4,
-            "point": (0, 0),
-            "expected_vectors": {
-                (1, 0),  # E
-                (0, 1),  # S
-                (1, 1),  # SE
-                (1, 2),
-                (1, 3),
-                (2, 1),
-                (2, 3),
-                (3, 1),
-                (3, 2),
-            },
+        "simple_reduction": {
+            "from_": (7, 3),
+            "to_": (9, 7),
+            "expected_unit_vector": (1, 2),
         },
     }
 )
-def test__get_vectors(point, rows, columns, expected_vectors):
-    assert sorted(list(_get_vectors(point=point, rows=rows, cols=columns))) == list(
-        sorted(expected_vectors)
-    )
+def test__get_unit_vector(from_, to_, expected_unit_vector):
+    assert _get_unit_vector(from_, to_) == expected_unit_vector
