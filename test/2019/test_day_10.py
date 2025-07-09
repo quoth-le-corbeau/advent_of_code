@@ -4,6 +4,8 @@ from advent_2019.day_10.solutions import _gcd, _get_unit_vector
 
 @dict_parametrize(
     {
+        "simple_case": {"x": 4, "y": 6, "expected_gcd": 2},
+        "simple_case_negative": {"x": -4, "y": 6, "expected_gcd": 2},
         "coprime": {"x": 4, "y": 9, "expected_gcd": 1},
         "very_divisible": {"x": 36, "y": 48, "expected_gcd": 12},
     }
