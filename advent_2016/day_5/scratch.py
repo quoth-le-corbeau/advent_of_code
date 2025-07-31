@@ -4,8 +4,9 @@ i = 0
 res = ""
 door_id = "abc"
 door_id = "reyedfim"
-password = {n:"" for n in range(8)}
-while any(val=="" for val in password.values()):
+
+password = {n: "" for n in range(8)}
+while any(val == "" for val in password.values()):
     i += 1
     test_string = door_id + str(i)
     hsh = hashlib.md5(string=test_string.encode())
@@ -18,9 +19,10 @@ while any(val=="" for val in password.values()):
         position_i = int(position)
         if position_i <= 7:
             print(password)
-            password[position_i] = res[6]
+            if password[position_i] == "":
+                password[position_i] = res[6]
 
-s=""
+s = ""
 for i in range(8):
     s += password[i]
 print(f"password: {s}")
