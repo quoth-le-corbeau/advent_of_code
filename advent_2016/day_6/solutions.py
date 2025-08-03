@@ -1,21 +1,25 @@
 from pathlib import Path
-
+from collections import Counter
 from reusables import timer, INPUT_PATH
 
 
-def RENAME_FUNC(file_path: Path):
+def _parse_signal(file_path: Path):
     with open(file_path, "r") as puzzle_input:
-        lines = puzzle_input.read()
-        print(lines)
+        return puzzle_input.read().strip().splitlines()
 
 
 @timer
-def part_one(file: str, day: int = 6, year: int = 2016):
+def part_one(file: str, day: int = 6, year: int = 2016) -> str:
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    print(f"<-----------{input_file_path} -------------->")
-    print(f"part 1: {RENAME_FUNC(file_path=input_file_path)}")
+    signal_rows = _parse_signal(file_path=input_file_path)
+    return "".join(
+        [
+            Counter([signal_row[i] for signal_row in signal_rows]).most_common()[0][0]
+            for i in range(len(signal_rows[0]))
+        ]
+    )
 
 
 part_one(file="eg")
@@ -27,7 +31,13 @@ def part_two(file: str, day: int = 6, year: int = 2016):
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    print(f"part 2: {RENAME_FUNC(file_path=input_file_path)}")
+    signal_rows = _parse_signal(file_path=input_file_path)
+    return "".join(
+        [
+            Counter([signal_row[i] for signal_row in signal_rows]).most_common()[-1][0]
+            for i in range(len(signal_rows[0]))
+        ]
+    )
 
 
 part_two(file="eg")
