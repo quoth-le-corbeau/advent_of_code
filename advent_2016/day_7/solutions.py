@@ -1,27 +1,57 @@
 from pathlib import Path
 import re
+from dataclasses import dataclass
+
 
 from reusables import timer, INPUT_PATH
 
 
-def _parse_ips(file_path: Path) -> list[tuple[str, str, str]]:
+@dataclass(frozen=True)
+class IpAddress:
+    hypernets: list[str]
+    supernets: list[str]
+
+    def assert_reconstructed(self, ip_line: str):
+        reconstructed = ""
+        for i in range(len(self.hypernets)):
+            reconstructed += self.supernets[i] + "[" + self.hypernets[i] + "]"
+        reconstructed += self.supernets[-1]
+        assert reconstructed == ip_line
+
+    def abba_in_hypernets(self) -> bool:
+        return any(_has_abba_me(string_=hypernet) for hypernet in self.hypernets)
+
+    def abba_in_supernets(self) -> bool:
+        return any(_has_abba_me(string_=supernet) for supernet in self.supernets)
+
+
+def _parse_ips(file_path: Path) -> list[IpAddress]:
     with open(file_path, "r") as puzzle_input:
-        return [
-            (
-                line.split("[")[0],
-                line.split("[")[1].split("]")[0],
-                line.split("[")[1].split("]")[1],
+        hypernet_pattern = r"\[(.*?)\]"
+
+        ip_addresses = []
+        for ip_line in puzzle_input.read().strip().splitlines():
+            ip_address = IpAddress(
+                hypernets=re.findall(pattern=hypernet_pattern, string=ip_line),
+                supernets=re.split(pattern=hypernet_pattern, string=ip_line),
             )
-            for line in puzzle_input.read().strip().splitlines()
-        ]
+            # ip_address.assert_reconstructed(ip_line)
+            ip_addresses.append(ip_address)
+        return ip_addresses
 
 
-def _has_abba(string_: str) -> bool:
-    pattern = r"(?=([a-zA-Z])([a-zA-Z])\2\1)(?!\1\1\1\1)"
-    matches = [
-        string_[m.start() : m.start() + 4] for m in re.finditer(pattern, string_)
-    ]
-    return len(matches) != 0
+def _has_abba_re(string_: str) -> bool:
+    pattern = r"(?=(([a-zA-Z])(?!\2)([a-zA-Z])\3\2))"
+    matches = [m.group(1) for m in re.finditer(pattern, string_)]
+    return len(matches) == 1
+
+
+def _has_abba_me(string_: str) -> bool:
+    for i in range(len(string_) - 3):
+        to_examine = string_[i : i + 4]
+        if to_examine[:2] == to_examine[-2:][::-1] and len(set(to_examine)) == 2:
+            return True
+    return False
 
 
 @timer
@@ -29,12 +59,14 @@ def part_one(file: str, day: int = 7, year: int = 2016) -> int:
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    ip_address_hypernet_tuples = _parse_ips(file_path=input_file_path)
+    ip_addresses = _parse_ips(file_path=input_file_path)
     count = 0
-    for part_1, hypernet, part_2 in ip_address_hypernet_tuples:
-        if (_has_abba(part_1) or _has_abba(part_2)) and not _has_abba(hypernet):
-            print(part_1 + "[" + hypernet + "]" + part_2)
+    for ip_address in ip_addresses:
+        if ip_address.abba_in_hypernets():
+            continue
+        if ip_address.abba_in_supernets():
             count += 1
+
     return count
 
 
