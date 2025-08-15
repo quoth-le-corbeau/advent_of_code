@@ -49,13 +49,13 @@ def part_one(file: str, day: int = 9, year: int = 2016) -> int:
     return len(decompressed)
 
 
-part_one(file="eg")
-part_one(file="eg2")
-part_one(file="eg3")
-part_one(file="eg4")
-part_one(file="eg5")
-part_one(file="eg6")
-part_one(file="input")
+# part_one(file="eg")
+# part_one(file="eg2")
+# part_one(file="eg3")
+# part_one(file="eg4")
+# part_one(file="eg5")
+# part_one(file="eg6")
+# part_one(file="input")
 
 
 @timer
@@ -63,7 +63,10 @@ def part_two(file: str, day: int = 9, year: int = 2016):
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
+    compressed = _parse_compressed_file(file_path=input_file_path)
+    print(f"{compressed=}")
 
 
-# part_two(file="eg")
+part_two(file="eg3")
+part_two(file="eg6")
 # part_two(file="input")
