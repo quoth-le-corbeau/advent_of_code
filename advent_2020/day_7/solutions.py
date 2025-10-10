@@ -4,9 +4,12 @@ from pathlib import Path
 from reusables import timer, INPUT_PATH
 
 
-def _parse_input_rules(file_path: Path) -> dict[str, list[str]]:
+def _parse_input_rules(
+    file_path: Path,
+) -> tuple[dict[str, list[str]], dict[str, list[str]]]:
     with open(file_path, "r") as puzzle_input:
         contains_by_bag = defaultdict(list)
+        contained_in_by_bag = defaultdict(list)
         lines = puzzle_input.read().strip().splitlines()
         for line in lines:
             line = line.replace(".", "")
@@ -24,7 +27,9 @@ def _parse_input_rules(file_path: Path) -> dict[str, list[str]]:
                 bag_no_number = " ".join(s.split(" ")[1:])
                 in_outer_omit_number.add(bag_no_number)
             contains_by_bag[outer] = list(in_outer_omit_number)
-    return dict(contains_by_bag)
+            for inner in in_outer_omit_number:
+                contained_in_by_bag[inner].append(outer)
+    return dict(contains_by_bag), dict(contained_in_by_bag)
 
 
 @timer
@@ -32,20 +37,14 @@ def part_one(file: str, day: int = 7, year: int = 2020) -> int:
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    contains_by_bag = _parse_input_rules(file_path=input_file_path)
-    all_bags = list(contains_by_bag.keys())
-    for bag, inner_bags in contains_by_bag.items():
-        i = all_bags.index(bag)
-        for inner in inner_bags:
-            j = all_bags.index(inner)
-            if j < i:
-                all_bags[i], all_bags[j] = all_bags[j], all_bags[i]
-    print(all_bags)
-    return all_bags.index("shiny gold")
+    contains_mapping, contained_by_mapping = _parse_input_rules(
+        file_path=input_file_path
+    )
+    directly_containing_gold = contained_by_mapping["shiny gold"]
 
 
 part_one(file="eg")
-part_one(file="input")
+# part_one(file="input")
 
 
 @timer
@@ -69,4 +68,13 @@ contains_by_bag = {
     "vibrant plum": ["dotted black", "faded blue"],
     "faded blue": [],
     "dotted black": [],
+}
+contained_by_mapping = {
+    "bright white": ["light red", "dark orange"],
+    "muted yellow": ["light red", "dark orange"],
+    "shiny gold": ["bright white", "muted yellow"],
+    "faded blue": ["muted yellow", "dark olive", "vibrant plum"],
+    "vibrant plum": ["shiny gold"],
+    "dark olive": ["shiny gold"],
+    "dotted black": ["dark olive", "vibrant plum"],
 }
