@@ -6,30 +6,45 @@ from reusables import timer, INPUT_PATH
 
 def _parse_input_rules(
     file_path: Path,
-) -> tuple[dict[str, list[str]], dict[str, list[str]]]:
+) -> tuple[dict[str, set[str]], dict[str, set[str]]]:
     with open(file_path, "r") as puzzle_input:
-        contains_by_bag = defaultdict(list)
-        contained_in_by_bag = defaultdict(list)
+        contains = defaultdict(set)
+        contained_mapping = defaultdict(set)
         lines = puzzle_input.read().strip().splitlines()
         for line in lines:
-            line = line.replace(".", "")
-            line = line.replace("bags", "")
-            line = line.replace("bag", "")
-            outer, inner = line.split(" contain ")
+            parsed_line = line.replace(".", "").replace("bags", "").replace("bag", "")
+            outer, inner = parsed_line.split(" contain ")
             outer = outer.strip()
-            inner = inner.strip()
-            all_inner = inner.split(" , ")
-            in_outer_omit_number = set()
-            for s in all_inner:
-                if s == "no other":
-                    contains_by_bag[outer] = []
+            all_inner = inner.strip().split(" , ")
+            for inner in all_inner:
+                if "no other" in inner:
+                    contains[outer] = set()
                     continue
-                bag_no_number = " ".join(s.split(" ")[1:])
-                in_outer_omit_number.add(bag_no_number)
-            contains_by_bag[outer] = list(in_outer_omit_number)
-            for inner in in_outer_omit_number:
-                contained_in_by_bag[inner].append(outer)
-    return dict(contains_by_bag), dict(contained_in_by_bag)
+                contains[outer].add(inner)
+            for inner in all_inner:
+                parsed_inner = " ".join(inner.split(" ")[1:])
+                contained_mapping[parsed_inner].add(outer)
+    return dict(contains), dict(contained_mapping)
+
+
+def _dfs(tree: dict[str, set[str]]) -> set[str]:
+    stack = ["shiny gold"]
+    seen = set()
+    end_nodes = list()
+    while stack:
+        node = stack.pop()
+        if node in seen:
+            continue
+        seen.add(node)
+        if node in tree:
+            for child in tree[node]:
+                stack.append(child)
+        else:
+            end_nodes.append(node)
+
+    print(f"End nodes: {end_nodes}")
+    print(f"Seen nodes: {seen}")
+    return seen
 
 
 @timer
@@ -40,11 +55,12 @@ def part_one(file: str, day: int = 7, year: int = 2020) -> int:
     contains_mapping, contained_by_mapping = _parse_input_rules(
         file_path=input_file_path
     )
-    directly_containing_gold = contained_by_mapping["shiny gold"]
+    # print(f"{contains_mapping=}, \n{contained_by_mapping=}")
+    return len(_dfs(tree=contained_by_mapping)) - 1
 
 
 part_one(file="eg")
-# part_one(file="input")
+part_one(file="input")
 
 
 @timer
@@ -57,24 +73,3 @@ def part_two(file: str, day: int = 7, year: int = 2020):
 
 # part_two(file="eg")
 # part_two(file="input")
-
-contains_by_bag = {
-    "light red": ["bright white", "muted yellow"],
-    "dark orange": ["bright white", "muted yellow"],
-    "bright white": ["shiny gold"],
-    "muted yellow": ["shiny gold", "faded blue"],
-    "shiny gold": ["vibrant plum", "dark olive"],
-    "dark olive": ["dotted black", "faded blue"],
-    "vibrant plum": ["dotted black", "faded blue"],
-    "faded blue": [],
-    "dotted black": [],
-}
-contained_by_mapping = {
-    "bright white": ["light red", "dark orange"],
-    "muted yellow": ["light red", "dark orange"],
-    "shiny gold": ["bright white", "muted yellow"],
-    "faded blue": ["muted yellow", "dark olive", "vibrant plum"],
-    "vibrant plum": ["shiny gold"],
-    "dark olive": ["shiny gold"],
-    "dotted black": ["dark olive", "vibrant plum"],
-}
