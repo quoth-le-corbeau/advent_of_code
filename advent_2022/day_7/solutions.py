@@ -14,11 +14,9 @@ def _dfs(tree: dict[str, set[str]], node: str, size_map: dict[str, int]):
     size = 0
     if node in tree:
         for child in tree[node]:
-            if child.split(" ")[0] == "dir":
-                if node == "/":
-                    new_node = child.split(" ")[1]
-                else:
-                    new_node = node + "/" + child.split(" ")[1]
+            if child.startswith("dir "):
+                dir_name = child.split(" ")[1]
+                new_node = node.rstrip("/") + "/" + dir_name
                 s, _ = _dfs(tree, new_node, size_map)
                 size += s
             else:
@@ -30,7 +28,6 @@ def _dfs(tree: dict[str, set[str]], node: str, size_map: dict[str, int]):
 def _parse_terminal_output(file_path: Path) -> dict:
     with open(file_path, "r") as puzzle_input:
         lines = puzzle_input.read().strip().splitlines()
-        current_dir_name = ""
         tree = defaultdict(set)
         path = []
         for line in lines:
@@ -39,15 +36,14 @@ def _parse_terminal_output(file_path: Path) -> dict:
                 continue
             elif parts == ["$", "cd", ".."]:
                 path.pop()
-                current_dir_name = path[-1] if path else "/"
-            elif parts[0] == "$" and parts[1] == "cd" and parts[2] != "..":
-                prev_dir_name = current_dir_name
-                current_dir_name = parts[2]
-                if current_dir_name != "/" and prev_dir_name != "/":
-                    current_dir_name = prev_dir_name + "/" + current_dir_name
-                path.append(current_dir_name)
+            elif parts[0] == "$" and parts[1] == "cd":
+                if parts[2] == "/":
+                    path = [""]
+                else:
+                    path.append(parts[2])
             else:
-                tree[current_dir_name].add(" ".join(parts))
+                current_path = "/".join(path).replace("//", "/") or "/"
+                tree[current_path].add(line)
         return dict(tree)
 
 
