@@ -1,56 +1,33 @@
+from collections import defaultdict
 from pathlib import Path
 
 from reusables import timer, INPUT_PATH
 
-tree = {
-    "dir /": {"dir d", "dir a", "14848514 b.txt", "8504156 c.dat"},
-    "dir a": {"62596 h.lst", "29116 f", "2557 g", "dir e"},
-    "dir e": {"584 i"},
-    "dir d": {"8033020 d.log", "7214296 k", "5626152 d.ext", "4060174 j"},
-}
+# decide on a data structure into which to parse the input
+# base the decision on an appropriate algorithm to arrive at the solution
+# assess if the data structure misses any edge cases (e.g - repeated dir names in nesting means flat won't work)
+# assess if the algo misses edge cases
+# proceed
 
 
-def _dfs(
-    tree: dict[str, set[str]],
-    size_map: dict[str, int],
-    node: str = "dir /",
-):
-    size = 0
-    if node in tree:
-        for child in tree[node]:
-            if child.split(" ")[0].strip() == "dir":
-                size += _dfs(tree, size_map, child)
-            else:
-                size += int(child.split(" ")[0])
-        size_map[node] += size
-    print(size_map)
-    return size
-
-
-def _parse_terminal_output(file_path: Path) -> dict[str, set[str]]:
+def _parse_terminal_output(file_path: Path) -> dict:
     with open(file_path, "r") as puzzle_input:
-        lines: list[str] = puzzle_input.read().strip().splitlines()
-        # print(f"{lines=}")
-        tree = dict()
-        current_dir_contents = set()
+        lines = puzzle_input.read().strip().splitlines()
         current_dir_name = "/"
+        tree = defaultdict(set)
+        path = ["/"]
         for line in lines:
-            if line == "$ ls":
+            parts = line.split(" ")
+            if parts == ["$", "ls"]:
                 continue
-            elif (
-                line.split(" ")[0].strip() == "cd" or line.split(" ")[1].strip() == "cd"
-            ):
-                if line.split(" ")[2].strip() == "..":
-                    continue
-                else:
-                    tree["dir " + current_dir_name] = current_dir_contents
-                    current_dir_name = line.split(" ")[2].strip()
-                    current_dir_contents = set()
+            elif parts == ["$", "cd", ".."]:
+                current_dir_name = path.pop()
+            elif parts[0] == "$" and parts[1] == "cd" and parts[2] != "..":
+                current_dir_name += "/" + parts[2]
+                path.append(current_dir_name)
             else:
-                current_dir_contents.add(line)
-        tree["dir " + current_dir_name] = current_dir_contents
-        # print(f"{tree=}")
-        return tree
+                tree[current_dir_name].add(" ".join(parts))
+        return dict(tree)
 
 
 @timer
@@ -58,9 +35,7 @@ def part_one(file: str, day: int = 7, year: int = 2022):
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    tree = _parse_terminal_output(file_path=input_file_path)
-    size_map = {k: 0 for k in tree}
-    return _dfs(tree=tree, size_map=size_map, node="dir /")
+    return _parse_terminal_output(file_path=input_file_path)
 
 
 part_one(file="eg")
