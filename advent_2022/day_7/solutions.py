@@ -1,7 +1,8 @@
-from collections import defaultdict
 from pathlib import Path
+from collections import defaultdict
 
 from reusables import timer, INPUT_PATH
+
 
 # decide on a data structure into which to parse the input
 # base the decision on an appropriate algorithm to arrive at the solution
@@ -9,67 +10,76 @@ from reusables import timer, INPUT_PATH
 # assess if the algo misses edge cases
 # proceed
 
-_SIZE_TO_CHECK = 100000
+_PART_ONE_SIZE = 100000
+_ROOT_DIR = "/"
 _TOTAL_DISK_SPACE = 70000000
 _NEEDED_FREE_FOR_UPDATE = 30000000
 
 
-def _dfs_sum(tree: dict[str, set[str]], node: str, size_map: dict[str, int]):
-    size = 0
-    for child in tree[node]:
-        if child.startswith("dir "):
-            dir_name = child.split(" ")[1]
-            new_node = node.rstrip("/") + "/" + dir_name
-            s, _ = _dfs_sum(tree, new_node, size_map)
-            size += s
-        else:
-            size += int(child.split(" ")[0])
-    size_map[node] = size
-    return size, size_map
-
-
-def _parse_terminal_output(file_path: Path) -> dict:
+def _parse_terminal_output(file_path: Path) -> dict[str, set[str]]:
     with open(file_path, "r") as puzzle_input:
         lines = puzzle_input.read().strip().splitlines()
         tree = defaultdict(set)
         path = []
         for line in lines:
             parts = line.split(" ")
-            if parts == ["$", "ls"]:
+            if line == "$ ls":
                 continue
-            elif parts == ["$", "cd", ".."]:
+            elif line == "$ cd ..":
                 path.pop()
-            elif parts[0] == "$" and parts[1] == "cd":
-                if parts[2] == "/":
+            elif line.startswith("$ cd "):
+                if len(parts) != 3:
+                    raise ValueError(f"Unexpected command: {line}")
+                dir_name = parts[2]
+                if dir_name == "/":
                     path = [""]
                 else:
-                    path.append(parts[2])
+                    path.append(dir_name)
+                dir_name = "/".join(path).replace("//", "/") or "/"
             else:
-                current_path = "/".join(path).replace("//", "/") or "/"
-                tree[current_path].add(line)
-        return dict(tree)
+                tree[dir_name].add(line)
+    return dict(tree)
 
 
-def _get_file_system_size(day, file, year):
-    input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
-        year=year, day=day, file=file
-    )
-    tree = _parse_terminal_output(file_path=input_file_path)
-    size_map = {dir_name: 0 for dir_name in tree}
-    root_dir_size, size_map = _dfs_sum(tree=tree, size_map=size_map, node="/")
-    return root_dir_size, size_map
+def _dfs_sum(
+    tree: dict[str, set[str]], size_map: dict[str, int], node: str
+) -> tuple[int, dict[str, int]]:
+    size = 0
+    for child in tree[node]:
+        parts = child.split(" ")
+        if len(parts) != 2:
+            raise ValueError(f"Invalid dir content: {child}")
+
+        if child.startswith("dir "):
+            new_node = node.rstrip("/") + "/" + child.split(" ")[1].strip()
+            s, _ = _dfs_sum(tree=tree, size_map=size_map, node=new_node)
+            size += s
+        else:
+            try:
+                file_size = int(parts[0])
+            except ValueError:
+                raise ValueError(f"Invalid file: {child}")
+            size += file_size
+    size_map[node] = size
+    return size, size_map
+
+
+def _get_file_system_size(input_file_path: Path) -> tuple[int, dict[str, int]]:
+    file_system_tree = _parse_terminal_output(file_path=input_file_path)
+    size_map = {dir_name: 0 for dir_name in file_system_tree}
+    # print(f"{file_system_tree=}")
+    return _dfs_sum(tree=file_system_tree, size_map=size_map, node=_ROOT_DIR)
 
 
 @timer
 def part_one(file: str, day: int = 7, year: int = 2022) -> int:
-    root_dir_size, size_map = _get_file_system_size(day, file, year)
+    input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
+        year=year, day=day, file=file
+    )
+    root_dir_size, size_by_dir_name = _get_file_system_size(input_file_path)
     # print(f"{root_dir_size=}")
-    # print(f"{size_map=}")
-    total = 0
-    for dir_name, dir_size in size_map.items():
-        if dir_size <= _SIZE_TO_CHECK:
-            total += dir_size
-    return total
+    # print(f"{size_by_dir_name=}")
+    return sum(list(filter(lambda x: x <= _PART_ONE_SIZE, size_by_dir_name.values())))
 
 
 part_one(file="eg")
@@ -78,14 +88,13 @@ part_one(file="input")
 
 @timer
 def part_two(file: str, day: int = 7, year: int = 2022) -> int:
-    root_dir_size, size_map = _get_file_system_size(day, file, year)
-    available_space = _TOTAL_DISK_SPACE - root_dir_size
-    required_free_space = _NEEDED_FREE_FOR_UPDATE - available_space
-    # print(f"{required_free_space=}")
-    candidates = list(filter(lambda x: x >= required_free_space, size_map.values()))
-    if len(candidates) == 0:
-        raise ValueError("No candidates!")
-    return sorted(candidates)[0]
+    input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
+        year=year, day=day, file=file
+    )
+    root_dir_size, size_by_dir_name = _get_file_system_size(input_file_path)
+    unused_space = _TOTAL_DISK_SPACE - root_dir_size
+    required = _NEEDED_FREE_FOR_UPDATE - unused_space
+    return sorted(list(filter(lambda x: x >= required, size_by_dir_name.values())))[0]
 
 
 part_two(file="eg")
