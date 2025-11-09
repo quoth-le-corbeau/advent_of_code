@@ -51,6 +51,8 @@ def _bfs(
             return path
         for direction in _UNIT_VECTORS:
             next_node = current[0] + direction[0], current[1] + direction[1]
+            if next_node in visited:
+                continue
             if 0 <= next_node[0] < row_count and 0 <= next_node[1] < col_count:
                 if grid[next_node[0]][next_node[1]] - grid[current[0]][current[1]] == 1:
                     queue.append(path + [next_node])
