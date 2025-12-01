@@ -2,6 +2,8 @@ from pathlib import Path
 
 from reusables import timer, INPUT_PATH
 
+_DIAL_LENGTH = 100
+
 
 def _parse_input(file_path: Path) -> list[str]:
     with open(file_path, "r") as puzzle_input:
@@ -14,7 +16,6 @@ def part_one(file: str, day: int = 1, year: int = 2025):
         year=year, day=day, file=file
     )
     instructions = _parse_input(file_path=input_file_path)
-    print(f"{instructions=}")
     current = 50
     count = 0
     for instruction in instructions:
@@ -24,7 +25,7 @@ def part_one(file: str, day: int = 1, year: int = 2025):
             current -= steps
         elif direction == "R":
             current += steps
-        current = current % 100
+        current = current % _DIAL_LENGTH
         if current == 0:
             count += 1
     return count
@@ -51,10 +52,12 @@ def part_two(file: str, day: int = 1, year: int = 2025):
                 current -= 1
             elif direction == "R":
                 current += 1
+            else:
+                raise ValueError(f"Unknown direction '{direction}'")
             if current < 0:
-                current = current % 100
-            if current >= 100:
-                current = current % 100
+                current = current % _DIAL_LENGTH
+            if current >= _DIAL_LENGTH:
+                current = current % _DIAL_LENGTH
             if current == 0:
                 count += 1
             i += 1
