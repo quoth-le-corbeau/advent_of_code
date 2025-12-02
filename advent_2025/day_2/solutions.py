@@ -30,7 +30,6 @@ def part_one(file: str, day: int = 2, year: int = 2025) -> int:
         year=year, day=day, file=file
     )
     ranges = _parse_input(file_path=input_file_path)
-    print(f"{ranges=}")
     invalid = []
     for r in ranges:
         s, e = int(r.split("-")[0]), int(r.split("-")[1])
