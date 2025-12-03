@@ -1,13 +1,6 @@
 from pathlib import Path
 
-
 from reusables import timer, INPUT_PATH
-
-
-def _parse_input(file_path: Path) -> list[str]:
-    with open(file_path, "r") as puzzle_input:
-        ranges = puzzle_input.read().strip().split(",")
-        return ranges
 
 
 def _is_composed_of_repeated_digits(number_str: str) -> bool:
@@ -29,15 +22,15 @@ def part_one(file: str, day: int = 2, year: int = 2025) -> int:
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    ranges = _parse_input(file_path=input_file_path)
-    invalid = []
-    for r in ranges:
-        s, e = int(r.split("-")[0]), int(r.split("-")[1])
-        for n in range(s, e + 1):
-            sn = str(n)
-            mid = len(sn) // 2
-            if sn[:mid] == sn[mid:]:
-                invalid.append(n)
+    with open(input_file_path, "r") as puzzle_input:
+        invalid = []
+        for r in puzzle_input.read().strip().split(","):
+            s, e = int(r.split("-")[0]), int(r.split("-")[1])
+            for n in range(s, e + 1):
+                sn = str(n)
+                mid = len(sn) // 2
+                if sn[:mid] == sn[mid:]:
+                    invalid.append(n)
     return sum(invalid)
 
 
@@ -50,14 +43,14 @@ def part_two(file: str, day: int = 2, year: int = 2025) -> int:
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    ranges = _parse_input(file_path=input_file_path)
-    invalid = []
-    for r in ranges:
-        s, e = int(r.split("-")[0]), int(r.split("-")[1])
-        for n in range(s, e + 1):
-            sn = str(n)
-            if _is_composed_of_repeated_digits(sn):
-                invalid.append(n)
+    with open(input_file_path, "r") as puzzle_input:
+        invalid = []
+        for r in puzzle_input.read().strip().split(","):
+            s, e = int(r.split("-")[0]), int(r.split("-")[1])
+            for n in range(s, e + 1):
+                sn = str(n)
+                if _is_composed_of_repeated_digits(sn):
+                    invalid.append(n)
     return sum(invalid)
 
 
