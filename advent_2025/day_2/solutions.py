@@ -56,3 +56,26 @@ def part_two(file: str, day: int = 2, year: int = 2025) -> int:
 
 part_two(file="eg")
 part_two(file="input")
+
+from math import log10, ceil
+
+
+def check_valid_p2(low: int, high: int) -> set[int]:
+    valid = set()
+    min_digits, max_digits = ceil(log10(low) + 1e-9), ceil(log10(high) + 1e-9)
+    if max_digits > min_digits:
+        return check_valid_p2(low, 10**min_digits - 1).union(
+            check_valid_p2(10**min_digits, high)
+        )
+    digits = min_digits
+    for sequence_len in range(1, digits // 2 + 1):
+        start_pattern = low // 10 ** (digits - sequence_len)
+        end_pattern = high // 10 ** (digits - sequence_len)
+        for pattern in range(start_pattern, end_pattern + 1):
+            candidate = sum(
+                pattern * 10 ** (j * sequence_len)
+                for j in range(digits // sequence_len)
+            )
+            if low <= candidate <= high:
+                valid.add(candidate)
+    return valid
