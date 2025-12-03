@@ -27,8 +27,23 @@ def _find_largest_two_digit_voltage(bank: list[int]) -> int:
     return tens * 10 + units
 
 
-def _find_largest_twelve_digit_voltage(bank: list[int]) -> int:
-    pass
+def _find_largest_twelve_digit_voltage(bank: list[int], digits_left: int = 11) -> int:
+    total = 0
+    digit_count = 0
+    max_i = -1
+    while digits_left >= 0:
+        max_ = 0
+        pool = bank[digit_count : len(bank) - digits_left]
+        for i, n in enumerate(pool):
+            if n > max_ and i >= max_i:
+                max_ = n
+                max_i = i
+        total += max_ * 10**digits_left
+        print(f"subtotal: {total}")
+        digit_count += 1
+        digits_left -= 1
+
+    return total
 
 
 @timer
@@ -57,9 +72,12 @@ def part_two(file: str, day: int = 3, year: int = 2025):
     total = 0
     for bank in banks:
         largest = _find_largest_twelve_digit_voltage(bank)
+        print("--------------")
+        print(f"TOTAL: {largest}")
+        print("--------------")
         total += largest
     return total
 
 
 part_two(file="eg")
-# part_two(file="input")
+part_two(file="input")
