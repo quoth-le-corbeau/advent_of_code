@@ -53,7 +53,7 @@ def _parse_grid_editable(file_path: Path) -> list[list[str]]:
     return grid
 
 
-def _find_and_remove_bogrolls(grid: list[list[str]]) -> list[list[str]]:
+def _find_and_remove_bogrolls(grid: list[list[str]]) -> tuple[int, list[list[str]]]:
     forkliftables: list[GridPoint] = []
     for row, line in enumerate(grid):
         for col, grid_point in enumerate(line):
@@ -69,12 +69,13 @@ def _find_and_remove_bogrolls(grid: list[list[str]]) -> list[list[str]]:
                         break
                 if adj_count < 4:
                     forkliftables.append((col, row))
-    print(f"Removing {len(forkliftables)} bogrolls")
+    # print(f"Removing {len(forkliftables)} bogrolls")
     for r in range(len(grid)):
         for c in range(len(grid[0])):
             if (c, r) in forkliftables:
                 grid[r][c] = "x"
-    return grid
+    # _print_grid(grid)
+    return len(forkliftables), grid
 
 
 def _print_grid(grid: list[list[str]]) -> None:
@@ -88,10 +89,14 @@ def part_two(file: str, day: int = 4, year: int = 2025) -> int:
         year=year, day=day, file=file
     )
     grid = _parse_grid_editable(input_file_path)
-    _print_grid(grid)
-    g1 = _find_and_remove_bogrolls(grid)
-    _print_grid(g1)
+    count = 0
+    while True:
+        removed, grid = _find_and_remove_bogrolls(grid)
+        if removed == 0:
+            break
+        count += removed
+    return count
 
 
 part_two(file="eg")
-# part_two(file="input")
+part_two(file="input")
