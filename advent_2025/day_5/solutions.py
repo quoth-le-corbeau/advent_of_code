@@ -39,13 +39,12 @@ def part_two(file: str, day: int = 5, year: int = 2025):
     id_ranges, _ = _parse_input(file_path=input_file_path)
     preliminary = id_ranges[-1][1] - id_ranges[0][0] + 1
     deltas = []
-    for range_pair in zip(id_ranges[:-1], id_ranges[1:]):
-        first, second = range_pair
-        if second[0] > first[1]:
-            deltas.append(second[0] - first[1] - 1)
+    for i, r in enumerate(id_ranges):
+        all_ends_up_to_now = [x[1] for x in id_ranges[:i]]
+        if all_ends_up_to_now and r[0] > max(all_ends_up_to_now):
+            deltas.append(r[0] - max(all_ends_up_to_now) - 1)
     return preliminary - sum(deltas)
 
 
 part_two(file="eg")
 part_two(file="input")
-# 315004568769605
