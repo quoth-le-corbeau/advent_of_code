@@ -20,6 +20,8 @@ def _check_invalid(low: int, high: int) -> set[int]:
         for pattern in range(start_pattern, end_pattern + 1):
             candidate = 0
             # find all integers made of repeated pattern of sequence_len with this number of digits
+            # so the only unnecessary checks are for integers matching the pattern
+            # but falling outside the range. Salsiccia intelligenta!
             for j in range(digits // sequence_len):
                 candidate += pattern * 10 ** (j * sequence_len)
             # only append if within the given bounds
