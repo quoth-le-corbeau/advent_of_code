@@ -43,8 +43,8 @@ def part_one(file: str, day: int = 4, year: int = 2025) -> int:
     return len(_find_removable_bogrolls(grid))
 
 
-# part_one(file="eg")
-# part_one(file="input")
+part_one(file="eg")
+part_one(file="input")
 
 
 def _parse_grid_editable(file_path: Path) -> list[list[str]]:
