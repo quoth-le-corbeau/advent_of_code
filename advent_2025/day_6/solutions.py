@@ -65,36 +65,48 @@ def _parse_input_p2(file_path: Path) -> list[list[str]]:
         lines = puzzle_input.read().replace(" ", ".")
         rows = [line.replace(" ", ".") for line in lines.split("\n")]
         row_len = _find_row_length(lines)
-
-        # find break points
-        delimiter_indexes = []
-        for i in range(row_len):
-            if all(row[i] == "." for row in rows):
-                delimiter_indexes.append(i)
-        print(f"{delimiter_indexes}")
-
-        parsed = []
-        current_i = 0
-        for i, delimiter_index in enumerate(delimiter_indexes):
-            if i == len(delimiter_indexes):
-                end = row_len
-            else:
-                end = delimiter_index
-            for row in rows:
-                to_append = row[current_i:end]
-                parsed.append(to_append)
-            current_i = delimiter_index
-
-        groups = []
-        current_i = 0
-        for j, p in enumerate(parsed):
-            if "+" in p or "*" in p:
-                if "+" in p and "*" in p:
-                    print(f"WTFK??? j={j} p={p}")
-                group = parsed[current_i : j + 1]
-                groups.append(group)
-                current_i = j + 1
+        delimiter_indexes = _find_delimiter_indexes(row_len, rows)
+        parsed = _parse_vertical_blocks(
+            indexes=delimiter_indexes, row_len=row_len, rows=rows
+        )
+        groups = _build_groups(parsed)
     return groups
+
+
+def _build_groups(horizontal: list[str]):
+    groups = []
+    current_i = 0
+    for j, p in enumerate(horizontal):
+        if "+" in p or "*" in p:
+            group = horizontal[current_i : j + 1]
+            groups.append(group)
+            current_i = j + 1
+    return groups
+
+
+def _parse_vertical_blocks(
+    indexes: list[int], row_len: int, rows: list[str]
+) -> list[str]:
+    parsed = []
+    current_i = 0
+    for i, index in enumerate(indexes):
+        if i == len(indexes):
+            end = row_len
+        else:
+            end = index
+        for row in rows:
+            to_append = row[current_i:end]
+            parsed.append(to_append)
+        current_i = index
+    return parsed
+
+
+def _find_delimiter_indexes(row_len, rows):
+    delimiter_indexes = []
+    for i in range(row_len):
+        if all(row[i] == "." for row in rows):
+            delimiter_indexes.append(i)
+    return delimiter_indexes
 
 
 def _find_row_length(lines):
