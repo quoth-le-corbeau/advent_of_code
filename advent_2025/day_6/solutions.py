@@ -28,7 +28,7 @@ def _transform(rows: list[list[int | str]]) -> list[list[int | str]]:
 
 
 def _solve(math_problems: list[list[int | str]], n: int) -> list[int]:
-    s = []
+    subtotals = []
     for mp in math_problems:
         op = mp[-1]
         match op:
@@ -36,15 +36,15 @@ def _solve(math_problems: list[list[int | str]], n: int) -> list[int]:
                 r = 1
                 for i in range(n):
                     r *= mp[i]
-                s.append(r)
+                subtotals.append(r)
             case "+":
                 r = 0
                 for i in range(n):
                     r += mp[i]
-                s.append(r)
+                subtotals.append(r)
             case _:
                 raise ValueError(f"Unknown op: {op}!")
-    return s
+    return subtotals
 
 
 @timer
@@ -62,25 +62,27 @@ part_one(file="input", n=4)
 
 def _parse_input_p2(file_path: Path) -> list[list[str]]:
     with open(file_path, "r") as puzzle_input:
-        lines = puzzle_input.read().replace(" ", ".")
-        rows = [line.replace(" ", ".") for line in lines.split("\n")]
-        row_len = _find_row_length(lines)
-        delimiter_indexes = _find_delimiter_indexes(row_len, rows)
-        parsed = _parse_vertical_blocks(
+        input_line: str = puzzle_input.read().replace(" ", ".")
+        row_len: int = _find_row_length(input_line)
+        rows: list[str] = [line.replace(" ", ".") for line in input_line.split("\n")]
+        delimiter_indexes: list[int] = _find_delimiter_indexes(
+            row_len=row_len, rows=rows
+        )
+        parsed: list[str] = _parse_vertical_blocks(
             indexes=delimiter_indexes, row_len=row_len, rows=rows
         )
-        groups = _build_groups(parsed)
+        groups: list[list[str]] = _split_groups_at_op_lines(parsed)
     return groups
 
 
-def _build_groups(horizontal: list[str]):
+def _split_groups_at_op_lines(horizontal: list[str]) -> list[list[str]]:
     groups = []
-    current_i = 0
-    for j, p in enumerate(horizontal):
-        if "+" in p or "*" in p:
-            group = horizontal[current_i : j + 1]
+    start_index = 0
+    for i, line in enumerate(horizontal):
+        if "+" in line or "*" in line:
+            group = horizontal[start_index : i + 1]
             groups.append(group)
-            current_i = j + 1
+            start_index = i + 1
     return groups
 
 
@@ -90,37 +92,36 @@ def _parse_vertical_blocks(
     parsed = []
     current_i = 0
     for i, index in enumerate(indexes):
-        if i == len(indexes):
-            end = row_len
-        else:
-            end = index
         for row in rows:
-            to_append = row[current_i:end]
+            to_append = row[current_i:index]
             parsed.append(to_append)
         current_i = index
+    for row in rows:
+        to_append = row[current_i:]
+        parsed.append(to_append)
     return parsed
 
 
-def _find_delimiter_indexes(row_len, rows):
-    delimiter_indexes = []
+def _find_delimiter_indexes(row_len: int, rows: list[str]) -> list[int]:
+    indexes = []
     for i in range(row_len):
         if all(row[i] == "." for row in rows):
-            delimiter_indexes.append(i)
-    return delimiter_indexes
+            indexes.append(i)
+    return indexes
 
 
-def _find_row_length(lines):
+def _find_row_length(line: str) -> int:
     i = 0
-    while lines[i] != "\n":
+    while line[i] != "\n":
         i += 1
     return i
 
 
 def _solve_p2(math_problems: list[list[str]]) -> list[int]:
-    s = []
+    subtotals = []
     for mp in math_problems:
-        s.append(_cephalopod_transform_solve(mp))
-    return s
+        subtotals.append(_cephalopod_transform_solve(mp))
+    return subtotals
 
 
 def _cephalopod_transform_solve(problem: list[str]) -> int:
@@ -132,10 +133,7 @@ def _cephalopod_transform_solve(problem: list[str]) -> int:
         op = "*"
     else:
         raise ValueError("unknown op")
-    try:
-        assert op in ["+", "*"]
-    except AssertionError:
-        print("help")
+    assert op in ["+", "*"]
     nums = []
     for i in range(powers):
         n = ""
@@ -147,8 +145,7 @@ def _cephalopod_transform_solve(problem: list[str]) -> int:
         try:
             actually_nums.append(int(n.replace(".", "")))
         except (ValueError, TypeError):
-            print(f"TypeError:{n}")
-    print(f"{actually_nums=}")
+            continue
     return _cephalopod_solve(actually_nums, op)
 
 
@@ -158,7 +155,6 @@ def _cephalopod_solve(nums: list[int], op: str) -> int:
             r = 1
             for n in nums:
                 r *= n
-
         case "+":
             r = 0
             for n in nums:
@@ -174,10 +170,8 @@ def part_two(file: str, day: int = 6, year: int = 2025):
         year=year, day=day, file=file
     )
     math_problems = _parse_input_p2(file_path=input_file_path)
-    print(f"{math_problems=}")
     return sum(_solve_p2(math_problems))
 
 
-# part_two(file="eg")
+part_two(file="eg")
 part_two(file="input")
-print(f"solution: {10442199702583 + 477 + 7737}")
