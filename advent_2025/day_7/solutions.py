@@ -45,14 +45,14 @@ def _dfs(
         if current_position not in marked_splitters:
             marked_splitters.add(current_position)
             _dfs(
-                current_position=(x - 1, y),
+                current_position=(x - 1, y + 1),
                 cols=cols,
                 rows=rows,
                 splitters=splitters,
                 marked_splitters=marked_splitters,
             )
             _dfs(
-                current_position=(x + 1, y),
+                current_position=(x + 1, y + 1),
                 cols=cols,
                 rows=rows,
                 splitters=splitters,
@@ -100,8 +100,8 @@ def part_one(file: str, day: int = 7, year: int = 2025):
     return len(hit_splitters)
 
 
-# part_one(file="eg")
-# part_one(file="input")
+part_one(file="eg")
+part_one(file="input")
 
 
 def _bfs(
@@ -111,24 +111,31 @@ def _bfs(
     splitters: set[GridPoint],
 ) -> int:
     x, y = current_position
-    q = deque([(x, y, 1)])
-    total_paths = 0
+    q = deque([(x, y)])
+    visited = {(x, y)}
     cache = defaultdict(int)
     cache[(x, y)] = 1
-    while len(q) != 0:
-        node = q.popleft()
 
-        x, y, n = node
+    while len(q) != 0:
+        x, y = q.popleft()
+        current_paths = cache[(x, y)]
+
         if y >= rows - 1:
-            total_paths += n
             continue
 
-        if 0 <= x < cols and 0 <= y < rows:
-            if (x, y) in splitters:
-                q.append((x - 1, y, n))
-                q.append((x + 1, y, n))
-            else:
-                q.append((x, y + 1, n))
+        if (x, y) in splitters:
+            next_positions = [(x - 1, y + 1), (x + 1, y + 1)]
+        else:
+            next_positions = [(x, y + 1)]
+
+        for nx, ny in next_positions:
+            if 0 <= nx < cols and 0 <= ny < rows:
+                cache[(nx, ny)] += current_paths
+                if (nx, ny) not in visited:
+                    visited.add((nx, ny))
+                    q.append((nx, ny))
+
+    total_paths = sum(count for (x, y), count in cache.items() if y >= rows - 1)
     return total_paths
 
 
