@@ -2,32 +2,68 @@ from pathlib import Path
 
 from reusables import timer, INPUT_PATH
 
+GridPoint = type(tuple[int, int])
 
-def RENAME_FUNC(file_path: Path):
+
+def _parse_coordinates(file_path: Path) -> list[GridPoint]:
+    red_tile_x_y = []
     with open(file_path, "r") as puzzle_input:
-        lines = puzzle_input.read()
-        print(lines)
+        lines = puzzle_input.read().strip().splitlines()
+        for line in lines:
+            x, y = line.split(",")
+            red_tile_x_y.append((int(x), int(y)))
+    return red_tile_x_y
+
+
+def _area(a: GridPoint, b: GridPoint) -> int:
+    x, y = a
+    x1, y1 = b
+    return (abs(y - y1) + 1) * (abs(x - x1) + 1)
 
 
 @timer
-def part_one(file: str, day: int = 9, year: int = 2025):
+def part_one(file: str, day: int = 9, year: int = 2025) -> int:
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    return RENAME_FUNC(file_path=input_file_path)
+    red_tile_coordinates = _parse_coordinates(file_path=input_file_path)
+    areas = sorted(
+        [
+            (_area(a, b), a, b)
+            for i, a in enumerate(red_tile_coordinates)
+            for b in red_tile_coordinates[i + 1 :]
+        ]
+    )
+    return areas[-1][0]
 
 
-part_one(file="eg")
-part_one(file="input")
+# part_one(file="eg")
+# part_one(file="input")
+
+
+def _form_boundary(corners: list[GridPoint]) -> set[GridPoint]:
+    # shoot out rays in all directions
+    # cull these to the given red tiles
+    pass
 
 
 @timer
-def part_two(file: str, day: int = 9, year: int = 2025):
+def part_two(file: str, day: int = 9, year: int = 2025) -> int:
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    return RENAME_FUNC(file_path=input_file_path)
+    x_y_coordinates: list[GridPoint] = _parse_coordinates(file_path=input_file_path)
+    # plan:
+    boundary = _form_boundary(x_y_coordinates)
+    areas = sorted(
+        [
+            (_area(a, b), a, b)
+            for i, a in enumerate(x_y_coordinates)
+            for b in x_y_coordinates[i + 1 :]
+            # filter by being within boundary
+        ]
+    )
 
 
 part_two(file="eg")
-part_two(file="input")
+# part_two(file="input")
