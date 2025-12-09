@@ -3,7 +3,7 @@ from pathlib import Path
 from reusables import timer, INPUT_PATH
 
 
-GridPoint = type(tuple[int, int])
+GridPoint = tuple[int, int]
 
 
 def _parse_grid(file_path: Path):

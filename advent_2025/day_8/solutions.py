@@ -4,7 +4,7 @@ from functools import cache
 from reusables import timer, INPUT_PATH
 
 
-Coordinate = type(tuple[int, int, int])
+Coordinate = tuple[int, int, int]
 
 
 def _parse_input(file_path: Path) -> list[Coordinate]:

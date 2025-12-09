@@ -6,7 +6,7 @@ from reusables import timer, INPUT_PATH
 _UNIT_VECTORS = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
 
 
-GridPoint = type(tuple[int, int])
+GridPoint = tuple[int, int]
 
 
 def _parse_grid(file_path: Path) -> list[str]:
