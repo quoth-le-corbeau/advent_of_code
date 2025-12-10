@@ -1,3 +1,4 @@
+import itertools
 from pathlib import Path
 
 from reusables import timer, INPUT_PATH
@@ -24,28 +25,55 @@ def _parse_input(file_path: Path) -> list[list]:
     return configs
 
 
-def _parse_joltages(joltage_str):
+def _parse_joltages(joltage_str) -> tuple[int, ...]:
     return tuple(
         int(j) for j in joltage_str.replace("{", "").replace("}", "").split(",")
     )
 
 
-def _parse_buttons(button_str):
+def _parse_buttons(button_str) -> list[tuple[int, ...]]:
     buttons = []
     for b in button_str:
         buttons.append(tuple(map(int, b.replace(")", "").replace("(", "").split(","))))
     return buttons
 
 
-def _parse_lights(light_str):
+def _parse_lights(light_str) -> list[bool]:
     lights = []
-    for l in light_str[1:-1]:
-        if l == ".":
+    for light in light_str[1:-1]:
+        if light == ".":
             lights.append(False)
         else:
-            assert l == "#"
+            assert light == "#"
             lights.append(True)
     return lights
+
+
+def _count_required_presses(config: list) -> int:
+    goal = config[0]
+    buttons = config[1]
+    start = [False for _ in range(len(goal))]
+
+    # Start with combinations of size 1, 2, 3, etc.
+    for combination_size in range(1, len(buttons) + 1):
+        for (
+            button_combination
+        ) in itertools.combinations_with_replacement(  # this is f***ing awesome
+            buttons, combination_size
+        ):
+            candidate = _toggle(button_combination, start)
+            if candidate == goal:
+                return len(button_combination)
+
+    return -1
+
+
+def _toggle(button_combination: tuple, start: list[bool]) -> list[bool]:
+    state = start.copy()
+    for button in button_combination:
+        for index in button:
+            state[index] = not state[index]
+    return state
 
 
 @timer
@@ -54,11 +82,18 @@ def part_one(file: str, day: int = 10, year: int = 2025):
         year=year, day=day, file=file
     )
     configs = _parse_input(file_path=input_file_path)
-    print(f"{configs=}")
+    total = 0
+    for config in configs:
+        required_presses = _count_required_presses(config)
+        # print(f"For config: {config}")
+        # print(f"{required_presses=}")
+        # print("------------------------")
+        total += required_presses
+    return total
 
 
 part_one(file="eg")
-# part_one(file="input")
+part_one(file="input")
 
 
 @timer
