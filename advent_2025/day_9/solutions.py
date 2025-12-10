@@ -40,8 +40,8 @@ def part_one(file: str, day: int = 9, year: int = 2025) -> int:
     return areas[-1][0]
 
 
-# part_one(file="eg")
-# part_one(file="input")
+part_one(file="eg")
+part_one(file="input")
 
 
 def _inside_condition(lower: int, upper: int, point: int) -> bool:
@@ -53,6 +53,7 @@ def _rectangle_inside_perimeter(
     opposite_corner: GridPoint,
     perimeter_lines: list[tuple[GridPoint, GridPoint]],
 ) -> bool:
+    # Note to self: this definitely needs optimizing
     valid = True
     rectangle_min_x = min(corner[0], opposite_corner[0])
     rectangle_min_y = min(corner[1], opposite_corner[1])
@@ -113,9 +114,15 @@ def part_two(file: str, day: int = 9, year: int = 2025) -> int:
         year=year, day=day, file=file
     )
     red_tile_coordinates = _parse_coordinates(file_path=input_file_path)
-    perimeter_lines = list(zip(red_tile_coordinates[:-1], red_tile_coordinates[1:]))
+    perimeter_lines = list(
+        zip(red_tile_coordinates, red_tile_coordinates[1:] + red_tile_coordinates[:1])
+    )
     valid_areas = [
-        (_area(a, b), a, b)
+        (
+            _area(a, b),
+            a,
+            b,
+        )  # Note: _area() is only called if the filter condition is passed
         for i, a in enumerate(list(red_tile_coordinates))
         for b in list(red_tile_coordinates)[i + 1 :]
         if _rectangle_inside_perimeter(a, b, perimeter_lines)
@@ -125,4 +132,4 @@ def part_two(file: str, day: int = 9, year: int = 2025) -> int:
 
 
 part_two(file="eg")
-part_two(file="input")  # 1554370486
+part_two(file="input")
