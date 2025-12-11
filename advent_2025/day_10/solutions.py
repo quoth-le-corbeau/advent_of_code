@@ -25,8 +25,8 @@ def _parse_input(file_path: Path) -> list[list]:
     return configs
 
 
-def _parse_joltages(joltage_str) -> tuple[int, ...]:
-    return tuple(
+def _parse_joltages(joltage_str) -> list[int]:
+    return list(
         int(j) for j in joltage_str.replace("{", "").replace("}", "").split(",")
     )
 
@@ -92,8 +92,33 @@ def part_one(file: str, day: int = 10, year: int = 2025):
     return total
 
 
-part_one(file="eg")
-part_one(file="input")
+# part_one(file="eg")
+# part_one(file="input")
+
+
+def _count_required_joltage_presses(config: list) -> int:
+    goal = config[-1]
+    buttons = config[1]
+    counters = [0 for _ in range(len(goal))]
+
+    # Start with combinations of size 1, 2, 3, etc.
+    for combination_size in range(min(goal), len(buttons) + 100):
+        for button_combination in itertools.combinations_with_replacement(
+            buttons, combination_size
+        ):
+            candidate = _increment_counters(button_combination, counters)
+            if candidate == goal:
+                return len(button_combination)
+
+    return -1
+
+
+def _increment_counters(button_combination: tuple, start: list[int]) -> list[int]:
+    state = start.copy()
+    for button in button_combination:
+        for index in button:
+            state[index] += 1
+    return state
 
 
 @timer
@@ -101,8 +126,16 @@ def part_two(file: str, day: int = 10, year: int = 2025):
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    return _parse_input(file_path=input_file_path)
+    configs = _parse_input(file_path=input_file_path)
+    total = 0
+    for config in configs:
+        required_presses = _count_required_joltage_presses(config)
+        print(f"For config: {config}")
+        print(f"{required_presses=}")
+        print("------------------------")
+        total += required_presses
+    return total
 
 
-# part_two(file="eg")
-# part_two(file="input")
+part_two(file="eg")
+part_two(file="input")
