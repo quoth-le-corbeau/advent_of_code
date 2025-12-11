@@ -36,14 +36,14 @@ def part_one(file: str, day: int = 11, year: int = 2025):
         year=year, day=day, file=file
     )
     tree = _parse_tree(file_path=input_file_path)
-    print(f"{tree=}")
+    # print(f"{tree=}")
     paths = _bfs(start_node="you", tree=tree)
-    print(f"{paths=}")
+    # print(f"{paths=}")
     return len(paths)
 
 
-part_one(file="eg")
-part_one(file="input")
+# part_one(file="eg")
+# part_one(file="input")
 
 
 @timer
@@ -51,8 +51,15 @@ def part_two(file: str, day: int = 11, year: int = 2025):
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    return _parse_tree(file_path=input_file_path)
+    tree = _parse_tree(file_path=input_file_path)
+    paths = _bfs(start_node="svr", tree=tree)
+    res = []
+    for path in paths:
+        if "fft" in path and "dac" in path:
+            res.append(path)
+    print(f"{res=}")
+    return len(res)
 
 
-# part_two(file="eg")
+part_two(file="eg2")
 # part_two(file="input")
