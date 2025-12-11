@@ -15,7 +15,6 @@ def _parse_tree(file_path: Path) -> dict[str, set[str]]:
 
 def _bfs(start_node: str, tree: dict[str, set[str]]):
     q = deque([[start_node]])
-    # visited = set()
     paths = []
     while q:
         path = q.popleft()
@@ -24,9 +23,7 @@ def _bfs(start_node: str, tree: dict[str, set[str]]):
             paths.append(path)
             continue
         for neighbor in tree[current_node]:
-            # if neighbor not in visited:
             q.append(path + [neighbor])
-            # visited.add(neighbor)
     return paths
 
 
@@ -36,14 +33,47 @@ def part_one(file: str, day: int = 11, year: int = 2025):
         year=year, day=day, file=file
     )
     tree = _parse_tree(file_path=input_file_path)
-    # print(f"{tree=}")
     paths = _bfs(start_node="you", tree=tree)
-    # print(f"{paths=}")
     return len(paths)
 
 
-# part_one(file="eg")
-# part_one(file="input")
+part_one(file="eg")
+part_one(file="input")
+
+
+def _dfs(
+    node: str,
+    tree: dict[str, set[str]],
+    seen_dac: bool = False,
+    seen_fft: bool = False,
+    cache: dict[tuple[str, bool, bool], int] | None = None,
+) -> int:
+    if cache is None:
+        cache = {}
+    if node == "out":
+        if seen_dac and seen_fft:
+            return 1
+        else:
+            return 0
+
+    count = 0
+    for neighbor in tree[node]:
+        new_seen_fft = seen_fft or (neighbor == "fft")
+        new_seen_dac = seen_dac or (neighbor == "dac")
+        if (neighbor, new_seen_fft, new_seen_dac) in cache:
+            neighbor_count = cache[(neighbor, new_seen_fft, new_seen_dac)]
+        else:
+            neighbor_count = _dfs(
+                node=neighbor,
+                tree=tree,
+                seen_dac=new_seen_dac,
+                seen_fft=new_seen_fft,
+                cache=cache,
+            )
+            cache[(neighbor, new_seen_fft, new_seen_dac)] = neighbor_count
+        count += neighbor_count
+
+    return count
 
 
 @timer
@@ -52,14 +82,9 @@ def part_two(file: str, day: int = 11, year: int = 2025):
         year=year, day=day, file=file
     )
     tree = _parse_tree(file_path=input_file_path)
-    paths = _bfs(start_node="svr", tree=tree)
-    res = []
-    for path in paths:
-        if "fft" in path and "dac" in path:
-            res.append(path)
-    print(f"{res=}")
-    return len(res)
+    valid_path_count = _dfs(node="svr", tree=tree)
+    return valid_path_count
 
 
 part_two(file="eg2")
-# part_two(file="input")
+part_two(file="input")
