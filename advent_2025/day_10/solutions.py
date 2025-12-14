@@ -1,6 +1,7 @@
 import itertools
 from collections import deque
 from pathlib import Path
+from ortools.linear_solver import pywraplp
 
 from reusables import timer, INPUT_PATH
 
@@ -165,6 +166,36 @@ def _count_required_joltage_presses_dp(config: list) -> int:
                     new_queue.append(new_state)
         queue = new_queue
 
+    return -1
+
+
+def _count_required_joltage_presses_ortools(config: list) -> int:
+    goal = config[-1]
+    buttons = config[1]
+
+    solver = pywraplp.Solver.CreateSolver("SCIP")
+    if not solver:
+        return -1
+
+    button_variables = []
+    for i in range(len(buttons)):
+        button_variables.append(solver.IntVar(0, sum(goal), f"button_{i}"))
+
+    for position in range(len(goal)):
+        constraint = solver.Constraint(goal[position], goal[position])
+        for button_idx, button in enumerate(buttons):
+            if position in button:
+                constraint.SetCoefficient(button_variables[button_idx], 1)
+
+    objective = solver.Objective()
+    for variable in button_variables:
+        objective.SetCoefficient(variable, 1)
+    objective.SetMinimization()
+
+    status = solver.Solve()
+
+    if status == pywraplp.Solver.OPTIMAL:
+        return int(objective.Value())
     return -1
 
 
