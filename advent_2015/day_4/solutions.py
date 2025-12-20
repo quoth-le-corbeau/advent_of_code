@@ -1,6 +1,5 @@
 from pathlib import Path
 import hashlib
-from multiprocessing import Pool
 
 from reusables import timer, INPUT_PATH
 
