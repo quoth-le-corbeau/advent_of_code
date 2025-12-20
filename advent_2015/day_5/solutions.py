@@ -21,12 +21,18 @@ def _contains_repeated_char(string: str) -> bool:
     return False
 
 
-def _is_nice(string: str) -> bool:
+def _vowel_count(string: str) -> int:
+    count = 0
+    for char in string:
+        if char in _VOWELS:
+            count += 1
+    return count
+
+
+def _is_nice_p1(string: str) -> bool:
     if any(v in string for v in _VERBOTEN):
         return False
-    elif len(_VOWELS.intersection(set(string))) >= 3 and _contains_repeated_char(
-        string
-    ):
+    elif _vowel_count(string) >= 3 and _contains_repeated_char(string):
         return True
     else:
         return False
@@ -39,7 +45,7 @@ def part_one(file: str, day: int = 5, year: int = 2015) -> int:
     )
     nice = 0
     for line in _parse_lines(file_path=input_file_path):
-        if _is_nice(line):
+        if _is_nice_p1(line):
             nice += 1
     return nice
 
@@ -48,13 +54,29 @@ part_one(file="eg")
 part_one(file="input")
 
 
+def _is_nice_p2(string: str) -> bool:
+    has_repeated_pair = False
+    has_palindromic_triple = False
+    for i in range(len(string) - 2):
+        pair = string[i : i + 2]
+        if pair in string[i + 2 :]:
+            has_repeated_pair = True
+        if string[i] == string[i + 2]:
+            has_palindromic_triple = True
+    return has_repeated_pair and has_palindromic_triple
+
+
 @timer
 def part_two(file: str, day: int = 5, year: int = 2015):
     input_file_path: Path = Path(__file__).resolve().parents[2] / INPUT_PATH.format(
         year=year, day=day, file=file
     )
-    return _parse_lines(file_path=input_file_path)
+    nice = 0
+    for line in _parse_lines(file_path=input_file_path):
+        if _is_nice_p2(line):
+            nice += 1
+    return nice
 
 
-# part_two(file="eg")
-# part_two(file="input")
+part_two(file="eg2")
+part_two(file="input")
